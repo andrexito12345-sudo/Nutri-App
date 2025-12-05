@@ -17,6 +17,8 @@ function LandingPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
 
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
     // ✅ REGISTRAR VISITA AL CARGAR LA PÁGINA
     const visitRegistered = useRef(false);
 
@@ -51,10 +53,8 @@ function LandingPage() {
             const res = await api.post("/appointments", payload);
 
             if (res.data && res.data.ok) {
-                setMessage({
-                    type: "success",
-                    text: "¡Excelente! Tu solicitud fue enviada. Te contactaremos pronto para confirmar tu cita.",
-                });
+                // ÉXITO: Activamos el Modal y limpiamos el formulario
+                setShowSuccessModal(true);
                 setFormData({
                     name: "",
                     email: "",
@@ -77,6 +77,11 @@ function LandingPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Función para cerrar el modal
+    const closeSuccessModal = () => {
+        setShowSuccessModal(false);
     };
 
     const scrollToForm = () => {
@@ -834,6 +839,33 @@ function LandingPage() {
                         </div>
                     </div>
                 </footer>
+
+                {/* === MODAL DE ÉXITO (POPUP) === */}
+                {showSuccessModal && (
+                    <div className="lp-modal-overlay">
+                        <div className="lp-modal-card">
+                            <div className="lp-success-icon-wrapper">
+                                {/* Icono Check Animado SVG */}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </div>
+
+                            <h3 className="lp-modal-title">¡Solicitud Enviada!</h3>
+
+                            <p className="lp-modal-text">
+                                Gracias por dar el primer paso hacia tu bienestar.
+                                <br/><br/>
+                                Hemos recibido tus datos correctamente. Te contactaremos vía <strong>WhatsApp</strong> en breve para confirmar tu horario.
+                            </p>
+
+                            <button className="lp-modal-btn" onClick={closeSuccessModal}>
+                                Entendido, gracias
+                            </button>
+                        </div>
+                    </div>
+                )}
+
             </main>
         </div>
     );

@@ -1274,3 +1274,98 @@
         font-size: 2.2rem;
     }
 }
+
+/* ==============================================================
+   MODAL DE ÉXITO (POPUP)
+   ============================================================== */
+.lp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6); /* Fondo oscuro semitransparente */
+    backdrop-filter: blur(8px); /* Efecto de desenfoque moderno (Glassmorphism) */
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.lp-modal-card {
+    background: white;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Animación del Icono de Check */
+.lp-success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: #dcfce7;
+    color: #16a34a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 0 8px #f0fdf4; /* Efecto de onda exterior */
+}
+
+.lp-success-icon-wrapper svg {
+    width: 40px;
+    height: 40px;
+    stroke-width: 3;
+}
+
+.lp-modal-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.lp-modal-text {
+    font-size: 1.1rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.lp-modal-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #16a34a; /* Verde éxito */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(22, 163, 74, 0.3);
+}
+
+.lp-modal-btn:hover {
+    background: #15803d;
+    transform: translateY(-2px);
+}
+
+/* Animaciones Keyframes */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
