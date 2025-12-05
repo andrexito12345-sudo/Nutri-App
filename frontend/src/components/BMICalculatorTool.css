@@ -1,0 +1,590 @@
+/* ============================
+   OVERLAY SOLO PARA IMC
+   ============================ */
+
+.bmi-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1300;              /* por encima del header */
+    padding: 4rem 1rem 1.5rem;  /* deja espacio arriba para el header */
+    overflow-y: auto;
+}
+
+/* ============================
+   CONTENEDOR MODAL IMC
+   ============================ */
+
+.bmi-modal {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow:
+            0 18px 45px rgba(15, 23, 42, 0.25),
+            0 0 0 1px rgba(148, 163, 184, 0.15);
+    width: 100%;
+    max-width: 840px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ============================
+   HEADER
+   ============================ */
+
+.bmi-header {
+    padding: 1.25rem 1.75rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.header-title h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.header-title p {
+    margin: 0.1rem 0 0;
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 0 0, #f97316, transparent 60%),
+    radial-gradient(circle at 100% 100%, #4b0082, transparent 55%),
+    #eef2ff;
+    color: #4b0082;
+}
+
+.close-button {
+    border: none;
+    background: #f9fafb;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+}
+
+.close-button:hover {
+    background: #e5e7eb;
+    color: #111827;
+    transform: scale(1.02);
+}
+
+/* ============================
+   TABS
+   ============================ */
+
+.bmi-tabs {
+    display: inline-flex;
+    padding: 0.2rem;
+    background: #f3f4ff;
+    border-radius: 999px;
+    gap: 0.5rem;
+}
+
+.bmi-tab-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bmi-tab-text {
+    font-size: 0.9rem;
+}
+
+.bmi-tab-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor; /* usa el color del tab (normal/active) */
+}
+
+.bmi-tab {
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    padding: 0.22rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.1s ease;
+}
+
+.bmi-tab.active {
+    background: #4b0082;
+    color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 8px 18px rgba(79, 70, 229, 0.35);
+    transform: translateY(-1px);
+}
+
+.bmi-tab:not(.active):hover {
+    background: rgba(148, 163, 184, 0.16);
+}
+
+/* ============================
+   BODY / LAYOUT
+   ============================ */
+
+.bmi-body {
+    padding: 1.25rem 1.75rem 1.5rem;
+    overflow-y: auto;
+}
+
+.bmi-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+    gap: 1.25rem;
+}
+
+/* ============================
+   FORM CARD
+   ============================ */
+
+.bmi-form-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    background: radial-gradient(circle at 0 0, rgba(79, 70, 229, 0.06), transparent 55%),
+    #ffffff;
+    padding: 1.1rem 1.1rem 1rem;
+}
+
+.bmi-form-card h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.7rem;
+}
+
+.input-group label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.input-group input,
+.input-group select {
+    border-radius: 0.7rem;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.8rem;
+    color: #0f172a;
+    background: #f9fafb;
+    outline: none;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.input-group input::placeholder {
+    color: #9ca3af;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #4b0082;
+    box-shadow: 0 0 0 1px rgba(75, 0, 130, 0.16);
+    background: #ffffff;
+}
+
+/* ============================
+   RESULT CARD
+   ============================ */
+/* Cabecera del resultado pediátrico */
+.bmi-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.bmi-percentile-chip {
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(75, 0, 130, 0.08);
+    border: 1px solid rgba(75, 0, 130, 0.22);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #4b0082;
+    white-space: nowrap;
+}
+
+/* IMC grande + estado al lado */
+.bmi-main-metric {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Label y número del resultado pediátrico, estilo similar a adultos */
+.bmi-main-metric .label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.15rem;
+}
+
+.bmi-main-metric .number {
+    font-size: 2.1rem;      /* igual que .result-value .number */
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+
+
+.bmi-main-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-pill {
+    padding: 0.35rem 0.95rem;      /* más alto y más ancho */
+    border-radius: 999px;
+    font-size: 0.9rem;             /* texto más grande */
+    font-weight: 600;              /* un poquito más grueso */
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4); /* leve glow (opcional) */
+}
+
+
+/* Barra de percentil */
+.bmi-percentile-bar {
+    margin-top: 0.25rem;
+    margin-bottom: 0.35rem;
+}
+
+.bmi-percentile-track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(
+            to right,
+            #bfdbfe 0%,
+            #22c55e 40%,
+            #facc15 70%,
+            #f97316 85%,
+            #ef4444 100%
+    );
+    overflow: hidden;
+}
+
+.bmi-percentile-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px #4b0082, 0 4px 8px rgba(15, 23, 42, 0.35);
+}
+
+.bmi-percentile-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+
+
+
+.bmi-result-card {
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.1rem 1.1rem 1rem;
+    background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.08), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.12), transparent 55%),
+    #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.bmi-result-card.adult {
+    background: radial-gradient(circle at 0 0, rgba(16, 185, 129, 0.08), transparent 60%),
+    #f9fafb;
+}
+
+.bmi-result-card.pediatric {
+    background: radial-gradient(circle at 0 0, rgba(244, 114, 182, 0.08), transparent 60%),
+    #f9fafb;
+}
+
+.pediatric-age-badge {
+    align-self: flex-start;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    font-size: 0.72rem;
+    color: #1d4ed8;
+}
+
+/* ============================
+   RESULT VALUE
+   ============================ */
+
+.result-value {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.result-value .label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.result-value .number {
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: #4b5563;
+}
+
+.result-value .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 0.1rem;
+    padding: 0.22rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+/* Nota pediátrica / percentil */
+.pediatric-note {
+    margin: 0.2rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #4b5563;
+}
+
+.pediatric-note strong {
+    color: #4b0082;
+}
+
+.pediatric-note small {
+    display: inline-block;
+    margin-top: 0.15rem;
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+/* ============================
+   BMI METER (ADULTOS)
+   ============================ */
+
+.bmi-meter {
+    margin-top: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.meter-track {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(
+            to right,
+            #bfdbfe 0%,
+            #22c55e 30%,
+            #facc15 60%,
+            #f97316 80%,
+            #ef4444 100%
+    );
+    overflow: hidden;
+}
+
+.meter-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    transform-origin: left center;
+    transition: width 0.25s ease-out;
+}
+
+.meter-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+/* ============================
+   SCROLLBAR MODAL (OPCIONAL)
+   ============================ */
+
+.bmi-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.bmi-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bmi-body::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.9);
+    border-radius: 999px;
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+
+@media (max-width: 768px) {
+    .bmi-overlay {
+        padding-top: 2.5rem;      /* un poco menos para que no se “coma” altura útil */
+        padding-inline: 0.6rem;
+        overflow-y: auto;         /* aseguramos scroll también aquí */
+    }
+
+    .status-pill {
+        font-size: 0.82rem;
+        padding: 0.3rem 0.85rem;
+    }
+
+    .bmi-modal {
+        max-height: none;         /* dejamos que crezca libre y confiamos en el scroll del overlay */
+    }
+
+    .bmi-header {
+        padding: 0.85rem 0.9rem 0.6rem;
+    }
+
+    .bmi-body {
+        padding: 0.9rem 0.9rem 1rem;
+    }
+
+    .bmi-columns {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.9rem;
+    }
+
+    .bmi-form-card,
+    .bmi-result-card {
+        padding: 0.85rem 0.85rem 0.8rem;
+    }
+
+    .result-value .number,
+    .bmi-main-metric .number {
+        font-size: 1.7rem;
+    }
+
+    .bmi-result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .bmi-percentile-chip {
+        align-self: flex-start;
+        font-size: 0.72rem;
+        padding: 0.22rem 0.6rem;
+    }
+
+    .bmi-main-metric {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .status-pill {
+        font-size: 0.75rem;
+        padding: 0.22rem 0.6rem;
+    }
+
+    .bmi-percentile-track {
+        height: 7px;
+    }
+
+    .bmi-percentile-marker {
+        width: 12px;
+        height: 12px;
+    }
+
+    .bmi-percentile-labels {
+        font-size: 0.68rem;
+    }
+
+    .pediatric-note {
+        font-size: 0.74rem;
+    }
+}
+
+
+
+@media (max-width: 480px) {
+    .header-top {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .header-title h3 {
+        font-size: 1rem;
+    }
+
+    .bmi-tabs {
+        display: inline-flex;
+        gap: 0.5rem;
+    }
+
+    .bmi-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        /* el resto de estilos que ya tienes (padding, border-radius, etc.) */
+    }
+}

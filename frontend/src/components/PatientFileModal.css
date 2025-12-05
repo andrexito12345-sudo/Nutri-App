@@ -1,0 +1,1275 @@
+/* ============================================
+   MODAL DE EXPEDIENTE - SIN PADDING EXCESIVO
+   ============================================ */
+
+/* --- OVERLAY Y ESTRUCTURA BASE --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
+
+.modal-overlay .modal-content--large {
+    background: #ffffff;
+    width: 95%;
+    max-width: 950px;
+    height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideInModal 0.25s ease-out;
+    border: 1px solid #cbd5e1;
+}
+
+@keyframes slideInModal {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- HEADER DEL MODAL --- */
+.modal-overlay .modal-header {
+    padding: 20px 28px;
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-overlay .modal-patient-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.modal-overlay .patient-avatar--large {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #4B0082 0%, #7c3aed 100%);
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.15);
+    letter-spacing: 0.5px;
+}
+
+.modal-overlay .patient-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-overlay .patient-name {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+}
+
+.modal-overlay .patient-contact {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.modal-overlay .modal-close {
+    background: rgba(86, 12, 197, 0.73);
+    border: 1px solid rgba(86, 12, 197, 0.73);
+    color: rgba(86, 12, 197, 0.73);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+}
+
+.modal-overlay .modal-close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+/* --- BODY DEL MODAL --- */
+.modal-overlay .modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background-color: #f8fafc;
+}
+
+/* --- SECCIONES (SIN PADDING ARRIBA) --- */
+.modal-overlay .expediente-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.modal-overlay .section-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.modal-overlay .expediente-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.025em;
+}
+
+.modal-overlay .section-icon {
+    color: #0ea5e9;
+}
+
+/* --- BOTONES --- */
+.modal-overlay .btn-new-consultation {
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.modal-overlay .btn-new-consultation:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.modal-overlay .btn-start-consultation {
+    background: #0ea5e9;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.modal-overlay .btn-start-consultation:hover {
+    background: #0284c7;
+    transform: translateY(-2px);
+}
+
+.modal-overlay .btn-edit-consultation {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #64748b;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.modal-overlay .btn-edit-consultation svg {
+    width: 14px;
+    height: 14px;
+}
+
+.modal-overlay .btn-edit-consultation:hover {
+    border-color: #0ea5e9;
+    color: #0284c7;
+    background: #f0f9ff;
+}
+
+/* --- ESTADO VACÍO --- */
+.modal-overlay .empty-state {
+    background: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.modal-overlay .empty-state-icon {
+    color: #cbd5e1;
+    opacity: 0.7;
+}
+
+.modal-overlay .empty-state-text {
+    margin: 0;
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* --- GRID DE INFO --- */
+.modal-overlay .professional-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.modal-overlay .info-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 18px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.modal-overlay .full-width-card {
+    grid-column: 1 / -1;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.modal-overlay .info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-overlay .info-card-icon {
+    color: #64748b;
+}
+
+.modal-overlay .info-card-title {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.075em;
+    color: #64748b;
+}
+
+.modal-overlay .data-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-overlay .data-item-inline {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.875rem;
+    gap: 2px;
+}
+
+.modal-overlay .data-label-inline {
+    color: #64748b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.modal-overlay .data-value-inline {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.modal-overlay .alert-value {
+    color: #dc2626;
+}
+
+.modal-overlay .notes-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+/* --- GRÁFICA --- */
+.modal-overlay .chart-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+/* --- HISTORIAL SOAP --- */
+.modal-overlay .consultations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-overlay .soap-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.modal-overlay .soap-card:hover {
+    box-shadow: 0 8px 12px -4px rgba(0, 0, 0, 0.08);
+}
+
+.modal-overlay .soap-card-header {
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    padding: 10px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-overlay .soap-date-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-overlay .soap-date {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: -0.015em;
+}
+
+.modal-overlay .soap-time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.modal-overlay .soap-card-body {
+    padding: 0;
+    background: #fefefe;
+}
+
+.modal-overlay .soap-section {
+    display: flex;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-overlay .soap-indicator {
+    width: 5px;
+    flex-shrink: 0;
+}
+
+.modal-overlay .indicator-subjective { background-color: #0ea5e9; }
+.modal-overlay .indicator-objective { background-color: #f59e0b; }
+.modal-overlay .indicator-assessment { background-color: #8b5cf6; }
+.modal-overlay .indicator-plan { background-color: #10b981; }
+
+.modal-overlay .soap-content {
+    padding: 16px 20px;
+    flex: 1;
+}
+
+.modal-overlay .soap-section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+}
+
+.modal-overlay .soap-subjective .soap-section-title { color: #0284c7; }
+.modal-overlay .soap-objective .soap-section-title { color: #d97706; }
+.modal-overlay .soap-assessment .soap-section-title { color: #7c3aed; }
+.modal-overlay .soap-plan .soap-section-title { color: #059669; }
+
+.modal-overlay .soap-field {
+    margin-bottom: 10px;
+}
+
+.modal-overlay .field-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #475569;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.modal-overlay .field-text {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.modal-overlay .field-notes {
+    margin: 12px 0 0 0;
+    font-size: 0.875rem;
+    color: #64748b;
+    font-style: italic;
+}
+
+.modal-overlay .measurement-group {
+    margin-bottom: 14px;
+}
+
+.modal-overlay .group-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-overlay .measurements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+.modal-overlay .measurement-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: border-color 0.2s;
+}
+
+.modal-overlay .measurement-item:hover {
+    border-color: #cbd5e1;
+}
+
+.modal-overlay .measurement-item span {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.modal-overlay .measurement-item strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+.modal-overlay .pes-diagnosis {
+    background: #f5f3ff;
+    border: 1px solid #e9d5ff;
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal-overlay .pes-item {
+    font-size: 0.875rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.modal-overlay .pes-item strong {
+    color: #7c3aed;
+    font-weight: 700;
+}
+
+.modal-overlay .clinical-data-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.modal-overlay .prescription-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.modal-overlay .prescription-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #15803d;
+    margin-bottom: 10px;
+}
+
+.modal-overlay .prescription-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+}
+
+.modal-overlay .prescription-item {
+    background: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-overlay .prescription-item span {
+    font-size: 0.7rem;
+    color: #059669;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.modal-overlay .prescription-item strong {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.modal-overlay .next-appointment {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #15803d;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.modal-overlay .next-appointment svg {
+    color: #15803d;
+}
+
+.modal-overlay .next-appointment strong {
+    font-weight: 700;
+}
+
+/* --- SCROLLBAR --- */
+.modal-overlay .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-overlay .modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.modal-overlay .modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.modal-overlay .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .modal-overlay .modal-content--large {
+        width: 98%;
+        height: 95vh;
+    }
+
+    .modal-overlay .modal-body {
+        padding: 20px;
+    }
+
+    .modal-overlay .professional-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-overlay .measurements-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .modal-overlay .patient-name {
+        font-size: 1.1rem;
+    }
+
+    .modal-overlay .section-header-with-action {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .modal-overlay .btn-new-consultation,
+    .modal-overlay .btn-start-consultation {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-overlay .empty-state {
+        padding: 32px 20px;
+    }
+}
+
+/* ... existing code ... */
+
+/* --- SECCIÓN HISTORIAL DE CÁLCULOS (MODULO HERRAMIENTAS) --- */
+.tools-history-section {
+    margin-top: 30px;
+    border-top: 2px dashed #e2e8f0;
+    padding-top: 20px;
+}
+
+.tools-compact-header {
+    background: linear-gradient(135deg, #4B0082, #6d28d9) !important;
+}
+
+.tools-history-title {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calculations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.calc-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.calc-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.calc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.calc-date {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+/* ESTILOS PARA HISTORIAL DE CÁLCULOS */
+
+.herramientas-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+}
+
+.calculation-history-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.history-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.history-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.history-title svg {
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.history-empty svg {
+    opacity: 0.3;
+    margin-bottom: 16px;
+}
+
+.history-empty p {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.history-empty span {
+    font-size: 0.875rem;
+    color: #cbd5e1;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.history-card {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.history-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    transform: translateX(4px);
+}
+
+.history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.history-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.history-date svg {
+    flex-shrink: 0;
+}
+
+.history-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-cut {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.badge-bulk {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-maint {
+    background: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.history-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.history-metric {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    transition: all 0.15s;
+}
+
+.history-metric:hover {
+    background: #f1f5f9;
+}
+
+.history-metric.highlight {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+    border-color: #fde047;
+}
+
+.metric-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+}
+
+.metric-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.history-macros {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.macro-protein {
+    color: #dc2626;
+}
+
+.macro-carbs {
+    color: #ea580c;
+}
+
+.macro-fats {
+    color: #16a34a;
+}
+
+.history-config {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+@keyframes slideInHistory {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.history-card {
+    animation: slideInHistory 0.3s ease-out;
+}
+
+.history-card:nth-child(1) { animation-delay: 0.05s; }
+.history-card:nth-child(2) { animation-delay: 0.1s; }
+.history-card:nth-child(3) { animation-delay: 0.15s; }
+.history-card:nth-child(4) { animation-delay: 0.2s; }
+.history-card:nth-child(5) { animation-delay: 0.25s; }
+
+@media (max-width: 768px) {
+    .history-metrics {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .history-macros {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .history-card {
+        padding: 14px;
+    }
+}
+
+.calc-summary {
+    font-size: 0.95rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.calc-macros {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.calc-badge {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-cut { background: #fee2e2; color: #b91c1c; }
+.badge-bulk { background: #dbeafe; color: #1d4ed8; }
+.badge-maintenance { background: #dcfce7; color: #15803d; }
+
+
+/* Contenedor de tabs debajo del header */
+.patient-tabs-wrapper {
+    margin-top: 0.25rem;
+}
+
+/* Barra de tabs: escritorio por defecto */
+.patient-tabs-bar {
+    display: flex;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 20px;
+}
+
+/* Botón base */
+.patient-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.65rem 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.patient-tab svg {
+    flex-shrink: 0;
+}
+
+/* Estado activo general */
+.patient-tab.is-active {
+    color: #4b0082;
+}
+
+.patient-tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: #4b0082;
+}
+
+/* Herramientas en verde cuando está activa */
+.patient-tab--tools.is-active {
+    color: #059669;
+}
+
+.patient-tab--tools.is-active::after {
+    background: #059669;
+}
+
+/* --- MÓVIL: barra desplazable y, si quieres, sticky --- */
+@media (max-width: 768px) {
+    .patient-tabs-wrapper {
+        position: sticky;
+        top: 0;                /* ajusta si tienes padding en el header */
+        z-index: 5;
+        background: #ffffff;
+    }
+
+    .patient-tabs-bar {
+        overflow-x: auto;
+        padding-bottom: 0.3rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .patient-tabs-bar::-webkit-scrollbar {
+        display: none;         /* opcional, oculta la barra de scroll */
+    }
+
+    .patient-tab {
+        padding: 0.55rem 0;
+        font-size: 0.85rem;
+    }
+}
+
+.patient-tabs-wrapper {
+    margin-top: 0.25rem;
+}
+
+/* --- Tabs escritorio --- */
+.patient-tabs-bar {
+    display: flex;
+    gap: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 20px;
+}
+
+.patient-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.65rem 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.patient-tab svg {
+    flex-shrink: 0;
+}
+
+.patient-tab.is-active {
+    color: #4b0082;
+}
+
+.patient-tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: #4b0082;
+}
+
+/* Herramientas en verde cuando está activa */
+.patient-tab--tools.is-active {
+    color: #059669;
+}
+
+.patient-tab--tools.is-active::after {
+    background: #059669;
+}
+
+/* --- Bloque móvil (oculto en desktop por defecto) --- */
+.patient-tabs-mobile {
+    display: none;
+    padding: 0 20px;
+    margin-top: 0.4rem;
+}
+
+/* Botón que muestra la pestaña actual */
+.patient-tabs-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.patient-tabs-toggle:hover {
+    background: #f3f4ff;
+    border-color: #d4d4ff;
+}
+
+.patient-tabs-toggle-icon {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* Dropdown con las opciones */
+.patient-tabs-dropdown {
+    margin-top: 0.4rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    box-shadow: 0 14px 45px rgba(15, 23, 42, 0.18);
+    padding: 0.25rem 0;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.patient-tabs-dropdown-item {
+    width: 100%;
+    text-align: right;
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    font-size: 0.82rem;
+    color: #374151;
+    cursor: pointer;
+}
+
+.patient-tabs-dropdown-item:hover {
+    background: #f3f4ff;
+}
+
+.patient-tabs-dropdown-item.is-active {
+    font-weight: 600;
+    color: #4b0082;
+    background: #f3e8ff;
+}
+
+.patient-tabs-dropdown-item + .patient-tabs-dropdown-item {
+    border-top: 1px solid #f3f4f6; /* separador suave */
+}
+
+/* --- BREAKPOINT: en móvil ocultamos barra y mostramos menú --- */
+@media (max-width: 768px) {
+    .patient-tabs-bar {
+        display: none;
+    }
+
+    .patient-tabs-mobile {
+        display: block;
+    }
+
+    .patient-tabs-wrapper {
+        border-bottom: none;
+    }
+}
+
+.patient-modal-close {
+    border: none;
+    background: #f9fafb;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.patient-modal-close:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+    transform: translateY(-1px);
+}
+
+.patient-modal-close svg {
+    display: block;
+}
+
+/* Ajuste ligero en pantallas pequeñas */
+@media (max-width: 768px) {
+    .patient-modal-close {
+        width: 28px;
+        height: 28px;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+    }
+}

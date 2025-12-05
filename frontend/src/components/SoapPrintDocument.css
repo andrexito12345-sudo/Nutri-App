@@ -1,0 +1,153 @@
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+}
+
+.print-document {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    background: white;
+    padding: 40px;
+    max-width: 800px; /* Ancho A4 aproximado */
+    margin: 0 auto;
+}
+
+.print-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.header-logo p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.divider {
+    border: 0;
+    border-top: 2px solid #2c3e50;
+    margin: 10px 0 20px 0;
+}
+
+.print-patient-info {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.info-col {
+    flex: 1;
+}
+
+/* ESTILO SOAP TIPO TABLA */
+.soap-print-grid {
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.print-section {
+    border-bottom: 1px solid #333;
+    display: flex;
+}
+
+.print-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    width: 30px; /* Una columna delgada a la izquierda tipo ejemplo */
+    background-color: #eee;
+    writing-mode: vertical-rl; /* Texto vertical */
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 10px 5px;
+    border-right: 1px solid #333;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* OJO: Si prefieres títulos horizontales normales (como tu imagen 2), usa esto: */
+.section-title {
+    writing-mode: horizontal-tb;
+    transform: none;
+    width: 100%;
+    background: #e2e8f0;
+    border-right: none;
+    border-bottom: 1px solid #333;
+    padding: 5px 10px;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.print-section {
+    flex-direction: column; /* Cambia a columna para título arriba */
+}
+
+.section-content {
+    padding: 15px;
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Respeta los saltos de línea */
+}
+
+.metrics-print-row {
+    display: flex;
+    gap: 20px;
+    background: #fdfdfd;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+}
+
+.print-footer {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.signature-box {
+    margin-top: 40px;
+    display: inline-block;
+    text-align: center;
+}
+
+.signature-line {
+    width: 250px;
+    border-top: 1px solid #000;
+    margin-bottom: 5px;
+}
+
+.footer-note {
+    margin-top: 30px;
+    font-size: 0.7rem;
+    color: #888;
+}

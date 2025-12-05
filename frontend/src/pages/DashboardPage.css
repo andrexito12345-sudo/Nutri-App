@@ -1,0 +1,1312 @@
+/* ==============================================================
+   DASHBOARD PROFESIONAL - SISTEMA NUTRICIONAL
+   ============================================================== */
+
+.dash {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 6rem 1.5rem 2rem;
+}
+
+/* ==============================================================
+   HEADER COMPACTO
+   ============================================================== */
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.dash-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.dash-subtitle {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0.25rem 0 0;
+    font-weight: 500;
+}
+
+.dash-date {
+    font-size: 0.813rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+/* ==============================================================
+   LOADING & ERROR
+   ============================================================== */
+
+.dash-loading,
+.dash-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 1rem;
+    color: #64748b;
+}
+
+.dash-spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 3px solid #e2e8f0;
+    border-top-color: #4B0082;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.dash-error-icon {
+    width: 3rem;
+    height: 3rem;
+    color: #ef4444;
+}
+
+/* ==============================================================
+   KPIs - MÁS COMPACTOS Y PROFESIONALES
+   ============================================================== */
+
+.dash-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.kpi-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.kpi-card:hover::before {
+    opacity: 1;
+}
+
+.kpi-card--primary::before { background: linear-gradient(90deg, #4B0082, #7c3aed); }
+.kpi-card--warning::before { background: #f59e0b; }
+.kpi-card--success::before { background: #10b981; }
+.kpi-card--danger::before { background: #ef4444; }
+
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.kpi-label {
+    font-size: 0.813rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.kpi-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #cbd5e1;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-footer {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* ==============================================================
+   VISITAS - DISCRETAS
+   ============================================================== */
+
+.dash-visits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.visit-card {
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(75, 0, 130, 0.2);
+}
+
+.visit-icon {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.9;
+}
+
+.visit-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.visit-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.visit-label {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+}
+
+/* ==============================================================
+   GRÁFICOS - COMPACTOS
+   ============================================================== */
+
+.dash-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.chart-box {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+}
+
+.chart-box--wide {
+    grid-column: span 2;
+}
+
+.chart-head {
+    margin-bottom: 1rem;
+}
+
+.chart-head h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 0.25rem;
+}
+
+.chart-subtitle {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.chart-body {
+    width: 100%;
+    height: 240px;
+}
+
+/* ==============================================================
+   TABLA DE CITAS
+   ============================================================== */
+
+.dash-table-section {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.table-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.table-head h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.table-badge {
+    padding: 0.25rem 0.75rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ==============================================================
+   FILTROS PROFESIONALES
+   ============================================================== */
+
+.table-filters {
+    display: flex;
+    flex-direction: row; /* Fuerza la dirección horizontal */
+    flex-wrap: nowrap;   /* IMPORTANTE: Evita que bajen a otra línea */
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.search-wrapper {
+    flex: 1;          /* IMPORTANTE: Hace que el buscador ocupe todo el espacio sobrante */
+    min-width: 200px;
+    position: relative;
+    /* Elimina o comenta la línea de max-width si existe para que se estire */
+    /* max-width: 350px; */
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #94a3b8;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+
+.search-input:focus {
+    border-color: #4B0082;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+.filter-select {
+    flex-shrink: 0;
+    width: auto;
+    padding: 10px 35px 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.filter-select:hover {
+    border-color: #cbd5e1;
+}
+
+.filter-select:focus {
+    border-color: #4B0082;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+/* ==============================================================
+   TABLA DE DATOS
+   ============================================================== */
+
+.table-wrapper {
+    overflow-x: auto; /* Mantiene scroll horizontal si la pantalla es chica */
+    overflow-y: auto; /* Activa scroll vertical si hay muchas filas */
+    max-height: 450px; /* <--- AQUÍ ESTÁ EL TRUCO: Altura máxima fija */
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.05); /* Sombra interna sutil abajo */
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.data-table thead {
+    background: #f8fafc;
+}
+
+.data-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table thead th {
+    position: sticky; /* Se queda pegado arriba */
+    top: 0;
+    z-index: 10; /* Se asegura que flote sobre las filas */
+    background-color: #f8fafc; /* Mismo color de fondo que tenías */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* Pequeña sombra para separar */
+}
+
+.data-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.data-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.875rem;
+    color: #334155;
+}
+
+/* Celdas específicas */
+.patient-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.patient-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4B0082, #7c3aed);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.contact-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.contact-cell .phone {
+    font-size: 0.813rem;
+    color: #4B0082;
+    font-weight: 500;
+}
+
+.reason-cell {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.date-cell .time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* ==============================================================
+   PILLS DE ESTADO
+   ============================================================== */
+
+.status-pill {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-pill--pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-pill--realizada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pill--cancelada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ==============================================================
+   BOTONES DE ACCIÓN - ÍCONOS SVG
+   ============================================================== */
+
+.action-btns {
+    display: flex;
+    gap: 0.375rem;
+}
+
+.action-btn {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.action-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.action-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+.action-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+.action-btn--warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.action-btn--warning:hover:not(:disabled) {
+    background: #fde68a;
+}
+
+.action-btn--success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.action-btn--success:hover:not(:disabled) {
+    background: #a7f3d0;
+}
+
+.action-btn--danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.action-btn--danger:hover:not(:disabled) {
+    background: #fecaca;
+}
+
+/* ==============================================================
+   EMPTY STATE
+   ============================================================== */
+
+.empty-row {
+    text-align: center;
+    padding: 3rem 1rem !important;
+}
+
+.empty-icon {
+    width: 3rem;
+    height: 3rem;
+    color: #cbd5e1;
+    margin: 0 auto 0.75rem;
+}
+
+.empty-row p {
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+/* ==============================================================
+   RESPONSIVE
+   ============================================================== */
+
+@media (max-width: 1200px) {
+    .chart-box--wide {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .dash {
+        padding: 5.5rem 1rem 1.5rem;
+    }
+
+    .dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .dash-title {
+        font-size: 1.5rem;
+    }
+
+    .dash-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-card {
+        padding: 1rem;
+    }
+
+    .dash-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .table-filters {
+        flex-direction: column;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .dash-table-section {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-value {
+        font-size: 1.75rem;
+    }
+
+    .table-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* ==============================================================
+   MODAL DE EXPEDIENTE DE PACIENTE
+   ============================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-content--large {
+    max-width: 800px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+}
+
+.modal-header h2 {
+    color: white;
+}
+.modal-patient-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.modal-patient-info h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-patient-info p {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.patient-avatar--large {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-close svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: white;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ==============================================================
+   SECCIONES DEL EXPEDIENTE
+   ============================================================== */
+
+.expediente-section {
+    margin-bottom: 1.5rem;
+
+}
+
+.expediente-section:last-child {
+    margin-bottom: 0;
+    padding-top: 4.5rem;
+}
+
+.expediente-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Grid de información */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-item--full {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-size: 0.938rem;
+    color: #1e293b;
+}
+
+/* ==============================================================
+   LISTA DE CONSULTAS
+   ============================================================== */
+
+.consultations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.consultation-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.consultation-card:hover {
+    border-color: #4B0082;
+    box-shadow: 0 2px 8px rgba(75, 0, 130, 0.1);
+}
+
+.consultation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.consultation-date {
+    font-weight: 600;
+    color: #4B0082;
+    font-size: 0.938rem;
+}
+
+.consultation-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.metric-label {
+    font-size: 0.688rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.consultation-diagnosis,
+.consultation-treatment {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.consultation-diagnosis strong,
+.consultation-treatment strong {
+    color: #1e293b;
+}
+
+.empty-text {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* ==============================================================
+   RESPONSIVE MODAL
+   ============================================================== */
+
+@media (max-width: 768px) {
+    .modal-content--large {
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .modal-overlay {
+        padding: 0;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .consultation-metrics {
+        gap: 0.75rem;
+    }
+}
+
+/* ==============================================================
+   BOTÓN NUEVO PACIENTE
+   ============================================================== */
+
+.btn-new-patient {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(75, 0, 130, 0.2);
+}
+
+.btn-new-patient:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
+}
+
+.btn-new-patient:active {
+    transform: translateY(0);
+}
+
+/* ==============================================================
+   FORMULARIO DE PACIENTE
+   ============================================================== */
+
+.form-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1rem;
+}
+
+.form-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.form-group--full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.813rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4B0082;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+/* ==============================================================
+   BOTONES DEL FORMULARIO
+   ============================================================== */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 0.5rem;
+}
+
+.btn-cancel {
+    padding: 0.625rem 1.25rem;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.btn-save {
+    padding: 0.625rem 1.5rem;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(75, 0, 130, 0.2);
+}
+
+.btn-save:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
+}
+
+.btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==============================================================
+   RESPONSIVE FORMULARIO
+   ============================================================== */
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* --- ESTILOS PARA EL HISTORIAL SOAP (Mini Tarjetas) --- */
+
+.soap-history-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.soap-history-header {
+    background-color: #f8fafc;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    color: #334155;
+}
+
+.soap-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+/* En pantallas grandes, poner S y O arriba, A y P abajo */
+@media (min-width: 768px) {
+    .soap-grid {
+        grid-template-columns: 1fr 1fr; /* Dos columnas */
+    }
+}
+
+.soap-mini-section {
+    padding: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.soap-mini-section strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Colores idénticos al formulario SOAP */
+.s-section { border-left: 4px solid #3498db; background-color: #f0f9ff; } /* Azul */
+.o-section { border-left: 4px solid #e67e22; background-color: #fffaf0; } /* Naranja */
+.a-section { border-left: 4px solid #9b59b6; background-color: #fbf5ff; } /* Morado */
+.p-section { border-left: 4px solid #27ae60; background-color: #f0fdf4; } /* Verde */
+
+.mini-metrics {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mini-metric-pill {
+    background: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+/* ==============================================================
+   NUEVO ESTILO: INFORMACIÓN PERSONAL PROFESIONAL
+   ============================================================== */
+
+.professional-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.info-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-card-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.info-card-icon {
+    color: #4B0082; /* Tu color morado */
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.data-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.9rem;
+}
+
+.data-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.data-value {
+    color: #1e293b;
+    font-weight: 600;
+    text-align: right;
+}
+
+.highlight-value {
+    background: #e0e7ff;
+    color: #4338ca;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.full-width-card {
+    grid-column: 1 / -1;
+    background: #fff;
+    border-left: 4px solid #f59e0b; /* Borde naranja para notas/alergias */
+}
+
+/* ==============================================================
+   ALERTA DE CITAS PENDIENTES (Efecto Radar)
+   ============================================================== */
+
+@keyframes pulse-alert {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        transform: scale(1);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+        transform: scale(1.02);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        transform: scale(1);
+    }
+}
+
+.kpi-alert-active {
+    animation: pulse-alert 2s infinite;
+    border: 2px solid #10b981; /* Borde verde fuerte */
+    background-color: #ecfdf5; /* Fondo verde muy suave */
+}
+
+.kpi-alert-active .kpi-value {
+    color: #059669; /* Texto verde oscuro */
+}
+
+.kpi-alert-active .kpi-icon {
+    color: #10b981;
+    animation: spin-slow 4s infinite linear; /* Icono girando lento */
+}
+
+@keyframes spin-slow {
+    100% { transform: rotate(360deg); }
+}
+
+/* Badge de notificación en el título */
+.notification-badge {
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    vertical-align: middle;
+    margin-left: 10px;
+    animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+/* Fila de cita pendiente resaltada */
+.row-pending {
+    background-color: #fffbeb !important; /* Amarillo muy suave */
+    border-left: 4px solid #f59e0b; /* Línea naranja a la izquierda */
+    transition: all 0.3s ease;
+}
+
+.row-pending:hover {
+    background-color: #fef3c7 !important; /* Amarillo un poco más fuerte al pasar el mouse */
+}

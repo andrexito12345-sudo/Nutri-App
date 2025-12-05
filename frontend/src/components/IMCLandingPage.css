@@ -1,0 +1,285 @@
+/* ==============================================================
+   ESTILOS CALCULADORA IMC – VERSIÓN SIDE-BY-SIDE (2 COLUMNAS)
+   ============================================================== */
+
+/* Contenedor principal centrado, ahora más ancho */
+.imc-wrapper {
+    width: 100%;
+    max-width: 900px; /* Aumentamos el ancho máximo para que quepan las dos columnas */
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+/* La tarjeta principal que contiene las dos columnas */
+.imc-card {
+    background: #ffffff;
+    border-radius: 32px;
+    /* Quitamos padding global, lo aplicaremos a las columnas */
+    box-shadow: 0 20px 60px -10px rgba(51, 65, 85, 0.15);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex; /* Activamos Flexbox */
+    overflow: hidden; /* Para que el radio del borde recorte el contenido interno */
+}
+
+/* === COLUMNA IZQUIERDA: INPUTS === */
+.imc-col-inputs {
+    flex: 1; /* Toma el 50% del espacio */
+    padding: 3rem 2.5rem;
+}
+
+/* Títulos */
+.imc-title {
+    text-align: left;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.imc-subtitle {
+    text-align: left;
+    color: #64748b;
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+/* Grid de Inputs */
+.imc-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.imc-input-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.imc-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.imc-input {
+    width: 100%;
+    padding: 1rem 1.2rem; /* Un poco más compactos */
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.imc-input:focus {
+    outline: none;
+    border-color: #7c3aed;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.imc-unit {
+    position: absolute;
+    right: 1.2rem;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.imc-calc-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.imc-calc-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.5);
+}
+
+/* === COLUMNA DERECHA: RESULTADOS === */
+.imc-col-results {
+    flex: 1; /* Toma el otro 50% */
+    background: #f8fafc; /* Un fondo ligeramente diferente para que parezca un panel */
+    padding: 3rem 2.5rem;
+    border-left: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el contenido */
+}
+
+/* Estado vacío (Placeholder antes de calcular) */
+.imc-placeholder {
+    text-align: center;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    animation: fadeIn 0.5s ease;
+}
+
+.imc-placeholder svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.5;
+}
+
+/* Tarjeta de resultados activa */
+.imc-result-card {
+    /* Eliminamos los bordes y márgenes superiores que tenía antes */
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+    animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+}
+
+/* Estilos internos del resultado (Header, Barra, Insight) */
+.imc-score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.imc-score-label {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.imc-score-number {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #1e293b;
+}
+
+.imc-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.imc-bar-container {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    position: relative;
+    margin: 1.5rem 0 2rem 0;
+}
+
+.imc-bar-background {
+    width: 100%; height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, #3b82f6 0%, #3b82f6 18%, #10b981 18.5%, #10b981 45%, #f59e0b 45.5%, #f59e0b 70%, #ef4444 70.5%, #ef4444 100%);
+    opacity: 0.3;
+}
+
+.imc-marker {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 20px; height: 20px; background: white;
+    border: 4px solid #1e293b; border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: left 1s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
+}
+
+.imc-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    padding-bottom: 1.5rem;
+}
+
+.imc-insight {
+    background: white; /* Fondo blanco para que resalte sobre el panel gris claro */
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Estilo del contenedor del icono */
+.imc-insight-icon {
+    /* font-size: 1.5rem;  <-- ESTA LÍNEA SE ELIMINA (era para emojis) */
+    background: #f1f5f9;
+    width: 44px; /* Un poquito más grande */
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+/* NUEVO: Controlamos el tamaño y grosor del SVG interno */
+.imc-insight-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 2px; /* Grosor profesional */
+}
+
+.imc-insight-content h4 { margin: 0 0 0.4rem 0; font-size: 1rem; color: #334155; }
+.imc-insight-content p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #64748b; }
+
+.imc-cta-small {
+    margin-top: 1rem; font-size: 0.9rem; color: #dc2626; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.imc-cta-small:hover { text-decoration: underline; }
+
+/* =========================================
+   RESPONSIVE: Volver a una columna en móvil
+   ========================================= */
+@media (max-width: 768px) {
+    .imc-card {
+        flex-direction: column; /* Apilar columnas */
+    }
+    .imc-col-inputs, .imc-col-results {
+        padding: 2rem 1.5rem;
+    }
+    .imc-col-results {
+        border-left: none;
+        border-top: 1px solid #e2e8f0;
+        min-height: 200px; /* Altura mínima para el placeholder */
+    }
+    .imc-title, .imc-subtitle {
+        text-align: center;
+    }
+}

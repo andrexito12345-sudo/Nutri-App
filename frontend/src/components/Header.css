@@ -1,0 +1,487 @@
+/* ==============================================================
+   HEADER FLOTANTE UNIVERSAL
+   ============================================================== */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.25s ease;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.header--scrolled {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0.875rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ==============================================================
+   BRAND / LOGO
+   ============================================================== */
+
+.header__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.header__brand:hover {
+    opacity: 0.85;
+}
+
+.header__logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(75, 0, 130, 0.25);
+}
+
+.header__logo-svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #ffffff;
+}
+
+.header__name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #4B0082;
+    letter-spacing: -0.02em;
+}
+
+/* ==============================================================
+   NAVEGACIÓN
+   ============================================================== */
+
+.header__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+/* ==============================================================
+   BOTONES DEL HEADER
+   ============================================================== */
+
+.header-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.header-btn__icon-svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+}
+
+.header-btn__text {
+    display: inline;
+}
+
+/* Botón Ghost */
+.header-btn--ghost {
+    background: transparent;
+    color: #374151;
+    border: none;
+}
+
+.header-btn--ghost:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* Botón Outline */
+.header-btn--outline {
+    border: 1.5px solid #4B0082;
+    background: transparent;
+    color: #4B0082;
+}
+
+.header-btn--outline:hover {
+    background: rgba(75, 0, 130, 0.06);
+}
+
+/* Botón Primary */
+.header-btn--primary {
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+    box-shadow: 0 2px 6px rgba(75, 0, 130, 0.25);
+}
+
+.header-btn--primary:hover {
+    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.35);
+    transform: translateY(-1px);
+}
+
+/* Botón Logout */
+.header-btn--logout {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.header-btn--logout:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+/* ==============================================================
+   BOTÓN MENÚ HAMBURGUESA
+   ============================================================== */
+
+.menu-hamburger-btn {
+    background: #f3e8ff;
+    border: 1px solid #e9d5ff;
+    color: #6d28d9;
+    cursor: pointer;
+    padding: 0.625rem;
+    margin-left: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+}
+
+.menu-hamburger-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.menu-hamburger-btn:hover {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+}
+
+/* ==============================================================
+   COMPATIBILIDAD CON CLASES ANTIGUAS (lp-header)
+   ============================================================== */
+
+.lp-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.25s ease;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.lp-header--scrolled {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.lp-header__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0.875rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lp-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.lp-header__brand:hover {
+    opacity: 0.85;
+}
+
+.lp-header__logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(75, 0, 130, 0.25);
+}
+
+.lp-header__logo-icon {
+    font-size: 1.25rem;
+}
+
+.lp-header__name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #4B0082;
+    letter-spacing: -0.02em;
+}
+
+.lp-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+/* Botones compatibles */
+.lp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.lp-btn--small {
+    padding: 0.625rem 1.125rem;
+    font-size: 0.875rem;
+}
+
+.lp-btn--ghost {
+    background: transparent;
+    color: #374151;
+}
+
+.lp-btn--ghost:hover {
+    background: #f3f4f6;
+}
+
+.lp-btn--outline {
+    border: 1.5px solid #4B0082;
+    background: transparent;
+    color: #4B0082;
+}
+
+.lp-btn--outline:hover {
+    background: rgba(75, 0, 130, 0.06);
+}
+
+.lp-btn--primary {
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: white;
+    box-shadow: 0 2px 6px rgba(75, 0, 130, 0.25);
+}
+
+.lp-btn--primary:hover {
+    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.35);
+    transform: translateY(-1px);
+}
+
+.lp-btn__icon {
+    font-size: 1rem;
+}
+
+/* Botón de Herramientas */
+.header-btn--tools {
+    background: #f3e8ff;
+    color: #6d28d9;
+    border: 1px solid #e9d5ff;
+    margin-right: 0.5rem;
+}
+
+.header-btn--tools:hover {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+}
+
+/* ==============================================================
+   RESPONSIVE - TABLET
+   ============================================================== */
+
+@media (max-width: 768px) {
+    .header__container,
+    .lp-header__container {
+        padding: 0.75rem 1rem;
+    }
+
+    .header__nav,
+    .lp-header__nav {
+        gap: 0.5rem;
+    }
+
+    .header-btn,
+    .lp-btn {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8125rem;
+    }
+
+    .header__name,
+    .lp-header__name {
+        font-size: 1rem;
+    }
+
+    .header__logo,
+    .lp-header__logo {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
+    .header__logo-svg {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+}
+
+/* ==============================================================
+   RESPONSIVE - MÓVIL GRANDE
+   ============================================================== */
+
+@media (max-width: 640px) {
+    .header__container,
+    .lp-header__container {
+        padding: 0.75rem 1rem;
+    }
+
+    .header__nav,
+    .lp-header__nav {
+        gap: 0.375rem;
+    }
+
+    /* Botones más compactos pero con iconos visibles */
+    .header-btn,
+    .lp-btn {
+        padding: 0.5rem 0.625rem;
+        font-size: 0.75rem;
+        gap: 0.375rem;
+    }
+
+    /* Ocultar texto, mostrar iconos */
+    .header-btn__text {
+        display: none;
+    }
+
+    /* Iconos más grandes y visibles en móvil */
+    .header-btn__icon-svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .header__name,
+    .lp-header__name {
+        font-size: 0.9375rem;
+    }
+
+    .header__logo,
+    .lp-header__logo {
+        width: 2.125rem;
+        height: 2.125rem;
+    }
+
+    .header__logo-svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .menu-hamburger-btn {
+        padding: 0.5rem;
+    }
+
+    .menu-hamburger-btn svg {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+}
+
+/* ==============================================================
+   RESPONSIVE - MÓVIL PEQUEÑO
+   ============================================================== */
+
+@media (max-width: 480px) {
+    .header__container,
+    .lp-header__container {
+        padding: 0.625rem 0.75rem;
+    }
+
+    .header__nav,
+    .lp-header__nav {
+        gap: 0.25rem;
+    }
+
+    /* Botones con tamaño mínimo pero funcionales */
+    .header-btn,
+    .lp-btn {
+        padding: 0.5rem;
+        min-width: 2.5rem;
+        min-height: 2.5rem;
+    }
+
+    /* Iconos grandes y claros */
+    .header-btn__icon-svg {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+
+    .header__logo,
+    .lp-header__logo {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 8px;
+    }
+
+    .header__logo-svg {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    .header__name,
+    .lp-header__name {
+        font-size: 0.875rem;
+    }
+
+    .menu-hamburger-btn {
+        padding: 0.5rem;
+        min-width: 2.5rem;
+        min-height: 2.5rem;
+    }
+
+    .menu-hamburger-btn svg {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+}
+
+/* ==============================================================
+   TOOLTIPS NATIVOS (title) - Mejorar visibilidad
+   ============================================================== */
+
+.header-btn[title],
+.menu-hamburger-btn[title] {
+    position: relative;
+}

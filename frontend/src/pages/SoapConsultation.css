@@ -1,0 +1,433 @@
+/* ========================================
+   SOAP CONSULTATION - ESTILOS PROFESIONALES
+   ======================================== */
+
+.soap-container {
+    padding: 5rem 2rem 2rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* Header Title */
+.soap-header-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.soap-header-title h2 {
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin: 0;
+    font-weight: 700;
+}
+
+.soap-header-title p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+}
+
+/* Form Layout */
+.soap-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ========== SOAP SECTIONS ========== */
+.soap-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 5px solid #ccc;
+    transition: box-shadow 0.3s ease;
+}
+
+.soap-section:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Colores por sección SOAP */
+.soap-s { border-left-color: #3b82f6; }
+.soap-o { border-left-color: #10b981; }
+.soap-a { border-left-color: #f59e0b; }
+.soap-p { border-left-color: #8b5cf6; }
+
+/* Section Header */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.section-letter {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+}
+
+.soap-s .section-letter { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.soap-o .section-letter { background: linear-gradient(135deg, #10b981, #059669); }
+.soap-a .section-letter { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.soap-p .section-letter { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+.section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #334155;
+}
+
+/* ========== FORM ELEMENTS ========== */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.4rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 1rem;
+}
+
+.form-row.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Inputs & Textareas */
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #334155;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 35px;
+}
+
+/* ========== SUBSECTIONS ========== */
+.subsection {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.subsection h4 {
+    font-size: 0.9rem;
+    color: #475569;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+}
+
+/* ========== METRICS GRID ========== */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.metrics-grid.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.input-group input {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+}
+
+.read-only {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    cursor: not-allowed;
+}
+
+/* ========== PES BOX ========== */
+.pes-box {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 1rem;
+}
+
+.pes-box h4 {
+    font-size: 0.9rem;
+    color: #92400e;
+    margin: 0 0 12px 0;
+    font-weight: 700;
+}
+
+.pes-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.pes-field:last-child {
+    margin-bottom: 0;
+}
+
+.pes-label {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f59e0b;
+    color: white;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.pes-field input {
+    flex: 1;
+    border-color: #fcd34d;
+    background: rgba(255,255,255,0.8);
+}
+
+.pes-field input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* ========== NEXT APPOINTMENT ========== */
+.next-apt-group {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 1px solid #8b5cf6;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.next-apt-group label {
+    color: #5b21b6;
+    font-weight: 700;
+}
+
+.next-apt-group input {
+    border-color: #a78bfa;
+    font-weight: 600;
+    color: #5b21b6;
+}
+
+.next-apt-group input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+/* ========== SAVE BUTTON ========== */
+.save-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .soap-container {
+        padding: 4rem 1rem 1.5rem 1rem;
+    }
+
+    .soap-section {
+        padding: 15px;
+    }
+
+    .section-letter {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .metrics-grid.three-cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row,
+    .form-row.three-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .pes-field {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pes-label {
+        width: 100%;
+        padding: 8px;
+        text-align: center;
+    }
+}
+
+/* ========== UTILITY CLASSES ========== */
+.mt-2 { margin-top: 10px; }
+.mb-2 { margin-bottom: 10px; }
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.soap-section {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.soap-section:nth-child(1) { animation-delay: 0.05s; }
+.soap-section:nth-child(2) { animation-delay: 0.1s; }
+.soap-section:nth-child(3) { animation-delay: 0.15s; }
+.soap-section:nth-child(4) { animation-delay: 0.2s; }
+
+
+/* --- ENCABEZADO TIPO INFORME CLÍNICO --- */
+.clinical-header-container {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px 0; /* Espaciado vertical */
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e2e8f0; /* Línea divisoria sutil al fondo */
+    text-align: left; /* Alineado a la izquierda como un documento real */
+}
+
+.clinical-accent-bar {
+    width: 6px;
+    height: 50px;
+    background-color: #0ea5e9; /* Azul clínico profesional */
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.clinical-text-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.clinical-main-title {
+    font-size: 1.5rem;
+    font-weight: 800; /* Letra gruesa */
+    color: #1e293b; /* Gris oscuro casi negro */
+    text-transform: uppercase; /* Todo mayúsculas */
+    letter-spacing: 0.5px; /* Separación ligera entre letras */
+    margin: 0;
+    line-height: 1.2;
+}
+
+.clinical-meta-info {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #64748b; /* Gris medio */
+    font-weight: 600;
+}
+
+.meta-tag {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.meta-separator {
+    margin: 0 10px;
+    color: #cbd5e1;
+    font-weight: bold;
+}
