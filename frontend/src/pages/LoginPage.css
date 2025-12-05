@@ -1,414 +1,222 @@
-/* Importamos la fuente moderna (Outfit) */
+/* Importamos la fuente moderna */
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap");
 
-/* ========================================= */
-/* RESET & BASE */
-/* ========================================= */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body, input, button { font-family: "Outfit", sans-serif; }
 
-body,
-input,
-button,
-textarea {
-    font-family: "Outfit", sans-serif;
-}
-
-/* Fondo y centrado SOLO para la página de login */
+/* Contenedor Principal Centrado */
 .login-page {
     background: linear-gradient(135deg, #fdfbfd 0%, #f3efff 100%);
-    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5rem 0 0 0;
+    overflow: hidden;
 }
 
-/* ========================================= */
-/* LAYOUT PRINCIPAL */
-/* ========================================= */
+/* GRID PRINCIPAL */
 .login-container {
     width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
+    max-width: 1050px; /* Ancho ideal */
+    padding: 1rem;
 }
 
 .login-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 50% y 50% */
+    grid-template-columns: 45% 55%;
     background: #ffffff;
-    border-radius: 32px;
-    box-shadow: 0 30px 60px -12px rgba(107, 33, 212, 0.15),
-    0 18px 36px -18px rgba(0, 0, 0, 0.1);
+    border-radius: 28px;
+    box-shadow: 0 25px 50px -12px rgba(107, 33, 212, 0.25);
     overflow: hidden;
-    min-height: 650px;
+    min-height: 600px; /* Altura fija elegante */
+    align-items: stretch;
+    padding-bottom: 0 !important;
 }
 
-/* ========================================= */
-/* LADO IZQUIERDO (HERO) */
-/* ========================================= */
+/* === LADO IZQUIERDO (HERO) === */
 .login-hero {
-    background: linear-gradient(
-            135deg,
-            #6b21d4 0%,
-            #7c3aed 50%,
-            #9333ea 100%
-    );
+    background: linear-gradient(135deg, #4B0082, #6d28d9) !important;
     position: relative;
     color: #ffffff;
-    padding: 4rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
+    justify-content: center; /* Centrado vertical perfecto */
+    height: 100%;
+    gap: 1rem; /* Espacio entre bloques */
 }
 
-/* Círculos decorativos */
+/* Decoración fondo */
 .login-hero::before {
-    content: "";
-    position: absolute;
-    top: -10%;
-    right: -10%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.1) 0%,
-            transparent 70%
-    );
-    border-radius: 50%;
+    content: ""; position: absolute; top: -10%; right: -10%; width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%); border-radius: 50%;
 }
-
 .login-hero::after {
-    content: "";
-    position: absolute;
-    bottom: -10%;
-    left: -10%;
-    width: 250px;
-    height: 250px;
-    background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.15) 0%,
-            transparent 70%
-    );
-    border-radius: 50%;
+    content: ""; position: absolute; bottom: -10%; left: -10%; width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%); border-radius: 50%;
 }
 
 .hero-content {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    position: relative; z-index: 10; text-align: center; flex: 1;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 
+/* BADGE DEL CANDADO */
 .badge {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(4px);
     padding: 0.5rem 1.2rem;
     border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem; /* Un poco más grande */
+    font-weight: 700;
     margin-bottom: 1.5rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-}
-
-.hero-title {
-    font-size: 2.8rem;
-    line-height: 1.1;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-}
-
-/* Línea superior: pequeña, sutil */
-.hero-title-small {
-    display: block;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    gap: 0.6rem;
     text-transform: uppercase;
-    color: #e9d5ff;         /* lavanda suave */
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* Línea principal: protagonista */
-.hero-title-main {
-    display: block;
-    font-size: 2.6rem;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    color: #ffffff;         /* blanco para máximo contraste */
-    text-shadow: 0 8px 24px rgba(15, 23, 42, 0.45);
+/* ANIMACIÓN ELEGANTE DEL CANDADO */
+@keyframes pulse-glow {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 5px rgba(255,255,255,0.6)); }
+    100% { transform: scale(1); opacity: 0.8; }
 }
+
+.lock-anim-icon {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    animation: pulse-glow 2s infinite ease-in-out; /* Latido suave */
+}
+
+/* TIPOGRAFÍA AUMENTADA */
+.hero-title { line-height: 1; margin-bottom: 1rem; }
+.hero-title-small { display: block; font-size: 1rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #e9d5ff; margin-bottom: 0.4rem; }
+.hero-title-main { display: block; font-size: 3.2rem; /* MUCHO MÁS GRANDE */ font-weight: 900; color: #ffffff; text-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
 .hero-text {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
-    max-width: 400px;
+    font-size: 1rem; /* Aumentado */
+    opacity: 0.95;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    max-width: 320px;
 }
 
-/* LISTA DE FEATURES */
-.features-list {
-    list-style: none;
-    text-align: left;
-    display: inline-block;
-}
-
+/* LISTA DE CARACTERÍSTICAS */
+.features-list { list-style: none; text-align: left; display: inline-block; }
 .features-list li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 1rem;
-    font-size: 1.05rem;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 0.8rem;
+    font-size: 1.05rem; /* Aumentado */
     font-weight: 500;
 }
 
+/* Círculo del check */
 .check-icon {
     background: #ffffff;
     color: #7c3aed;
-    width: 24px;
+    width: 24px; /* Más grandes */
     height: 24px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+.check-icon svg { width: 14px; height: 14px; stroke-width: 4; }
 
-/* Footer de la doctora */
-.hero-footer {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    margin-top: 2rem;
-}
+/* FOOTER DOCTORA */
+.hero-footer { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+.avatar-circle { width: 55px; height: 55px; background: #ffffff; color: #6b21d4; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
+.doctor-info h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0; }
+.doctor-info p { font-size: 0.85rem; opacity: 0.85; }
 
-.avatar-circle {
-    width: 60px;
-    height: 60px;
-    background: #ffffff;
-    color: #6b21d4;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
 
-.doctor-info h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 0.2rem;
-}
-
-.doctor-info p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-/* ========================================= */
-/* LADO DERECHO (FORMULARIO) */
-/* ========================================= */
+/* === LADO DERECHO (FORMULARIO) - Manteniendo estructura === */
 .login-form-container {
-    padding: 4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding: 2rem;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    height: 100%;
 }
+.form-wrapper { width: 100%; max-width: 380px; }
 
-.form-wrapper {
-    width: 100%;
-    max-width: 400px;
-}
+.form-header { margin-bottom: 2rem; text-align: center; }
+.form-header h2 { font-size: 2rem; color: #1e293b; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+.form-header p { color: #64748b; font-size: 1rem; line-height: 1.5; }
 
-.form-header {
-    margin-bottom: 2.5rem;
-}
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; margin-bottom: 0.4rem; color: #334155; font-weight: 600; font-size: 0.9rem; }
 
-.form-header h2 {
-    font-size: 2.5rem;
-    color: #1a1a1a;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
-}
-
-.form-header p {
-    color: #666666;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.input-group {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #444444;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.input-field-wrapper {
-    position: relative;
-}
+.input-field-wrapper { position: relative; display: flex; align-items: center; }
 
 .input-field-wrapper input {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8fafc;
-    color: #333333;
+    width: 100%; padding: 0.75rem; padding-left: 2.8rem; padding-right: 2.8rem;
+    border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;
+    transition: all 0.2s ease; background: #f8fafc; color: #1e293b; height: 52px;
 }
+.input-field-wrapper input:focus { outline: none; border-color: #7c3aed; background: #ffffff; box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08); padding-left: 0.8rem; }
+.input-field-wrapper input:not(:placeholder-shown) { padding-left: 0.8rem; }
 
-.input-field-wrapper input:focus {
-    outline: none;
-    border-color: #7c3aed;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
-}
+.input-icon-left { position: absolute; left: 0.8rem; color: #94a3b8; pointer-events: none; transition: all 0.2s ease; opacity: 1; transform: translateX(0); }
+.input-field-wrapper input:focus ~ .input-icon-left,
+.input-field-wrapper input:not(:placeholder-shown) ~ .input-icon-left { opacity: 0; transform: translateX(-10px); }
 
-/* Icono dentro del input */
-.input-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
-}
+.toggle-password-btn { position: absolute; right: 0.8rem; background: none; border: none; cursor: pointer; color: #94a3b8; padding: 0; display: flex; align-items: center; }
+.toggle-password-btn:hover { color: #64748b; }
 
-/* Botón */
 .btn-login {
-    width: 100%;
-    padding: 1rem;
-    background: #7c3aed;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-    margin-top: 1rem;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #4B0082, #6d28d9) !important; color: #ffffff; border: none; border-radius: 12px;
+    font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 }
+.btn-login:hover:not(:disabled) { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 6px 15px rgba(124, 58, 237, 0.35); }
+.btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
 
-.btn-login:hover:not(:disabled) {
-    background: #6d28d9;
-    transform: translateY(-2px);
-}
+.btn-content-loading { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.spinner { width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #ffffff; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.btn-login:disabled {
-    opacity: 0.7;
-    cursor: default;
-}
+.login-error { color: #dc2626; background: #fef2f2; padding: 0.6rem; border-radius: 8px; font-size: 0.9rem; margin-top: 1rem; border: 1px solid #fecaca; text-align: center; }
+.form-footer { margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: #64748b; }
+.form-footer a { color: #7c3aed; text-decoration: none; font-weight: 600; }
+.form-footer a:hover { text-decoration: underline; }
 
-/* Error de login */
-.login-error {
-    color: #dc2626;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-/* Forzar que el grid no tenga padding */
-.login-page .login-grid {
-    padding: 0;       /* elimina el 32px arriba y abajo */
-}
-
-/* Footer del formulario */
-.form-footer {
-    margin-top: 2rem;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #666666;
-}
-
-.form-footer a {
-    color: #7c3aed;
-    text-decoration: none;
-    font-weight: 600;
+/* Responsive */
+@media (max-width: 768px) {
+    .login-grid { grid-template-columns: 1fr; max-width: 450px; min-height: auto; }
+    .login-hero { display: none; }
+    .login-form-container { padding: 2rem; }
 }
 
 /* ========================================= */
-/* RESPONSIVE */
+/* RESPONSIVE (ARREGLADO PARA TABLETS) */
 /* ========================================= */
-@media (max-width: 968px) {
+
+/* CORRECCIÓN 3: Subimos el breakpoint a 1024px */
+/* Esto cubre Tablets en vertical (iPad) y Laptops pequeñas */
+@media (max-width: 1024px) {
     .login-grid {
-        grid-template-columns: 1fr;
-        max-width: 500px;
-        min-height: auto;
+        grid-template-columns: 1fr; /* Una sola columna */
+        max-width: 480px; /* Ancho máximo estilo móvil/tablet */
+        min-height: auto; /* La altura se ajusta al contenido */
+        margin: 2rem auto; /* Un poco de margen vertical */
     }
 
+    /* En Tablet/Móvil ocultamos el lado morado para que sea limpio */
     .login-hero {
-        padding: 3rem 2rem;
-        text-align: center;
-    }
-
-    .features-list {
-        display: inline-block;
-        margin: 0 auto;
+        display: none;
     }
 
     .login-form-container {
-        padding: 3rem 2rem;
+        padding: 2.5rem 2rem;
     }
 
-    .hero-title {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-header h2 {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 480px) {
+    /* Aseguramos que el fondo cubra todo incluso al scrollear */
     .login-page {
+        height: auto;
         padding: 1rem;
-    }
-
-    .login-hero {
-        padding: 2.5rem 1.5rem;
-    }
-
-    .login-form-container {
-        padding: 2.5rem 1.5rem;
-    }
-
-    .hero-title {
-        font-size: 1.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-title-main {
-        font-size: 2.1rem;
     }
 }
