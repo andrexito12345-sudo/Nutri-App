@@ -1,7 +1,7 @@
 import React from 'react';
 import './ToolsSidebar.css';
 
-const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods }) => {
+const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods, onOpenDiet }) => {
     return (
         <>
             {/* Fondo oscurecido */}
@@ -146,7 +146,7 @@ const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods }) 
                             type="button"
                             className="nav-tool-btn"
                             onClick={() => {
-                                alert("Próximamente");
+                                if (onOpenDiet) onOpenDiet();
                                 onClose();
                             }}
                         >

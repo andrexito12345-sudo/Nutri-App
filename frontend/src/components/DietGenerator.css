@@ -1,0 +1,1093 @@
+/* ============================================
+   DietGeneratorPro.css
+   Clinical Professional Design System v2
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* === CSS VARIABLES === */
+:root {
+    --primary: #0d9488;
+    --primary-light: #14b8a6;
+    --primary-dark: #0f766e;
+    --primary-subtle: #ccfbf1;
+    --primary-bg: #f0fdfa;
+
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+
+    --bg-primary: #f8fafb;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f5f9;
+    --bg-hover: #e2e8f0;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --text-inverse: #ffffff;
+
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -1px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+}
+
+/* === RESET === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* === MAIN CONTAINER === */
+.diet-generator {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-primary);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.dg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    height: 64px;
+}
+
+/* Logo */
+.dg-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dg-logo__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #4B0082, #6d28d9) !important;
+    border-radius: var(--radius-md);
+    color: var(--text-inverse);
+    box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+
+.dg-logo__icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.dg-logo__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.dg-logo__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.dg-logo__subtitle {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Stats Section */
+.dg-header__stats {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 1;
+    justify-content: center;
+    max-width: 700px;
+    padding: 0.5rem 1rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+}
+
+/* Target */
+.dg-target {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dg-target:hover {
+    border-color: var(--primary);
+}
+
+.dg-target__icon {
+    color: var(--primary);
+}
+
+.dg-target__icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.dg-target__content {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+}
+
+.dg-target__value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dg-target__input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 70px;
+}
+
+.dg-target__label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* Progress */
+.dg-progress-wrapper {
+    flex: 1;
+    max-width: 200px;
+}
+
+.dg-progress {
+    height: 6px;
+    background: var(--bg-hover);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.dg-progress__fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+.dg-progress__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.dg-progress__status {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+}
+
+.dg-progress__status--start {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+}
+
+.dg-progress__status--progress {
+    background: var(--primary-subtle);
+    color: var(--primary-dark);
+}
+
+.dg-progress__status--optimal {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.dg-progress__status--over {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.dg-progress__remaining {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* Macros */
+.dg-macros {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.dg-macro {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+}
+
+.dg-macro svg {
+    width: 14px;
+    height: 14px;
+}
+
+.dg-macro span {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+.dg-macro small {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-left: 2px;
+}
+
+.dg-macro--protein {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.dg-macro--carbs {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.dg-macro--fat {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+/* Header Actions */
+.dg-header__actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dg-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.dg-btn--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.dg-btn--ghost:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.dg-btn--primary {
+    background: linear-gradient(135deg, #4B0082, #6d28d9);
+    color: var(--text-inverse);
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+}
+
+.dg-btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.35);
+}
+
+/* ============================================
+   WORKSPACE
+   ============================================ */
+.dg-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.dg-sidebar {
+    width: 320px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.dg-sidebar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dg-sidebar__header h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dg-sidebar__count {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+/* Search */
+.dg-search {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.dg-search > svg {
+    position: absolute;
+    left: calc(1.25rem + 10px);
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.dg-search input {
+    width: 100%;
+    padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.dg-search input::placeholder {
+    color: var(--text-muted);
+}
+
+.dg-search input:focus {
+    background: var(--bg-secondary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+.dg-search__clear {
+    position: absolute;
+    right: calc(1.25rem + 8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: var(--bg-hover);
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.dg-search__clear svg {
+    width: 12px;
+    height: 12px;
+}
+
+.dg-search__clear:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+/* Category Dropdown */
+.dg-category-select {
+    position: relative;
+    padding: 0 1.25rem 0.75rem;
+}
+
+.dg-category-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dg-category-trigger svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+.dg-category-trigger svg:last-child {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.dg-category-trigger.open svg:last-child {
+    transform: rotate(180deg);
+}
+
+.dg-category-trigger:hover {
+    border-color: var(--primary);
+}
+
+.dg-category-trigger span {
+    flex: 1;
+    text-align: left;
+}
+
+.dg-category-dropdown {
+    position: absolute;
+    top: calc(100% - 0.5rem);
+    left: 1.25rem;
+    right: 1.25rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: dropdownIn 0.15s ease;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dg-category-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.dg-category-option:first-child {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.dg-category-option:last-child {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.dg-category-option:hover {
+    background: var(--bg-tertiary);
+}
+
+.dg-category-option.active {
+    background: var(--primary-bg);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.dg-category-option svg {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+}
+
+.dg-category-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 0.25rem 0;
+}
+
+/* Food List */
+.dg-food-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1rem;
+}
+
+.dg-food-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.dg-food-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dg-food-list::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+}
+
+/* Food Item */
+.dg-food-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.35rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dg-food-item:hover {
+    border-color: #4B0082;
+    box-shadow: var(--shadow-sm);
+    transform: translateX(3px);
+}
+
+.dg-food-item:hover .dg-food-item__add {
+    background: linear-gradient(135deg, #4B0082, #6d28d9) !important;
+    color: var(--text-inverse);
+    transform: scale(1.1);
+}
+
+.dg-food-item__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dg-food-item__info h4 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.dg-food-item__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.dg-food-item__group {
+    padding: 1px 5px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+}
+
+.dg-food-item__nutrients {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-end;
+}
+
+.dg-nutrient {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.dg-nutrient svg {
+    width: 10px;
+    height: 10px;
+}
+
+.dg-nutrient--kcal {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.dg-nutrient--prot {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.dg-food-item__add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-tertiary);
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+}
+
+.dg-food-item__add svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ============================================
+   BOARD
+   ============================================ */
+.dg-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.25rem;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+.dg-board__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.dg-board__header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Meal Navigation Tabs */
+.dg-meal-nav {
+    display: flex;
+    gap: 0.35rem;
+    padding: 4px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.dg-meal-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.dg-meal-tab:hover {
+    background: var(--bg-tertiary);
+}
+
+.dg-meal-tab.active {
+    background: linear-gradient(135deg, #4B0082, #6d28d9) !important;
+    color: var(--text-inverse);
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+}
+
+.dg-meal-tab__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+}
+
+.dg-meal-tab__icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.dg-meal-tab.active .dg-meal-tab__icon {
+    color: var(--text-inverse);
+}
+
+.dg-meal-tab__count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--danger);
+    color: var(--text-inverse);
+    font-size: 0.6rem;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+}
+
+/* Columns */
+.dg-columns {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.dg-columns::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dg-columns::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+}
+
+.dg-columns::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+}
+
+.dg-column {
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.dg-column:hover {
+    border-color: var(--border);
+}
+
+.dg-column.active {
+    border-color: #4B0082;
+    box-shadow: var(--shadow-md), 0 0 0 3px rgba(13, 148, 136, 0.08);
+    min-width: 260px;
+    max-width: 320px;
+}
+
+.dg-column__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dg-column__title {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.dg-column__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: color-mix(in srgb, var(--meal-color) 15%, transparent);
+    border-radius: var(--radius-md);
+    color: var(--meal-color);
+}
+
+.dg-column__icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.dg-column__info h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.dg-column__time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.dg-column__time svg {
+    width: 12px;
+    height: 12px;
+}
+
+.dg-column__kcal {
+    text-align: right;
+}
+
+.dg-column__kcal strong {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dg-column.active .dg-column__kcal strong {
+    color: var(--primary);
+}
+
+.dg-column__kcal small {
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dg-column__body {
+    flex: 1;
+    padding: 0.75rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Empty State */
+.dg-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    text-align: center;
+    flex: 1;
+}
+
+.dg-empty__icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 0.75rem;
+}
+
+.dg-empty__icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.dg-empty p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    max-width: 140px;
+    line-height: 1.4;
+}
+
+/* Diet Card */
+.dg-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.dg-card:hover {
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.dg-card.added {
+    animation: cardAdded 0.5s ease;
+}
+
+@keyframes cardAdded {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    60% {
+        transform: translateY(2px) scale(1.01);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dg-card__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.dg-card__content h4 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dg-card__macros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.dg-card__kcal {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: #ea580c;
+    font-weight: 600;
+}
+
+.dg-card__kcal svg {
+    width: 10px;
+    height: 10px;
+}
+
+.dg-card__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.dg-card__remove svg {
+    width: 14px;
+    height: 14px;
+}
+
+.dg-card:hover .dg-card__remove {
+    opacity: 1;
+}
+
+.dg-card__remove:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1100px) {
+    .dg-header__stats {
+        max-width: 500px;
+    }
+
+    .dg-macros {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .dg-header {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 0.75rem 1rem;
+        gap: 0.75rem;
+    }
+
+    .dg-header__stats {
+        order: 3;
+        width: 100%;
+        max-width: none;
+    }
+
+    .dg-sidebar {
+        width: 280px;
+    }
+
+    .dg-column {
+        min-width: 200px;
+    }
+}
