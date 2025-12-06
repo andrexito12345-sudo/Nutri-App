@@ -17,6 +17,7 @@ function DashboardPage({ isToolsOpen, closeTools }) {
     // Extraemos TODA la lógica del Hook
     const logic = useDashboardLogic();
 
+
     if (logic.loading) {
         return (
             <div className="dash-loading">
@@ -36,6 +37,7 @@ function DashboardPage({ isToolsOpen, closeTools }) {
             </div>
         );
     }
+
 
     return (
         <div className="dash">
@@ -98,6 +100,9 @@ function DashboardPage({ isToolsOpen, closeTools }) {
                 onOpenIMC={() => logic.setShowBMIModal(true)}
                 onOpenFoods={() => alert("Tabla de Alimentos: En construcción")}
                 onOpenDiet={() => logic.setShowDietModal(true)}
+                onOpenHerramientasAvanzadas={() => {
+                    logic.setShowHerramientasAvanzadas(true);
+                }}
             />
 
             {/* Gestión de Todos los Modales */}
@@ -105,6 +110,7 @@ function DashboardPage({ isToolsOpen, closeTools }) {
                 modals={logic.modals}
                 modalData={logic.modalData}
                 actions={{
+                    // Tus actions existentes
                     closePatientModal: logic.closePatientModal,
                     setShowPatientForm: logic.setShowPatientForm,
                     setPendingAppointment: logic.setPendingAppointment,
@@ -112,7 +118,10 @@ function DashboardPage({ isToolsOpen, closeTools }) {
                     savePatient: logic.savePatient,
                     setShowStatsModal: logic.setShowStatsModal,
                     setShowBMIModal: logic.setShowBMIModal,
-                    setShowDietModal: logic.setShowDietModal
+                    setShowDietModal: logic.setShowDietModal,
+
+                    // ¡¡AÑADE ESTA LÍNEA ES DE HERRAMIENTAS AVANZADAS
+                    setShowHerramientasAvanzadas: logic.setShowHerramientasAvanzadas,
                 }}
             />
 

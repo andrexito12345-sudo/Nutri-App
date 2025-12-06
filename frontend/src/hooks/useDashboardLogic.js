@@ -8,6 +8,20 @@ import { printSoapReport } from "../utils/soapPrinter";
 export function useDashboardLogic() {
     const navigate = useNavigate();
 
+
+    const [showHerramientasAvanzadas, setShowHerramientasAvanzadas] = useState(false);
+
+// Debug: Sobreescribimos el setter para ver cuándo se llama
+    const debugSetter = (value) => {
+        console.log("useDashboardLogic: setShowHerramientasAvanzadas llamado con:", value);
+        console.log("Estado anterior:", showHerramientasAvanzadas);
+        setShowHerramientasAvanzadas(value);
+        console.log("Estado nuevo (después del set):", value);
+    };
+
+// Usamos el setter con debug
+// (más abajo en el return, cambia setShowHerramientasAvanzadas por debugSetter si quieres)
+
     // --- ESTADOS DE DATOS ---
     const [appointments, setAppointments] = useState([]);
     const [visitStats, setVisitStats] = useState({ total: 0, today: 0 });
@@ -376,6 +390,7 @@ export function useDashboardLogic() {
             diet: showDietModal,
             patientFile: showPatientModal,
             newPatient: showPatientForm,
+            herramientasAvanzadas: showHerramientasAvanzadas,  // AÑADIDO
             isEditing
         },
 
@@ -387,8 +402,12 @@ export function useDashboardLogic() {
         },
 
         // Setters de Modales
-        setShowStatsModal, setShowBMIModal, setShowDietModal,
-        setShowPatientForm, setPendingAppointment,
+        setShowStatsModal,
+        setShowBMIModal,
+        setShowDietModal,
+        setShowPatientForm,
+        setPendingAppointment,
+        setShowHerramientasAvanzadas: debugSetter,
 
         // Handlers / Acciones
         handlePatientFormChange: (e) => setPatientFormData(prev => ({ ...prev, [e.target.name]: e.target.value })),
@@ -399,6 +418,9 @@ export function useDashboardLogic() {
         formatDate, navigate,
 
         // Refs
-        printRef
+        printRef,
+
+        // NUEVO: Para las herramientas avanzadas
+        showHerramientasAvanzadas
     };
 }

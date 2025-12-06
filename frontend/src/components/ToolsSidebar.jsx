@@ -1,7 +1,7 @@
 import React from 'react';
 import './ToolsSidebar.css';
 
-const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods, onOpenDiet }) => {
+const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods, onOpenDiet, onOpenHerramientasAvanzadas }) => {
     return (
         <>
             {/* Fondo oscurecido */}
@@ -169,6 +169,33 @@ const ToolsSidebar = ({ isOpen, onClose, onOpenStats, onOpenIMC, onOpenFoods, on
                                 </svg>
                             </span>
                         </button>
+
+                        {/* AQUÍ VA EL NUEVO BOTÓN - HERRAMIENTAS AVANZADAS */}
+                        <button
+                            type="button"
+                            className="nav-tool-btn premium-tool"
+                            onClick={() => {
+                                onOpenHerramientasAvanzadas();
+                            }}
+                        >
+                            <div className="icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 2a10 10 0 0 1 10 10a10 10 0 0 1 -10 10a10 10 0 0 1 -10 -10a10 10 0 0 1 10 -10z" />
+                                    <path d="M12 8v4l3 3" />
+                                    <circle cx="12" cy="12" r="8" fill="none" strokeWidth="1.5" />
+                                </svg>
+                            </div>
+                            <div className="text">
+                                <strong style={{ color: '#9333ea' }}>Herramientas Avanzadas PRO</strong>
+                                <p style={{ color: '#a855f7' }}>TMB • FFMI • % Grasa • PDF • Reverse • Macros</p>
+                            </div>
+                            <span className="arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 18l6-6-6-6" />
+        </svg>
+    </span>
+                        </button>
+
                     </section>
                 </div>
 

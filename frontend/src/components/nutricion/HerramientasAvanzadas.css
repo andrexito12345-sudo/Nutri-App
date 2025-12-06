@@ -1,0 +1,265 @@
+/* src/components/nutricion/HerramientasAvanzadas.css */
+
+.ha-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.ha-modal {
+    width: 100%;
+    max-width: 1100px;
+    max-height: 100%;
+    background: linear-gradient(135deg, #4b0082, #6d28d9);
+    border-radius: 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.ha-header {
+    padding: 18px 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+    position: relative;
+}
+
+.ha-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    font-size: 28px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.ha-close-btn:hover {
+    color: #fee2e2;
+}
+
+.ha-header-tag {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.ha-header-title {
+    font-size: 22px;
+    margin: 4px 0 2px;
+    font-weight: 800;
+}
+
+.ha-header-subtitle {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+/* Body */
+.ha-body {
+    padding: 20px 24px 24px;
+    overflow-y: auto;
+}
+
+/* Grid principal */
+.ha-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 18px;
+}
+
+/* Cards */
+.ha-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ha-card-title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Formulario */
+.ha-card-form {
+    font-size: 13px;
+}
+
+.ha-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.ha-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.ha-field-wide {
+    grid-column: span 1;
+}
+
+.ha-field-full {
+    grid-column: 1 / span 3;
+}
+
+.ha-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 3px;
+    opacity: 0.9;
+}
+
+.ha-input {
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    padding: 6px 10px;
+    font-size: 14px;
+    outline: none;
+    color: #111827;
+}
+
+.ha-input:focus {
+    box-shadow: 0 0 0 2px rgba(216, 180, 254, 0.9);
+}
+
+.ha-helper-text {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+/* Resultados */
+.ha-results-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ha-results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.ha-card-result .ha-label {
+    opacity: 0.8;
+}
+
+.ha-result-value {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.ha-card-result--green .ha-result-value {
+    color: #bbf7d0;
+}
+
+.ha-card-result--yellow .ha-result-value {
+    color: #fde68a;
+}
+
+.ha-card-result--cyan .ha-result-value {
+    color: #a5f3fc;
+}
+
+.ha-result-sub {
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+/* Macros */
+.ha-card-macros {
+    font-size: 13px;
+}
+
+.ha-macros-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    text-align: center;
+}
+
+.ha-macro-value {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.ha-print-wrapper {
+    text-align: center;
+    margin-top: 14px;
+}
+
+.ha-print-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #ffffff;
+    color: #4b0082;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.ha-print-btn:hover {
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+    .ha-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ha-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ha-field-full {
+        grid-column: 1 / span 2;
+    }
+}
+
+@media (max-width: 640px) {
+    .ha-modal {
+        border-radius: 18px;
+    }
+
+    .ha-body {
+        padding: 16px;
+    }
+
+    .ha-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ha-field-full {
+        grid-column: 1 / span 1;
+    }
+
+    .ha-results-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ha-macros-grid {
+        grid-template-columns: 1fr;
+    }
+}

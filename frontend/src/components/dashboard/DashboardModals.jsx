@@ -4,6 +4,7 @@ import NewPatientModal from '../NewPatientModal';
 import StatsModal from '../StatsModal';
 import BMICalculatorTool from '../BMICalculatorTool';
 import DietGenerator from '../DietGenerator';
+import HerramientasAvanzadas from '../nutricion/HerramientasAvanzadas';
 
 const DashboardModals = ({
                              modals,
@@ -12,6 +13,7 @@ const DashboardModals = ({
                          }) => {
     return (
         <>
+
             {/* EXPEDIENTE */}
             <PatientFileModal
                 isOpen={modals.patientFile}
@@ -58,6 +60,15 @@ const DashboardModals = ({
                     }}
                 />
             )}
+
+            {/* HERRAMIENTAS AVANZADAS PRO */}
+            {modals.herramientasAvanzadas && (
+                <HerramientasAvanzadas
+                    patientId={modalData?.selectedPatient?.id || null}
+                    onClose={() => actions.setShowHerramientasAvanzadas(false)}
+                />
+            )}
+
         </>
     );
 };

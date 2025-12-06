@@ -9,5 +9,10 @@
   "private": true,
   "devDependencies": {
     "vite-plugin-purgecss": "^0.2.13"
+  },
+  "dependencies": {
+    "@react-pdf/renderer": "^4.3.1",
+    "chart.js": "^4.5.1",
+    "react-chartjs-2": "^5.3.1"
   }
 }
