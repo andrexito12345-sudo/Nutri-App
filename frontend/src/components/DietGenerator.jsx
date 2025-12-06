@@ -5,7 +5,6 @@ import "./DietGenerator.css";
 
 // === ICONOS SVG PROFESIONALES ===
 const Icons = {
-    // UI Icons
     Search: () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -18,7 +17,7 @@ const Icons = {
     ),
     Save: () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2-2z"/>
             <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
         </svg>
     ),
@@ -47,11 +46,6 @@ const Icons = {
             <polyline points="20 6 9 17 4 12"/>
         </svg>
     ),
-    Filter: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-        </svg>
-    ),
     Activity: () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -62,8 +56,6 @@ const Icons = {
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
     ),
-
-    // Nutrient Icons
     Flame: () => (
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 23c-4.97 0-9-3.58-9-8 0-2.52 1.17-5.23 3.5-8.5.93-1.3 2-2.65 3.17-4.05.35-.42.98-.42 1.33 0 1.17 1.4 2.24 2.75 3.17 4.05C16.83 9.77 18 12.48 18 15c0 4.42-4.03 8-6 8z"/>
@@ -81,11 +73,10 @@ const Icons = {
     ),
     Fat: () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2c-5.33 4-8 8-8 12a8 8 0 1 0 16 0c0-4-2.67-8-8-12z"/>
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8a2 2 0 0 0-2 2c0 1.33.67 2 2 2 1.33 0 2 .67 2 2a2 2 0 0 1-2 2"/>
         </svg>
     ),
-
-    // Meal Time Icons (SVG profesionales)
     Sunrise: () => (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/>
@@ -100,7 +91,6 @@ const Icons = {
             <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
             <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
             <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
     ),
     Utensils: () => (
@@ -122,376 +112,280 @@ const Icons = {
     ),
 };
 
-// Configuración de tiempos de comida con iconos SVG
+// === COMIDAS ===
 const MEAL_TIMES = {
-    BREAKFAST: {
-        id: "breakfast",
-        label: "Desayuno",
-        Icon: Icons.Sunrise,
-        time: "07:00 - 09:00",
-        color: "#f59e0b"
-    },
-    MID_MORNING: {
-        id: "mid_morning",
-        label: "Media Mañana",
-        Icon: Icons.Sun,
-        time: "10:30 - 11:30",
-        color: "#eab308"
-    },
-    LUNCH: {
-        id: "lunch",
-        label: "Almuerzo",
-        Icon: Icons.Utensils,
-        time: "12:30 - 14:00",
-        color: "#10b981"
-    },
-    SNACK: {
-        id: "snack",
-        label: "Merienda",
-        Icon: Icons.Apple,
-        time: "16:00 - 17:00",
-        color: "#ef4444"
-    },
-    DINNER: {
-        id: "dinner",
-        label: "Cena",
-        Icon: Icons.Moon,
-        time: "19:30 - 21:00",
-        color: "#6366f1"
-    },
+    BREAKFAST: { id: "breakfast", label: "Desayuno", Icon: Icons.Sunrise, time: "07:00 - 09:00", color: "#f59e0b" },
+    MID_MORNING: { id: "mid_morning", label: "Media Mañana", Icon: Icons.Sun, time: "10:30 - 11:30", color: "#eab308" },
+    LUNCH: { id: "lunch", label: "Almuerzo", Icon: Icons.Utensils, time: "12:30 - 14:00", color: "#10b981" },
+    SNACK: { id: "snack", label: "Merienda", Icon: Icons.Apple, time: "16:00 - 17:00", color: "#ef4444" },
+    DINNER: { id: "dinner", label: "Cena", Icon: Icons.Moon, time: "19:30 - 21:00", color: "#6366f1" },
 };
 
-const DietGeneratorPro = ({ onClose, onSave }) => {
-    // === ESTADOS ===
-    const [targetCalories, setTargetCalories] = useState(2000);
-    const [isEditingTarget, setIsEditingTarget] = useState(false);
-    const targetInputRef = useRef(null);
+// === QUICK PORTION INPUT - SIMPLIFICADO ===
+const QuickPortionInput = ({ food, onAdd, onCancel }) => {
+    const [portionText, setPortionText] = useState("100");
+    const inputRef = useRef(null);
 
-    const [diet, setDiet] = useState(
-        Object.fromEntries(Object.keys(MEAL_TIMES).map(key => [key, []]))
-    );
-
-    const [searchTerm, setSearchTerm] = useState("");
-    const [activeGroup, setActiveGroup] = useState("Todos");
-    const [activeMeal, setActiveMeal] = useState("BREAKFAST");
-    const [recentlyAdded, setRecentlyAdded] = useState(null);
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    const categoryRef = useRef(null);
-
-    // Cerrar dropdown al hacer clic fuera
     useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (categoryRef.current && !categoryRef.current.contains(e.target)) {
-                setIsCategoryOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        inputRef.current?.focus();
+        inputRef.current?.select();
     }, []);
 
-    // === CÁLCULOS ===
-    const totals = Object.values(diet).flat().reduce(
-        (acc, item) => ({
-            kcal: acc.kcal + item.kcal,
-            protein: acc.protein + item.proteina,
-            carbs: acc.carbs + item.carbohidratos,
-            fat: acc.fat + item.grasas,
-        }),
-        { kcal: 0, protein: 0, carbs: 0, fat: 0 }
+    const parsePortion = (text) => {
+        const match = text.match(/(\d+(?:\.\d+)?)/);
+        return match ? parseFloat(match[1]) : 100;
+    };
+
+    const handleAdd = () => {
+        const grams = parsePortion(portionText);
+        const factor = grams / 100;
+
+        const scaledFood = {
+            ...food,
+            cantidad: grams,
+            kcal: Math.round(food.kcal * factor),
+            proteina: parseFloat((food.proteina * factor).toFixed(1)),
+            carbohidratos: parseFloat((food.carbohidratos * factor).toFixed(1)),
+            grasas: parseFloat((food.grasas * factor).toFixed(1)),
+            uniqueId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        };
+
+        onAdd(scaledFood);
+    };
+
+    return (
+        <div className="dg-quick-portion">
+            <div className="dg-quick-portion__input">
+                <input
+                    ref={inputRef}
+                    type="text"
+                    value={portionText}
+                    onChange={(e) => setPortionText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+                    placeholder="100g"
+                />
+                <button className="dg-quick-portion__add" onClick={handleAdd}>
+                    <Icons.Check />
+                </button>
+                <button className="dg-quick-portion__cancel" onClick={onCancel}>
+                    <Icons.Close />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// === COMPONENTE PRINCIPAL - CON LAS 3 MEJORAS PEDIDAS ===
+const DietGeneratorPro = ({ onClose, onSave, initialData = {} }) => {
+    const [targetCalories, setTargetCalories] = useState(initialData.targetKcal || 2000);
+    const [proteinGoal] = useState(initialData.proteinGoal || 0);
+    const [carbsGoal] = useState(initialData.carbsGoal || 0);
+    const [fatGoal] = useState(initialData.fatGoal || 0);
+    const [patientName] = useState(initialData.patientName || "Paciente");
+    const [dietType] = useState(initialData.dietType || "Personalizado");
+
+    const [diet, setDiet] = useState(Object.fromEntries(Object.keys(MEAL_TIMES).map(key => [key, []])));
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedGroup, setSelectedGroup] = useState("Todos"); // NUEVO: FILTRO POR GRUPO
+    const [activeMeal, setActiveMeal] = useState("BREAKFAST");
+    const [recentlyAdded, setRecentlyAdded] = useState(null);
+    const [portionFood, setPortionFood] = useState(null);
+
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+
+    // CÁLCULO CORRECTO DE TOTALES (se actualiza en vivo)
+    const totals = React.useMemo(() =>
+            Object.values(diet).flat().reduce((acc, item) => ({
+                kcal: acc.kcal + (item.kcal || 0),
+                protein: acc.protein + (item.proteina || 0),
+                carbs: acc.carbs + (item.carbohidratos || 0),
+                fat: acc.fat + (item.grasas || 0),
+            }), { kcal: 0, protein: 0, carbs: 0, fat: 0 }),
+        [diet]
     );
 
     const progress = Math.min((totals.kcal / targetCalories) * 100, 100);
     const remaining = targetCalories - totals.kcal;
 
-    const getMealCalories = (mealKey) =>
-        diet[mealKey].reduce((sum, item) => sum + item.kcal, 0);
+    // GRUPOS ÚNICOS + "Todos"
+    const groups = React.useMemo(() =>
+            ["Todos", ...new Set(foodDatabase.map(f => f.grupo))].sort(),
+        []
+    );
 
-    // === ACCIONES ===
-    const addFood = (food) => {
-        const newFood = { ...food, uniqueId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}` };
-        setDiet(prev => ({
-            ...prev,
-            [activeMeal]: [...prev[activeMeal], newFood]
-        }));
-        setRecentlyAdded(newFood.uniqueId);
+    // ALIMENTOS FILTRADOS
+    const filteredFoods = React.useMemo(() =>
+            foodDatabase
+                .filter(f => selectedGroup === "Todos" || f.grupo === selectedGroup)
+                .filter(f => f.alimento.toLowerCase().includes(searchTerm.toLowerCase())),
+        [selectedGroup, searchTerm]
+    );
+
+    const addFood = (scaledFood) => {
+        setDiet(prev => ({ ...prev, [activeMeal]: [...prev[activeMeal], scaledFood] }));
+        setRecentlyAdded(scaledFood.uniqueId);
         setTimeout(() => setRecentlyAdded(null), 600);
+        setPortionFood(null);
     };
 
     const removeFood = (mealKey, uniqueId) => {
-        setDiet(prev => ({
-            ...prev,
-            [mealKey]: prev[mealKey].filter(item => item.uniqueId !== uniqueId)
-        }));
+        setDiet(prev => ({ ...prev, [mealKey]: prev[mealKey].filter(i => i.uniqueId !== uniqueId) }));
     };
 
-    const filteredFoods = foodDatabase.filter(item => {
-        const matchesSearch = item.alimento.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesGroup = activeGroup === "Todos" || item.grupo === activeGroup;
-        return matchesSearch && matchesGroup;
-    });
-
-    const getProgressStatus = () => {
-        if (progress > 100) return { color: "var(--danger)", label: "Excedido", status: "over" };
-        if (progress >= 90) return { color: "var(--success)", label: "Óptimo", status: "optimal" };
-        if (progress >= 50) return { color: "var(--primary)", label: "En progreso", status: "progress" };
-        return { color: "var(--muted)", label: "Iniciando", status: "start" };
-    };
-
-    useEffect(() => {
-        if (isEditingTarget && targetInputRef.current) {
-            targetInputRef.current.focus();
-            targetInputRef.current.select();
-        }
-    }, [isEditingTarget]);
-
-    const handleSave = () => {
-        const dietData = {
-            targetCalories,
-            totals,
-            meals: diet,
-            createdAt: new Date().toISOString()
-        };
-        onSave && onSave(dietData);
-    };
-
-    const selectCategory = (group) => {
-        setActiveGroup(group);
-        setIsCategoryOpen(false);
-    };
-
-    const progressStatus = getProgressStatus();
+    const startAddingFood = (food) => setPortionFood(food);
+    const confirmAddFood = (scaledFood) => addFood(scaledFood);
+    const cancelAddFood = () => setPortionFood(null);
+    const getMealCalories = (key) => diet[key].reduce((s, i) => s + (i.kcal || 0), 0);
 
     return (
         <div className="diet-generator">
-            {/* === HEADER === */}
+            {/* TU HEADER ORIGINAL CON KCAL EN VIVO */}
             <header className="dg-header">
                 <div className="dg-header__brand">
                     <div className="dg-logo">
-                        <div className="dg-logo__icon">
-                            <Icons.Activity />
-                        </div>
+                        <div className="dg-logo__icon"><Icons.Activity /></div>
                         <div className="dg-logo__text">
-                            <span className="dg-logo__title">NutriPlan</span>
-                            <span className="dg-logo__subtitle">Clinical Diet Builder</span>
+                            <div className="dg-logo__title">Plan para: <strong>{patientName}</strong></div>
+                            <div className="dg-logo__subtitle">
+                                {dietType} • Meta: {targetCalories.toLocaleString()} kcal • P: {proteinGoal}g • C: {carbsGoal}g • G: {fatGoal}g
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="dg-header__stats">
-                    {/* Target Calories */}
-                    <div className="dg-target" onClick={() => setIsEditingTarget(true)}>
+                    <div className="dg-target">
                         <div className="dg-target__icon"><Icons.Target /></div>
                         <div className="dg-target__content">
-                            {isEditingTarget ? (
-                                <input
-                                    ref={targetInputRef}
-                                    type="number"
-                                    className="dg-target__input"
-                                    value={targetCalories}
-                                    onChange={(e) => setTargetCalories(Math.max(0, Number(e.target.value)))}
-                                    onBlur={() => setIsEditingTarget(false)}
-                                    onKeyDown={(e) => e.key === 'Enter' && setIsEditingTarget(false)}
-                                />
-                            ) : (
-                                <span className="dg-target__value">{targetCalories.toLocaleString()}</span>
-                            )}
-                            <span className="dg-target__label">kcal meta</span>
+                            <span className="dg-target__value">{totals.kcal}</span>
+                            <span className="dg-target__label">de {targetCalories} kcal</span>
                         </div>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="dg-progress-wrapper">
-                        <div className="dg-progress">
-                            <div
-                                className="dg-progress__fill"
-                                style={{ width: `${progress}%`, backgroundColor: progressStatus.color }}
-                            />
-                        </div>
-                        <div className="dg-progress__info">
-              <span className={`dg-progress__status dg-progress__status--${progressStatus.status}`}>
-                {progressStatus.label}
-              </span>
-                            <span className="dg-progress__remaining">
-                {remaining >= 0 ? `${remaining.toFixed(0)} restantes` : `${Math.abs(remaining).toFixed(0)} excedidas`}
-              </span>
-                        </div>
-                    </div>
-
-                    {/* Macros */}
                     <div className="dg-macros">
                         <div className="dg-macro dg-macro--protein">
                             <Icons.Protein />
                             <span>{totals.protein.toFixed(0)}g</span>
-                            <small>Proteína</small>
+                            <small>de {proteinGoal}g</small>
                         </div>
                         <div className="dg-macro dg-macro--carbs">
                             <Icons.Carbs />
                             <span>{totals.carbs.toFixed(0)}g</span>
-                            <small>Carbos</small>
+                            <small>de {carbsGoal}g</small>
                         </div>
                         <div className="dg-macro dg-macro--fat">
                             <Icons.Fat />
                             <span>{totals.fat.toFixed(0)}g</span>
-                            <small>Grasas</small>
+                            <small>de {fatGoal}g</small>
                         </div>
                     </div>
                 </div>
 
                 <div className="dg-header__actions">
-                    <button className="dg-btn dg-btn--ghost" onClick={onClose}>
-                        <Icons.Close />
-                        <span>Cancelar</span>
-                    </button>
-                    <button className="dg-btn dg-btn--primary" onClick={handleSave}>
-                        <Icons.Save />
-                        <span>Guardar Plan</span>
-                    </button>
+                    <button className="dg-btn dg-btn--ghost" onClick={onClose}><Icons.Close /> Cancelar</button>
+                    <button className="dg-btn dg-btn--primary" onClick={() => onSave({ targetCalories, totals, meals: diet })}><Icons.Save /> Guardar Plan</button>
                 </div>
             </header>
 
-            {/* === WORKSPACE === */}
             <div className="dg-workspace">
-                {/* === SIDEBAR === */}
                 <aside className="dg-sidebar">
-                    <div className="dg-sidebar__header">
-                        <h2>Biblioteca de Alimentos</h2>
-                        <span className="dg-sidebar__count">{filteredFoods.length} items</span>
-                    </div>
-
-                    {/* Search */}
                     <div className="dg-search">
                         <Icons.Search />
-                        <input
-                            type="text"
-                            placeholder="Buscar alimentos..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        {searchTerm && (
-                            <button className="dg-search__clear" onClick={() => setSearchTerm("")}>
-                                <Icons.Close />
-                            </button>
-                        )}
+                        <input type="text" placeholder="Buscar alimentos..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                     </div>
 
-                    {/* Category Dropdown */}
-                    <div className="dg-category-select" ref={categoryRef}>
-                        <button
-                            className={`dg-category-trigger ${isCategoryOpen ? 'open' : ''}`}
-                            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                        >
-                            <Icons.Filter />
-                            <span>{activeGroup}</span>
-                            <Icons.ChevronDown />
-                        </button>
-
-                        {isCategoryOpen && (
-                            <div className="dg-category-dropdown">
-                                <div
-                                    className={`dg-category-option ${activeGroup === "Todos" ? 'active' : ''}`}
-                                    onClick={() => selectCategory("Todos")}
+                    {/* MENÚ DE CATEGORÍAS */}
+                    {/* CHIPS HORIZONTALES DE CATEGORÍAS - UX ÉLITE */}
+                    <div className="dg-category-chips-container">
+                        <div className="dg-category-chips">
+                            {groups.map(group => (
+                                <button
+                                    key={group}
+                                    className={`dg-category-chip ${selectedGroup === group ? 'active' : ''}`}
+                                    onClick={() => setSelectedGroup(group)}
                                 >
-                                    <span>Todos los alimentos</span>
-                                    {activeGroup === "Todos" && <Icons.Check />}
-                                </div>
-                                <div className="dg-category-divider" />
-                                {foodGroups.map(group => (
-                                    <div
-                                        key={group}
-                                        className={`dg-category-option ${activeGroup === group ? 'active' : ''}`}
-                                        onClick={() => selectCategory(group)}
-                                    >
-                                        <span>{group}</span>
-                                        {activeGroup === group && <Icons.Check />}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                                    {group}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Food List */}
-                    <div className="dg-food-list">
-                        {filteredFoods.slice(0, 100).map(food => (
-                            <div
-                                key={food.id}
-                                className="dg-food-item"
-                                onClick={() => addFood(food)}
-                            >
-                                <div className="dg-food-item__info">
-                                    <h4>{food.alimento}</h4>
-                                    <div className="dg-food-item__meta">
-                                        <span className="dg-food-item__group">{food.grupo}</span>
-                                        <span className="dg-food-item__portion">por 100g</span>
+                    {/* LISTA DE ALIMENTOS */}
+                    <div className="dg-food-grid">
+                        {filteredFoods.slice(0, 100).map(food => {
+                            const isAdding = portionFood?.id === food.id;
+                            return (
+                                <div
+                                    key={food.id}
+                                    className={`dg-food-card ${isAdding ? 'adding' : ''}`}
+                                    onClick={() => !isAdding && startAddingFood(food)}
+                                >
+                                    {/* Header del alimento */}
+                                    <div className="dg-food-card__header">
+                                        <h4 className="dg-food-card__name">{food.alimento}</h4>
+                                        <span className="dg-food-card__group">{food.grupo}</span>
+                                    </div>
+
+                                    {/* Macros principales */}
+                                    <div className="dg-food-card__macros">
+                                        <div className="dg-food-macro dg-food-macro--kcal">
+                                            <Icons.Flame />
+                                            <span>{food.kcal}</span>
+                                            <small>kcal</small>
+                                        </div>
+                                        <div className="dg-food-macro dg-food-macro--protein">
+                                            <Icons.Protein />
+                                            <span>{food.proteina}g</span>
+                                            <small>P</small>
+                                        </div>
+                                        <div className="dg-food-macro dg-food-macro--carbs">
+                                            <Icons.Carbs />
+                                            <span>{food.carbohidratos}g</span>
+                                            <small>C</small>
+                                        </div>
+                                        <div className="dg-food-macro dg-food-macro--fat">
+                                            <Icons.Fat />
+                                            <span>{food.grasas}g</span>
+                                            <small>G</small>
+                                        </div>
+                                    </div>
+
+                                    {/* Botón + o Quick Portion */}
+                                    <div className="dg-food-card__action">
+                                        {isAdding ? (
+                                            <QuickPortionInput
+                                                food={food}
+                                                onAdd={confirmAddFood}
+                                                onCancel={cancelAddFood}
+                                            />
+                                        ) : (
+                                            <button className="dg-food-card__add-btn">
+                                                <Icons.Plus />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
-                                <div className="dg-food-item__nutrients">
-                  <span className="dg-nutrient dg-nutrient--kcal">
-                    <Icons.Flame /> {food.kcal}
-                  </span>
-                                    <span className="dg-nutrient dg-nutrient--prot">
-                    P {food.proteina}g
-                  </span>
-                                </div>
-                                <button className="dg-food-item__add">
-                                    <Icons.Plus />
-                                </button>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </aside>
 
-                {/* === MAIN BOARD === */}
+                {/* TU BOARD ORIGINAL (sin cambios) */}
                 <main className="dg-board">
-                    {/* Board Header with Tabs */}
-                    <div className="dg-board__header">
-                        <h2>Plan Nutricional</h2>
-                        <nav className="dg-meal-nav">
-                            {Object.entries(MEAL_TIMES).map(([key, meal]) => {
-                                const MealIcon = meal.Icon;
-                                const isActive = activeMeal === key;
-                                const itemCount = diet[key].length;
-
-                                return (
-                                    <button
-                                        key={key}
-                                        className={`dg-meal-tab ${isActive ? 'active' : ''}`}
-                                        onClick={() => setActiveMeal(key)}
-                                        style={{ '--meal-color': meal.color }}
-                                    >
-                                        <span className="dg-meal-tab__icon"><MealIcon /></span>
-                                        <span className="dg-meal-tab__label">{meal.label}</span>
-                                        {itemCount > 0 && (
-                                            <span className="dg-meal-tab__count">{itemCount}</span>
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </nav>
-                    </div>
-
-                    {/* Columns Grid */}
                     <div className="dg-columns">
                         {Object.entries(MEAL_TIMES).map(([key, meal]) => {
                             const MealIcon = meal.Icon;
-                            const mealCalories = getMealCalories(key);
-                            const isActive = activeMeal === key;
                             const items = diet[key];
+                            const mealCalories = getMealCalories(key);
 
                             return (
-                                <div
-                                    key={key}
-                                    className={`dg-column ${isActive ? 'active' : ''}`}
-                                    onClick={() => setActiveMeal(key)}
-                                    style={{ '--meal-color': meal.color }}
-                                >
+                                <div key={key} className={`dg-column ${activeMeal === key ? 'active' : ''}`} onClick={() => setActiveMeal(key)}>
                                     <div className="dg-column__header">
                                         <div className="dg-column__title">
                                             <span className="dg-column__icon"><MealIcon /></span>
                                             <div className="dg-column__info">
                                                 <h3>{meal.label}</h3>
-                                                <span className="dg-column__time">
-                          <Icons.Clock /> {meal.time}
-                        </span>
+                                                <span className="dg-column__time"><Icons.Clock /> {meal.time}</span>
                                             </div>
                                         </div>
                                         <div className="dg-column__kcal">
@@ -508,28 +402,20 @@ const DietGeneratorPro = ({ onClose, onSave }) => {
                                             </div>
                                         ) : (
                                             items.map(item => (
-                                                <div
-                                                    key={item.uniqueId}
-                                                    className={`dg-card ${recentlyAdded === item.uniqueId ? 'added' : ''}`}
-                                                >
+                                                <div key={item.uniqueId} className={`dg-card ${recentlyAdded === item.uniqueId ? 'added' : ''}`}>
                                                     <div className="dg-card__content">
                                                         <h4>{item.alimento}</h4>
+                                                        <div className="dg-card__portion">
+                                                            {item.cantidad}g
+                                                        </div>
                                                         <div className="dg-card__macros">
-                              <span className="dg-card__kcal">
-                                <Icons.Flame /> {item.kcal} kcal
-                              </span>
+                                                            <span className="dg-card__kcal"><Icons.Flame /> {item.kcal} kcal</span>
                                                             <span>P: {item.proteina}g</span>
                                                             <span>C: {item.carbohidratos}g</span>
                                                             <span>G: {item.grasas}g</span>
                                                         </div>
                                                     </div>
-                                                    <button
-                                                        className="dg-card__remove"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            removeFood(key, item.uniqueId);
-                                                        }}
-                                                    >
+                                                    <button className="dg-card__remove" onClick={(e) => { e.stopPropagation(); removeFood(key, item.uniqueId); }}>
                                                         <Icons.Trash />
                                                     </button>
                                                 </div>

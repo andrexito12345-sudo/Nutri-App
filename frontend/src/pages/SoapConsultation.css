@@ -431,3 +431,54 @@ select {
     color: #cbd5e1;
     font-weight: bold;
 }
+
+/* BOTÓN GENERAR PLAN - ESTILO PREMIUM */
+.diet-prescription-enhanced {
+    position: relative;
+}
+
+.subsection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-generate-diet {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.btn-generate-diet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
+}
+
+.btn-generate-diet:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .subsection-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-generate-diet {
+        width: 100%;
+        justify-content: center;
+    }
+}

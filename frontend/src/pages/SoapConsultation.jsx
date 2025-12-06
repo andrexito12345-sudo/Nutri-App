@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 // 1. IMPORTAMOS EL COMPONENTE DE HERRAMIENTAS
 import NutritionalTools from '../components/NutritionalTools';
 
+import DietGeneratorPro from '../components/DietGenerator';
+
 const SoapConsultation = () => {
     const { appointmentId, patientId, consultationId } = useParams();
     const isEditing = !!consultationId; // Variable mágica: true si editamos, false si creamos
@@ -13,6 +15,8 @@ const SoapConsultation = () => {
 
     // Estado para mostrar el modal de herramientas
     const [showTools, setShowTools] = useState(false);
+    // === NUEVO: Estado para abrir el DietGeneratorPro ===
+    const [showDietGenerator, setShowDietGenerator] = useState(false);
     // Estado para guardar los datos básicos del paciente (necesario para las fórmulas: edad, sexo)
     const [patient, setPatient] = useState(null);
 
@@ -568,13 +572,31 @@ const SoapConsultation = () => {
                         />
                     </div>
 
-                    {/* Prescripción Dietética */}
-                    <div className="subsection">
-                        <h4>🍽️ Prescripción Dietética</h4>
+                    {/* Prescripción Dietética + BOTÓN MÁGICO */}
+                    <div className="subsection diet-prescription-enhanced">
+                        <div className="subsection-header">
+                            <h4>Prescripción Dietética</h4>
+                            {formData.calories_prescribed > 0 && (
+                                <button
+                                    type="button"
+                                    className="btn-generate-diet"
+                                    onClick={() => setShowDietGenerator(true)}
+                                >
+                                    Generar Plan Nutricional Completo
+                                </button>
+                            )}
+                        </div>
+
                         <div className="metrics-grid">
                             <div className="input-group">
                                 <label>Kcal/día</label>
-                                <input type="number" name="calories_prescribed" value={formData.calories_prescribed} onChange={handleChange} />
+                                <input
+                                    type="number"
+                                    name="calories_prescribed"
+                                    value={formData.calories_prescribed}
+                                    onChange={handleChange}
+                                    placeholder="Ej: 2500"
+                                />
                             </div>
                             <div className="input-group">
                                 <label>Proteína (g)</label>
@@ -589,6 +611,7 @@ const SoapConsultation = () => {
                                 <input type="number" name="fats_prescribed" value={formData.fats_prescribed} onChange={handleChange} />
                             </div>
                         </div>
+
                         <div className="form-group">
                             <label>Tipo de Dieta / Descripción</label>
                             <input
@@ -665,6 +688,37 @@ const SoapConsultation = () => {
                             }}
                             onSave={handleApplyCalculations}
                             onCancel={() => setShowTools(false)}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL DEL DIET GENERATOR PRO - CON TODOS LOS DATOS REALES */}
+            {showDietGenerator && (
+                <div className="modal-overlay" style={{ zIndex: 3000 }}>
+                    <div className="modal-content" style={{
+                        padding: 0,
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        maxWidth: '1450px',
+                        width: '96%',
+                        height: '96vh',
+                        background: 'white'
+                    }}>
+                        <DietGeneratorPro
+                            initialData={{
+                                targetKcal: parseFloat(formData.calories_prescribed) || 2000,
+                                proteinGoal: parseFloat(formData.protein_prescribed) || 0,
+                                carbsGoal: parseFloat(formData.carbs_prescribed) || 0,
+                                fatGoal: parseFloat(formData.fats_prescribed) || 0,
+                                patientName: patient?.full_name || "Paciente",
+                                dietType: formData.diet_type || "Personalizado",
+                            }}
+                            onClose={() => setShowDietGenerator(false)}
+                            onSave={(plan) => {
+                                toast.success("Plan nutricional creado con éxito");
+                                setShowDietGenerator(false);
+                            }}
                         />
                     </div>
                 </div>
