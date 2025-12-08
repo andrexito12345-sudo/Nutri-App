@@ -1,11 +1,12 @@
 // frontend/src/api.js
 import axios from "axios";
 
+const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:4000"; // fallback local
 
 const api = axios.create({
-    // Si tienes VITE_API_URL en .env se usa eso, si no, usa el localhost por defecto
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000",
-    withCredentials: true, // para que mande cookies de sesión
+    baseURL: `${API_BASE_URL}/api`,
+    withCredentials: true, // si usas sesiones/cookies
 });
 
 export default api;
