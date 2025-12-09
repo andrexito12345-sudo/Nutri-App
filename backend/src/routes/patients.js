@@ -8,9 +8,88 @@ const router = express.Router();
 const db = require('../db');
 
 // ============================================
-// 1. OBTENER TODOS LOS PACIENTES
+// Middleware de autenticación
+// --------------------------------------------
+// requireAuth verifica que exista una sesión válida
+// (req.session.doctorId). Solo la doctora autenticada
+// puede acceder a estas rutas.
 // ============================================
-router.get('/', (req, res) => {
+const { requireAuth } = require('../middleware/auth');
+
+// ============================================
+// 6. BUSCAR PACIENTE POR TELÉFONO (útil para crear citas)
+// --------------------------------------------
+// IMPORTANTE: esta ruta va ANTES de '/:id' para evitar
+// que la palabra 'search' sea interpretada como un :id.
+// ============================================
+router.get('/search/phone/:phone', requireAuth, (req, res) => {
+    const { phone } = req.params;
+
+    db.get('SELECT * FROM patients WHERE phone = ?', [phone], (err, patient) => {
+        if (err) {
+            console.error('Error al buscar paciente:', err);
+            return res.status(500).json({ error: 'Error al buscar paciente' });
+        }
+
+        if (!patient) {
+            return res.status(404).json({
+                error: 'Paciente no encontrado',
+                found: false
+            });
+        }
+
+        res.json({
+            found: true,
+            patient
+        });
+    });
+});
+
+// ============================================
+// 7. OBTENER ESTADÍSTICAS DEL PACIENTE
+// --------------------------------------------
+// También se coloca ANTES de '/:id' para que la ruta
+// '/:id/stats' no sea capturada por la más genérica '/:id'.
+// ============================================
+router.get('/:id/stats', requireAuth, (req, res) => {
+    const { id } = req.params;
+
+    const query = `
+    SELECT
+      COUNT(*) as total_consultations,
+      MIN(weight) as min_weight,
+      MAX(weight) as max_weight,
+      AVG(weight) as avg_weight,
+      MIN(bmi) as min_bmi,
+      MAX(bmi) as max_bmi,
+      AVG(bmi) as avg_bmi,
+      (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date ASC LIMIT 1) as initial_weight,
+      (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date DESC LIMIT 1) as current_weight
+    FROM consultations
+    WHERE patient_id = ?
+  `;
+
+    db.get(query, [id, id, id], (err, stats) => {
+        if (err) {
+            console.error('Error al obtener estadísticas:', err);
+            return res.status(500).json({ error: 'Error al obtener estadísticas' });
+        }
+
+        // Calcular diferencia de peso
+        if (stats && stats.initial_weight && stats.current_weight) {
+            stats.weight_difference = stats.current_weight - stats.initial_weight;
+        }
+
+        res.json(stats);
+    });
+});
+
+// ============================================
+// 1. OBTENER TODOS LOS PACIENTES
+// --------------------------------------------
+// Privado para la doctora → requireAuth
+// ============================================
+router.get('/', requireAuth, (req, res) => {
     const { search, limit = 50, offset = 0 } = req.query;
 
     let query = `
@@ -34,7 +113,7 @@ router.get('/', (req, res) => {
     }
 
     query += ` GROUP BY p.id ORDER BY p.created_at DESC LIMIT ? OFFSET ?`;
-    params.push(parseInt(limit), parseInt(offset));
+    params.push(parseInt(limit, 10), parseInt(offset, 10));
 
     db.all(query, params, (err, rows) => {
         if (err) {
@@ -45,16 +124,18 @@ router.get('/', (req, res) => {
         res.json({
             patients: rows,
             total: rows.length,
-            limit: parseInt(limit),
-            offset: parseInt(offset)
+            limit: parseInt(limit, 10),
+            offset: parseInt(offset, 10)
         });
     });
 });
 
 // ============================================
 // 2. OBTENER UN PACIENTE POR ID (con detalles completos)
+// --------------------------------------------
+// Privado para la doctora → requireAuth
 // ============================================
-router.get('/:id', (req, res) => {
+router.get('/:id', requireAuth, (req, res) => {
     const { id } = req.params;
 
     const query = `
@@ -86,8 +167,10 @@ router.get('/:id', (req, res) => {
 
 // ============================================
 // 3. CREAR NUEVO PACIENTE
+// --------------------------------------------
+// Privado para la doctora → requireAuth
 // ============================================
-router.post('/', (req, res) => {
+router.post('/', requireAuth, (req, res) => {
     const {
         full_name,
         email,
@@ -171,8 +254,10 @@ router.post('/', (req, res) => {
 
 // ============================================
 // 4. ACTUALIZAR PACIENTE
+// --------------------------------------------
+// Privado para la doctora → requireAuth
 // ============================================
-router.put('/:id', (req, res) => {
+router.put('/:id', requireAuth, (req, res) => {
     const { id } = req.params;
     const {
         full_name,
@@ -280,8 +365,10 @@ router.put('/:id', (req, res) => {
 
 // ============================================
 // 5. ELIMINAR PACIENTE (soft delete - marcar como inactivo)
+// --------------------------------------------
+// Privado para la doctora → requireAuth
 // ============================================
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAuth, (req, res) => {
     const { id } = req.params;
 
     // Verificar que el paciente existe
@@ -308,68 +395,6 @@ router.delete('/:id', (req, res) => {
                 deletedId: id
             });
         });
-    });
-});
-
-// ============================================
-// 6. BUSCAR PACIENTE POR TELÉFONO (útil para crear citas)
-// ============================================
-router.get('/search/phone/:phone', (req, res) => {
-    const { phone } = req.params;
-
-    db.get('SELECT * FROM patients WHERE phone = ?', [phone], (err, patient) => {
-        if (err) {
-            console.error('Error al buscar paciente:', err);
-            return res.status(500).json({ error: 'Error al buscar paciente' });
-        }
-
-        if (!patient) {
-            return res.status(404).json({
-                error: 'Paciente no encontrado',
-                found: false
-            });
-        }
-
-        res.json({
-            found: true,
-            patient
-        });
-    });
-});
-
-// ============================================
-// 7. OBTENER ESTADÍSTICAS DEL PACIENTE
-// ============================================
-router.get('/:id/stats', (req, res) => {
-    const { id } = req.params;
-
-    const query = `
-    SELECT
-      COUNT(*) as total_consultations,
-      MIN(weight) as min_weight,
-      MAX(weight) as max_weight,
-      AVG(weight) as avg_weight,
-      MIN(bmi) as min_bmi,
-      MAX(bmi) as max_bmi,
-      AVG(bmi) as avg_bmi,
-      (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date ASC LIMIT 1) as initial_weight,
-      (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date DESC LIMIT 1) as current_weight
-    FROM consultations
-    WHERE patient_id = ?
-  `;
-
-    db.get(query, [id, id, id], (err, stats) => {
-        if (err) {
-            console.error('Error al obtener estadísticas:', err);
-            return res.status(500).json({ error: 'Error al obtener estadísticas' });
-        }
-
-        // Calcular diferencia de peso
-        if (stats.initial_weight && stats.current_weight) {
-            stats.weight_difference = stats.current_weight - stats.initial_weight;
-        }
-
-        res.json(stats);
     });
 });
 
