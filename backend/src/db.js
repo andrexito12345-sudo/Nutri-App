@@ -141,7 +141,7 @@ db.serialize(() => {
     ensureColumnExists('patients', 'last_consultation_date', 'TEXT');
 
     // Migraciones ligeras
-    ensureColumn('consultations', 'body_fat_percentage', 'REAL');
+    //ensureColumn('consultations', 'body_fat_percentage', 'REAL');
 
 
     // ==========================
