@@ -4,12 +4,13 @@
 // Conexión y esquema SQLite para NutriVida Pro.
 //
 // - Abre (o crea) nutriapp.db
-// - Crea tablas si no existen:
-//     doctors, appointments, visits, patients, page_visits,
-//     consultations
-// - Asegura que la tabla consultations tenga las columnas
-//     appointment_id, subjective, objective, assessment, plan
-//   (usadas por el módulo de consultas / SOAP).
+// - Crea tablas base si no existen:
+//     doctors, appointments, visits, patients, page_visits
+//     consultations (SOAP completo)
+//     nutritional_calculations, measurements, evolution_notes
+// - Hace una “migración” ligera: añade las columnas nuevas
+//   que falten en tablas existentes (especialmente consultations)
+//   usando ALTER TABLE.
 // ============================================================
 
 const sqlite3 = require('sqlite3').verbose();
@@ -29,54 +30,43 @@ const db = new sqlite3.Database(DB_FILE, (err) => {
     if (err) {
         console.error('❌ Error al conectar a SQLite:', err);
     } else {
-        console.log('Conectado a la base de datos SQLite:', DB_FILE);
+        console.log('✅ Conectado a la base de datos SQLite:', DB_FILE);
     }
 });
 
 // ------------------------------------------------------------
-// Helper: asegurar que exista una columna en una tabla
+// Helpers para migraciones suaves (añadir columnas si faltan)
 // ------------------------------------------------------------
-// columnDef: ej. "subjective TEXT" o "appointment_id INTEGER"
-// ------------------------------------------------------------
-function ensureColumn(tableName, columnDef) {
-    const columnName = columnDef.split(/\s+/)[0]; // primera palabra
-
-    db.all(`PRAGMA table_info(${tableName});`, (err, rows) => {
+function ensureColumnExists(table, column, definition) {
+    db.all(`PRAGMA table_info(${table})`, (err, columns) => {
         if (err) {
-            console.error(`❌ Error leyendo esquema de ${tableName}:`, err);
+            console.error(`❌ Error leyendo esquema de ${table}:`, err);
             return;
         }
 
-        const exists = rows.some((col) => col.name === columnName);
-        if (exists) {
-            // Ya existe, nada que hacer
-            // console.log(`↪ Columna ${tableName}.${columnName} ya existe, OK`);
-            return;
+        const exists = columns.some((col) => col.name === column);
+        if (!exists) {
+            const sql = `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`;
+            db.run(sql, (err2) => {
+                if (err2) {
+                    console.error(`❌ Error agregando columna ${table}.${column}:`, err2);
+                } else {
+                    console.log(`✅ Columna agregada: ${table}.${column}`);
+                }
+            });
+        } else {
+            // console.log(`➡️ Columna ya existe: ${table}.${column}`);
         }
-
-        const alterSQL = `ALTER TABLE ${tableName} ADD COLUMN ${columnDef}`;
-        db.run(alterSQL, (alterErr) => {
-            if (alterErr) {
-                console.error(
-                    `❌ Error añadiendo columna ${tableName}.${columnName}:`,
-                    alterErr
-                );
-            } else {
-                console.log(
-                    `✅ Columna añadida: ${tableName}.${columnName} (${columnDef})`
-                );
-            }
-        });
     });
 }
 
 // ------------------------------------------------------------
-// Creación de tablas básicas (si no existen)
+// Creación de tablas (si no existen) + migraciones
 // ------------------------------------------------------------
 db.serialize(() => {
-    // ----------------------------------------------------------
-    // Tabla de la doctora / usuarios (doctors)
-    // ----------------------------------------------------------
+    // ==========================
+    // Tabla doctors
+    // ==========================
     db.run(`
     CREATE TABLE IF NOT EXISTS doctors (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,12 +78,13 @@ db.serialize(() => {
     )
   `);
 
-    // ----------------------------------------------------------
-    // Tabla de citas (appointments)
-    // ----------------------------------------------------------
+    // ==========================
+    // Tabla appointments
+    // ==========================
     db.run(`
     CREATE TABLE IF NOT EXISTS appointments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_id INTEGER,
       patient_name TEXT NOT NULL,
       patient_email TEXT,
       patient_phone TEXT,
@@ -105,9 +96,9 @@ db.serialize(() => {
     )
   `);
 
-    // ----------------------------------------------------------
-    // Tabla de visitas simples (visits)
-    // ----------------------------------------------------------
+    // ==========================
+    // Tabla visits (estadísticas)
+    // ==========================
     db.run(`
     CREATE TABLE IF NOT EXISTS visits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -117,9 +108,9 @@ db.serialize(() => {
     )
   `);
 
-    // ----------------------------------------------------------
-    // Tabla de pacientes (patients)
-    // ----------------------------------------------------------
+    // ==========================
+    // Tabla patients
+    // ==========================
     db.run(`
     CREATE TABLE IF NOT EXISTS patients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -135,64 +126,282 @@ db.serialize(() => {
       blood_type TEXT,
       allergies TEXT,
       notes TEXT,
+      -- Campos para último estado antropométrico
+      current_weight REAL,
+      current_bmi REAL,
+      last_consultation_date TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )
   `);
 
-    // ----------------------------------------------------------
-    // Tabla de visitas de página (page_visits) para el contador
-    // del dashboard (visitas hoy / totales).
-    // ----------------------------------------------------------
-    db.run(
-        `
-      CREATE TABLE IF NOT EXISTS page_visits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        path TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `,
-        (err) => {
-            if (err) {
-                console.error('❌ Error creando tabla page_visits:', err);
-            } else {
-                console.log('✅ Tabla page_visits verificada/creada correctamente');
-            }
-        }
-    );
+    // Migración defensiva por si patients ya existía sin estos campos
+    ensureColumnExists('patients', 'current_weight', 'REAL');
+    ensureColumnExists('patients', 'current_bmi', 'REAL');
+    ensureColumnExists('patients', 'last_consultation_date', 'TEXT');
 
-    // ----------------------------------------------------------
-    // Tabla de consultas nutricionales (consultations)
-    // ----------------------------------------------------------
-    // Definimos las columnas "mínimas" aquí; luego abajo
-    // añadimos, si faltan, appointment_id y los campos SOAP.
-    // ----------------------------------------------------------
+    // ==========================
+    // Tabla page_visits (tráfico)
+    // ==========================
+    db.run(`
+    CREATE TABLE IF NOT EXISTS page_visits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      path TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `, (err) => {
+        if (err) {
+            console.error('❌ Error creando tabla page_visits:', err);
+        } else {
+            console.log('✅ Tabla page_visits verificada/creada');
+        }
+    });
+
+    // ==========================
+    // Tabla consultations (SOAP completo)
+    // ==========================
     db.run(`
     CREATE TABLE IF NOT EXISTS consultations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       patient_id INTEGER NOT NULL,
+      appointment_id INTEGER,
       consultation_date TEXT NOT NULL,
+
+      -- Subjetivo
+      subjective TEXT,
+      symptoms TEXT,
+      appetite TEXT,
+      sleep_quality TEXT,
+      stress_level TEXT,
+      physical_activity TEXT,
+      water_intake TEXT,
+      bowel_habits TEXT,
+
+      -- Objetivo antropometría
       weight REAL,
+      height REAL,
       bmi REAL,
+      waist REAL,
+      hip REAL,
+      waist_hip_ratio REAL,
+      body_fat REAL,
+      muscle_mass REAL,
+      ideal_weight REAL,
+
+      -- Signos vitales
+      blood_pressure TEXT,
+      heart_rate INTEGER,
+      temperature REAL,
+
+      -- Bioquímicos
+      glucose REAL,
+      hba1c REAL,
+      cholesterol REAL,
+      triglycerides REAL,
+      hdl REAL,
+      ldl REAL,
+      hemoglobin REAL,
+      albumin REAL,
+      objective_notes TEXT,
+
+      -- Análisis (PES)
+      pes_problem TEXT,
+      pes_etiology TEXT,
+      pes_signs TEXT,
+      diagnosis TEXT,
+      assessment_notes TEXT,
+      nutritional_status TEXT,
+      risk_level TEXT,
+      priority TEXT,
+
+      -- Plan
+      treatment_plan TEXT,
+      treatment_goals TEXT,
+      calories_prescribed REAL,
+      protein_prescribed REAL,
+      carbs_prescribed REAL,
+      fats_prescribed REAL,
+      diet_type TEXT,
+      supplements_recommended TEXT,
+      education_provided TEXT,
+      referrals TEXT,
+      next_appointment TEXT,
+
+      -- Metadatos
       notes TEXT,
+      created_by TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now')),
+
       FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
     )
   `);
 
-    // ========================================================
-    // MIGRACIONES: añadir columnas que puedan faltar
-    // en la tabla consultations (sin borrar datos).
-    // ========================================================
-    // 1) Relación opcional con una cita
-    ensureColumn('consultations', 'appointment_id INTEGER');
+    // ------- Migración de columnas faltantes en consultations ------
+    const consultationColumns = [
+        ['appointment_id', 'INTEGER'],
+        ['consultation_date', 'TEXT'],
 
-    // 2) Campos SOAP completos
-    ensureColumn('consultations', 'subjective TEXT'); // S
-    ensureColumn('consultations', 'objective TEXT');  // O
-    ensureColumn('consultations', 'assessment TEXT'); // A
-    ensureColumn('consultations', 'plan TEXT');       // P
+        // Subjetivo
+        ['subjective', 'TEXT'],
+        ['symptoms', 'TEXT'],
+        ['appetite', 'TEXT'],
+        ['sleep_quality', 'TEXT'],
+        ['stress_level', 'TEXT'],
+        ['physical_activity', 'TEXT'],
+        ['water_intake', 'TEXT'],
+        ['bowel_habits', 'TEXT'],
+
+        // Antropometría
+        ['weight', 'REAL'],
+        ['height', 'REAL'],
+        ['bmi', 'REAL'],
+        ['waist', 'REAL'],
+        ['hip', 'REAL'],
+        ['waist_hip_ratio', 'REAL'],
+        ['body_fat', 'REAL'],
+        ['muscle_mass', 'REAL'],
+        ['ideal_weight', 'REAL'],
+
+        // Signos vitales
+        ['blood_pressure', 'TEXT'],
+        ['heart_rate', 'INTEGER'],
+        ['temperature', 'REAL'],
+
+        // Bioquímicos
+        ['glucose', 'REAL'],
+        ['hba1c', 'REAL'],
+        ['cholesterol', 'REAL'],
+        ['triglycerides', 'REAL'],
+        ['hdl', 'REAL'],
+        ['ldl', 'REAL'],
+        ['hemoglobin', 'REAL'],
+        ['albumin', 'REAL'],
+        ['objective_notes', 'TEXT'],
+
+        // Análisis
+        ['pes_problem', 'TEXT'],
+        ['pes_etiology', 'TEXT'],
+        ['pes_signs', 'TEXT'],
+        ['diagnosis', 'TEXT'],
+        ['assessment_notes', 'TEXT'],
+        ['nutritional_status', 'TEXT'],
+        ['risk_level', 'TEXT'],
+        ['priority', 'TEXT'],
+
+        // Plan
+        ['treatment_plan', 'TEXT'],
+        ['treatment_goals', 'TEXT'],
+        ['calories_prescribed', 'REAL'],
+        ['protein_prescribed', 'REAL'],
+        ['carbs_prescribed', 'REAL'],
+        ['fats_prescribed', 'REAL'],
+        ['diet_type', 'TEXT'],
+        ['supplements_recommended', 'TEXT'],
+        ['education_provided', 'TEXT'],
+        ['referrals', 'TEXT'],
+        ['next_appointment', 'TEXT'],
+
+        // Metadatos (por si algún entorno viejo no los tiene)
+        ['notes', 'TEXT'],
+        ['created_by', 'TEXT'],
+        ['created_at', "TEXT DEFAULT (datetime('now'))"],
+        ['updated_at', "TEXT DEFAULT (datetime('now'))"]
+    ];
+
+    consultationColumns.forEach(([name, def]) => {
+        ensureColumnExists('consultations', name, def);
+    });
+
+    // ==========================
+    // Tabla nutritional_calculations
+    // ==========================
+    db.run(`
+    CREATE TABLE IF NOT EXISTS nutritional_calculations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_id INTEGER NOT NULL,
+      consultation_id INTEGER,
+      calculation_date TEXT NOT NULL,
+
+      weight REAL,
+      height REAL,
+      age INTEGER,
+      gender TEXT,
+
+      formula_used TEXT,
+      activity_level TEXT,
+      stress_factor TEXT,
+      goal TEXT,
+      condition TEXT,
+
+      tmb_value REAL,
+      get_value REAL,
+      calories_prescribed REAL,
+
+      protein_grams REAL,
+      carbs_grams REAL,
+      fats_grams REAL,
+
+      distribution_strategy TEXT,
+      meal_distribution TEXT, -- JSON string
+
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+
+      FOREIGN KEY (patient_id) REFERENCES patients(id),
+      FOREIGN KEY (consultation_id) REFERENCES consultations(id)
+    )
+  `);
+
+    // ==========================
+    // Tabla measurements (mediciones corporales)
+    // ==========================
+    db.run(`
+    CREATE TABLE IF NOT EXISTS measurements (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_id INTEGER NOT NULL,
+      consultation_id INTEGER,
+      measurement_date TEXT NOT NULL,
+
+      chest REAL,
+      arm_left REAL,
+      arm_right REAL,
+      forearm_left REAL,
+      forearm_right REAL,
+      thigh_left REAL,
+      thigh_right REAL,
+      calf_left REAL,
+      calf_right REAL,
+
+      notes TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+
+      FOREIGN KEY (patient_id) REFERENCES patients(id),
+      FOREIGN KEY (consultation_id) REFERENCES consultations(id)
+    )
+  `);
+
+    // ==========================
+    // Tabla evolution_notes (notas de evolución)
+    // ==========================
+    db.run(`
+    CREATE TABLE IF NOT EXISTS evolution_notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_id INTEGER NOT NULL,
+      consultation_id INTEGER NOT NULL,
+      note_date TEXT NOT NULL,
+      note_type TEXT,
+      note TEXT NOT NULL,
+      is_important INTEGER DEFAULT 0,
+      created_by TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+
+      FOREIGN KEY (patient_id) REFERENCES patients(id),
+      FOREIGN KEY (consultation_id) REFERENCES consultations(id)
+    )
+  `);
 });
 
 // ------------------------------------------------------------
