@@ -26,7 +26,7 @@ function LoginPage() {
         setError('');
 
         try {
-            const res = await api.post('/api/auth/login', form);
+            const res = await api.post('/auth/login', form);
             const data = res.data || {};
             const token = data.token;
 

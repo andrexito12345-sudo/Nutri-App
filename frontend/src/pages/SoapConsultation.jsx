@@ -86,7 +86,7 @@ const SoapConsultation = () => {
         const fetchPatientData = async () => {
             if (patientId) {
                 try {
-                    const response = await api.get(`/api/patients/${patientId}`);
+                    const response = await api.get(`/patients/${patientId}`);
                     setPatient(response.data);
                 } catch (error) {
                     console.error("Error al cargar datos del paciente:", error);
@@ -125,7 +125,7 @@ const SoapConsultation = () => {
         if (isEditing) {
             const fetchConsultation = async () => {
                 try {
-                    const response = await api.get(`/api/consultations/${consultationId}`);
+                    const response = await api.get(`/consultations/${consultationId}`);
                     const data = response.data;
 
                     // Ajuste para fechas (los inputs date necesitan formato YYYY-MM-DD)
@@ -172,7 +172,7 @@ const SoapConsultation = () => {
             // Lógica inteligente: Editar o Crear
             if (isEditing) {
                 // MODO EDICIÓN (PUT)
-                await api.put(`/api/consultations/${consultationId}`, formData);
+                await api.put(`/consultations/${consultationId}`, formData);
                 alert('¡Consulta actualizada correctamente!');
             } else {
                 // MODO CREACIÓN (POST)
@@ -182,7 +182,7 @@ const SoapConsultation = () => {
                     consultation_date: new Date().toISOString(),
                     ...formData
                 };
-                await api.post('/api/consultations', payload);
+                await api.post('/consultations', payload);
                 alert('¡Consulta creada correctamente!');
             }
 
