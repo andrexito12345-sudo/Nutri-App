@@ -1,19 +1,15 @@
 // ============================================================
 // backend/src/db.js
 // ------------------------------------------------------------
-// Módulo de conexión a SQLite para NutriVida Pro.
+// Conexión y esquema SQLite para NutriVida Pro.
 //
-// - Abre (o crea) el archivo nutriapp.db.
-// - Se asegura de que existan las tablas básicas:
-//
-//   - doctors
-//   - appointments
-//   - visits
-//   - patients        ← NUEVA tabla que faltaba en Render
-//   - consultations   (por si todavía no está creada)
-//
-// Con CREATE TABLE IF NOT EXISTS no se borran datos existentes.
-// Simplemente crea la tabla si aún no existe.
+// - Abre (o crea) nutriapp.db
+// - Crea tablas si no existen:
+//     doctors, appointments, visits, patients, page_visits,
+//     consultations
+// - Asegura que la tabla consultations tenga las columnas
+//     appointment_id, subjective, objective, assessment, plan
+//   (usadas por el módulo de consultas / SOAP).
 // ============================================================
 
 const sqlite3 = require('sqlite3').verbose();
@@ -21,10 +17,6 @@ const path = require('path');
 
 // ------------------------------------------------------------
 // Ruta del archivo de base de datos
-// ------------------------------------------------------------
-// Si quieres personalizarla en el futuro puedes usar una
-// variable de entorno tipo DB_FILE, pero por ahora dejamos
-// el comportamiento que ya tienes.
 // ------------------------------------------------------------
 const DB_FILE =
     process.env.DB_FILE ||
@@ -42,10 +34,44 @@ const db = new sqlite3.Database(DB_FILE, (err) => {
 });
 
 // ------------------------------------------------------------
-// Creación de tablas (si no existen)
+// Helper: asegurar que exista una columna en una tabla
 // ------------------------------------------------------------
-// IMPORTANTE: CREATE TABLE IF NOT EXISTS no modifica tablas
-// que ya existen, solo las crea si faltan.
+// columnDef: ej. "subjective TEXT" o "appointment_id INTEGER"
+// ------------------------------------------------------------
+function ensureColumn(tableName, columnDef) {
+    const columnName = columnDef.split(/\s+/)[0]; // primera palabra
+
+    db.all(`PRAGMA table_info(${tableName});`, (err, rows) => {
+        if (err) {
+            console.error(`❌ Error leyendo esquema de ${tableName}:`, err);
+            return;
+        }
+
+        const exists = rows.some((col) => col.name === columnName);
+        if (exists) {
+            // Ya existe, nada que hacer
+            // console.log(`↪ Columna ${tableName}.${columnName} ya existe, OK`);
+            return;
+        }
+
+        const alterSQL = `ALTER TABLE ${tableName} ADD COLUMN ${columnDef}`;
+        db.run(alterSQL, (alterErr) => {
+            if (alterErr) {
+                console.error(
+                    `❌ Error añadiendo columna ${tableName}.${columnName}:`,
+                    alterErr
+                );
+            } else {
+                console.log(
+                    `✅ Columna añadida: ${tableName}.${columnName} (${columnDef})`
+                );
+            }
+        });
+    });
+}
+
+// ------------------------------------------------------------
+// Creación de tablas básicas (si no existen)
 // ------------------------------------------------------------
 db.serialize(() => {
     // ----------------------------------------------------------
@@ -65,10 +91,6 @@ db.serialize(() => {
     // ----------------------------------------------------------
     // Tabla de citas (appointments)
     // ----------------------------------------------------------
-    // OJO: aquí no tocamos ninguna columna "rara", solo las que
-    // usan tus rutas actuales. Si la tabla ya existe con más
-    // columnas, no pasa nada.
-    // ----------------------------------------------------------
     db.run(`
     CREATE TABLE IF NOT EXISTS appointments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,7 +106,7 @@ db.serialize(() => {
   `);
 
     // ----------------------------------------------------------
-    // Tabla de visitas (visits) para estadísticas de tráfico
+    // Tabla de visitas simples (visits)
     // ----------------------------------------------------------
     db.run(`
     CREATE TABLE IF NOT EXISTS visits (
@@ -97,14 +119,6 @@ db.serialize(() => {
 
     // ----------------------------------------------------------
     // Tabla de pacientes (patients)
-    // ----------------------------------------------------------
-    // Esta es la tabla que NO existía en Render y que está
-    // rompiendo:
-    //   - el LEFT JOIN de /api/appointments
-    //   - las consultas de /api/patients
-    //
-    // La definimos con todas las columnas que usa tu
-    // backend/src/routes/patients.js
     // ----------------------------------------------------------
     db.run(`
     CREATE TABLE IF NOT EXISTS patients (
@@ -126,46 +140,37 @@ db.serialize(() => {
     )
   `);
 
-
-    // ========================================================
-    // NUEVA TABLA: page_visits
-    // --------------------------------------------------------
-    // - Guarda cada visita a la página (path y fecha/hora).
-    // - El backend la usa en routes/visits.js para:
-    //   - INSERT INTO page_visits ...
-    //   - SELECT COUNT(*) y filtrar por created_at.
-    // ========================================================
-    db.run(`
-        CREATE TABLE IF NOT EXISTS page_visits (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            path TEXT NOT NULL,                -- ruta visitada (/doctora/dashboard, etc.)
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- fecha/hora de la visita
-        )
-    `, (err) => {
-        if (err) {
-            console.error('❌ Error creando tabla page_visits:', err);
-        } else {
-            console.log('✅ Tabla page_visits verificada/creada correctamente');
+    // ----------------------------------------------------------
+    // Tabla de visitas de página (page_visits) para el contador
+    // del dashboard (visitas hoy / totales).
+    // ----------------------------------------------------------
+    db.run(
+        `
+      CREATE TABLE IF NOT EXISTS page_visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `,
+        (err) => {
+            if (err) {
+                console.error('❌ Error creando tabla page_visits:', err);
+            } else {
+                console.log('✅ Tabla page_visits verificada/creada correctamente');
+            }
         }
-    });
+    );
 
     // ----------------------------------------------------------
     // Tabla de consultas nutricionales (consultations)
     // ----------------------------------------------------------
-    // La mayoría de tus consultas estadísticas usan:
-    //   - patient_id
-    //   - consultation_date
-    //   - weight
-    //   - bmi
-    //
-    // Si la tabla ya existía con más columnas, CREATE TABLE
-    // IF NOT EXISTS no la toca. Si no existía, la crea vacía.
+    // Definimos las columnas "mínimas" aquí; luego abajo
+    // añadimos, si faltan, appointment_id y los campos SOAP.
     // ----------------------------------------------------------
     db.run(`
     CREATE TABLE IF NOT EXISTS consultations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       patient_id INTEGER NOT NULL,
-      appointment_id INTEGER,                 -- vínculo opcional con la cita (puede ser NULL)
       consultation_date TEXT NOT NULL,
       weight REAL,
       bmi REAL,
@@ -176,36 +181,21 @@ db.serialize(() => {
     )
   `);
 
-    // ----------------------------------------------------------
-    // Migración ligera: asegurar columna appointment_id
-    // en tablas ya existentes de Render
-    // ----------------------------------------------------------
-    // - En bases nuevas: la tabla consultations ya se crea
-    //   con appointment_id y este ALTER dará error de
-    //   "duplicate column" → se ignora.
-    // - En bases antiguas (sin appointment_id): el ALTER
-    //   añadirá la columna sin perder datos.
-    // ----------------------------------------------------------
-    db.run(
-        `ALTER TABLE consultations ADD COLUMN appointment_id INTEGER`,
-        (err) => {
-            if (err) {
-                // Si la columna ya existe, ignoramos el error.
-                if (err.message && err.message.includes('duplicate column')) {
-                    console.log('ℹ️ Columna appointment_id ya existía en consultations, OK.');
-                } else if (err.message && err.message.includes('no such table')) {
-                    console.error('❌ Tabla consultations no existe al intentar añadir appointment_id:', err);
-                } else {
-                    console.error('❌ Error añadiendo columna appointment_id en consultations:', err);
-                }
-            } else {
-                console.log('✅ Columna appointment_id creada en consultations.');
-            }
-        }
-    );
+    // ========================================================
+    // MIGRACIONES: añadir columnas que puedan faltar
+    // en la tabla consultations (sin borrar datos).
+    // ========================================================
+    // 1) Relación opcional con una cita
+    ensureColumn('consultations', 'appointment_id INTEGER');
+
+    // 2) Campos SOAP completos
+    ensureColumn('consultations', 'subjective TEXT'); // S
+    ensureColumn('consultations', 'objective TEXT');  // O
+    ensureColumn('consultations', 'assessment TEXT'); // A
+    ensureColumn('consultations', 'plan TEXT');       // P
 });
 
 // ------------------------------------------------------------
-// Exportamos la instancia de la base de datos
+// Exportar instancia de la base de datos
 // ------------------------------------------------------------
 module.exports = db;
