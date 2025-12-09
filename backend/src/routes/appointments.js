@@ -1,11 +1,18 @@
+// backend/src/routes/appointments.js
+// ============================================
+// Rutas para gestión de citas
+// ============================================
+
 const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/appointments/stats  (solo doctora)
-// GET /api/appointments/stats  (solo doctora)
+// ============================================
+// 1. STATS DE CITAS (SOLO DOCTORA)
+//    GET /api/appointments/stats
+// ============================================
 router.get('/stats', requireAuth, (req, res) => {
     const todaySql = `
         SELECT
@@ -37,13 +44,18 @@ router.get('/stats', requireAuth, (req, res) => {
     db.get(todaySql, [], (err, todayRow) => {
         if (err) {
             console.error('Error obteniendo stats de hoy:', err);
-            return res.status(500).json({ ok: false, message: 'Error al obtener estadísticas de hoy' });
+            return res
+                .status(500)
+                .json({ ok: false, message: 'Error al obtener estadísticas de hoy' });
         }
 
         db.get(last30Sql, [], (err2, last30Row) => {
             if (err2) {
                 console.error('Error obteniendo stats de últimos 30 días:', err2);
-                return res.status(500).json({ ok: false, message: 'Error al obtener estadísticas de los últimos 30 días' });
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error al obtener estadísticas de los últimos 30 días',
+                });
             }
 
             return res.json({
@@ -55,54 +67,68 @@ router.get('/stats', requireAuth, (req, res) => {
     });
 });
 
-// POST /api/appointments  (público: desde la landing)
+// ============================================
+// 2. CREAR CITA (PÚBLICO - DESDE LANDING)
+//    POST /api/appointments
+// ============================================
 router.post('/', (req, res) => {
     const {
         patient_name,
         patient_email,
         patient_phone,
         reason,
-        appointment_datetime
+        appointment_datetime,
     } = req.body;
 
     if (!patient_name || !appointment_datetime) {
         return res.status(400).json({
             ok: false,
-            message: 'El nombre del paciente y la fecha/hora de la cita son obligatorios'
+            message:
+                'El nombre del paciente y la fecha/hora de la cita son obligatorios',
         });
     }
 
     const sql = `
-    INSERT INTO appointments
-      (patient_name, patient_email, patient_phone, reason, appointment_datetime, status)
-    VALUES (?, ?, ?, ?, ?, 'pendiente')
-  `;
+        INSERT INTO appointments
+          (patient_name, patient_email, patient_phone, reason, appointment_datetime, status)
+        VALUES (?, ?, ?, ?, ?, 'pendiente')
+    `;
 
     db.run(
         sql,
-        [patient_name, patient_email || null, patient_phone || null, reason || null, appointment_datetime],
+        [
+            patient_name,
+            patient_email || null,
+            patient_phone || null,
+            reason || null,
+            appointment_datetime,
+        ],
         function (err) {
             if (err) {
                 console.error('Error al crear cita:', err);
-                return res.status(500).json({ ok: false, message: 'Error al crear la cita' });
+                return res
+                    .status(500)
+                    .json({ ok: false, message: 'Error al crear la cita' });
             }
 
             return res.status(201).json({
                 ok: true,
                 message: 'Cita creada correctamente',
-                appointmentId: this.lastID
+                appointmentId: this.lastID,
             });
         }
     );
 });
 
-// GET /api/appointments  (privado: doctora) con filtros
-// GET /api/appointments (privado: doctora) con filtros
+// ============================================
+// 3. OBTENER CITA(S) (PRIVADO - DOCTORA)
+//    GET /api/appointments
+//    Filtros: status, q, date_from, date_to
+// ============================================
 router.get('/', requireAuth, (req, res) => {
     const { status, q, date_from, date_to } = req.query;
 
-    // MODIFICACIÓN CLAVE: Hacemos LEFT JOIN para encontrar el ID del paciente
-    // basándonos en el email o el teléfono.
+    // Hacemos LEFT JOIN con patients para intentar vincular por email/teléfono
     let sql = `
         SELECT a.*, p.id as linked_patient_id 
         FROM appointments a
@@ -117,7 +143,7 @@ router.get('/', requireAuth, (req, res) => {
     const params = [];
 
     if (status) {
-        sql += ' AND a.status = ?'; // Agregamos 'a.' para especificar la tabla
+        sql += ' AND a.status = ?';
         params.push(status);
     }
 
@@ -137,19 +163,26 @@ router.get('/', requireAuth, (req, res) => {
         params.push(date_to);
     }
 
-    // DESCendente = Nueva a Vieja (Lo más reciente primero)
-    sql += ' ORDER BY a.created_at DESC';
+    // [CAMBIO] Antes ordenábamos por a.created_at (columna que puede no existir
+    // en tu BD de Render). Para evitar el error 500, ordenamos por appointment_datetime,
+    // que sí existe en la tabla.
+    sql += ' ORDER BY a.appointment_datetime DESC';
 
     db.all(sql, params, (err, rows) => {
         if (err) {
             console.error('Error al obtener citas:', err);
-            return res.status(500).json({ ok: false, message: 'Error al obtener citas' });
+            return res
+                .status(500)
+                .json({ ok: false, message: 'Error al obtener citas' });
         }
         return res.json({ ok: true, appointments: rows });
     });
 });
 
-// PATCH /api/appointments/:id/status  (privado: doctora)
+// ============================================
+// 4. ACTUALIZAR ESTADO DE CITA (PRIVADO - DOCTORA)
+//    PATCH /api/appointments/:id/status
+// ============================================
 router.patch('/:id/status', requireAuth, (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -159,7 +192,7 @@ router.patch('/:id/status', requireAuth, (req, res) => {
     if (!allowedStatuses.includes(status)) {
         return res.status(400).json({
             ok: false,
-            message: 'Estado inválido'
+            message: 'Estado inválido',
         });
     }
 
@@ -169,11 +202,15 @@ router.patch('/:id/status', requireAuth, (req, res) => {
         function (err) {
             if (err) {
                 console.error('Error al actualizar cita:', err);
-                return res.status(500).json({ ok: false, message: 'Error al actualizar cita' });
+                return res
+                    .status(500)
+                    .json({ ok: false, message: 'Error al actualizar cita' });
             }
 
             if (this.changes === 0) {
-                return res.status(404).json({ ok: false, message: 'Cita no encontrada' });
+                return res
+                    .status(404)
+                    .json({ ok: false, message: 'Cita no encontrada' });
             }
 
             return res.json({ ok: true, message: 'Estado actualizado' });
