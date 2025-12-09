@@ -165,6 +165,7 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS consultations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       patient_id INTEGER NOT NULL,
+      appointment_id INTEGER,                 -- vínculo opcional con la cita (puede ser NULL)
       consultation_date TEXT NOT NULL,
       weight REAL,
       bmi REAL,
@@ -174,6 +175,34 @@ db.serialize(() => {
       FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
     )
   `);
+
+    // ----------------------------------------------------------
+    // Migración ligera: asegurar columna appointment_id
+    // en tablas ya existentes de Render
+    // ----------------------------------------------------------
+    // - En bases nuevas: la tabla consultations ya se crea
+    //   con appointment_id y este ALTER dará error de
+    //   "duplicate column" → se ignora.
+    // - En bases antiguas (sin appointment_id): el ALTER
+    //   añadirá la columna sin perder datos.
+    // ----------------------------------------------------------
+    db.run(
+        `ALTER TABLE consultations ADD COLUMN appointment_id INTEGER`,
+        (err) => {
+            if (err) {
+                // Si la columna ya existe, ignoramos el error.
+                if (err.message && err.message.includes('duplicate column')) {
+                    console.log('ℹ️ Columna appointment_id ya existía en consultations, OK.');
+                } else if (err.message && err.message.includes('no such table')) {
+                    console.error('❌ Tabla consultations no existe al intentar añadir appointment_id:', err);
+                } else {
+                    console.error('❌ Error añadiendo columna appointment_id en consultations:', err);
+                }
+            } else {
+                console.log('✅ Columna appointment_id creada en consultations.');
+            }
+        }
+    );
 });
 
 // ------------------------------------------------------------
