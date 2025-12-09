@@ -1,14 +1,17 @@
 // ============================================================
 // backend/src/routes/visits.js
 // ------------------------------------------------------------
-// Rutas para registrar visitas a la página y obtener estadísticas
-// de tráfico (total de visitas y visitas del día).
+// Rutas para registrar visitas a la landing y obtener
+// estadísticas simples de tráfico.
 //
-// Esta versión:
-//  - Garantiza que siempre se inserte un "path" (para evitar
-//    NOT NULL constraint failed: page_visits.path).
-//  - Evita registrar visitas duplicadas del mismo IP + path
-//    dentro de una ventana de 5 minutos.
+// Diseño actual:
+//   Tabla page_visits:
+//     - id          INTEGER PRIMARY KEY AUTOINCREMENT
+//     - path        TEXT NOT NULL
+//     - created_at  TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+//
+// NOTA: ya no se usa ip_address, así que todo el código
+// relacionado con IP fue eliminado para evitar errores.
 // ============================================================
 
 const express = require('express');
@@ -19,102 +22,67 @@ const db = require('../db');
 // 1. Registrar una visita
 // ------------------------------------------------------------
 // POST /api/visits
-// Body opcional:
-//   { path: "/doctora/dashboard" }
+// Body JSON esperado (opcional):
+//   { "path": "/ruta/opcional" }
 //
-// Si el frontend no envía path, se intenta obtener desde:
-//   - cabecera X-Page-Path
-//   - cabecera Referer
-//   - y si nada existe, se usa "/" como valor por defecto.
+// Si no llega path o viene vacío, se guarda '/'.
 // ============================================================
 
 router.post('/', (req, res) => {
-    // -------------------------------
-    // Obtener IP del cliente
-    // -------------------------------
-    const ipHeader = req.headers['x-forwarded-for'];
-    const ip = ipHeader
-        ? ipHeader.split(',')[0].trim()
-        : (req.socket?.remoteAddress || 'unknown');
+    try {
+        // Tomamos el path que venga del frontend (si viene)
+        const rawPath = req.body?.path;
 
-    // -------------------------------
-    // Obtener User-Agent (navegador)
-    // -------------------------------
-    const userAgent = req.headers['user-agent'] || 'unknown';
+        // Normalizamos el path para evitar valores raros o vacíos
+        const normalizedPath =
+            typeof rawPath === 'string' && rawPath.trim() !== ''
+                ? rawPath.trim()
+                : '/';
 
-    // -------------------------------
-    // Obtener el path de la página
-    // -------------------------------
-    const bodyPath   = req.body?.path;               // lo ideal: lo envía el frontend
-    const headerPath = req.headers['x-page-path'];   // alternativa por cabecera
-    const referer    = req.headers['referer'];       // como último intento, la URL de referencia
-
-    // Si nada viene, usamos "/" para no violar el NOT NULL
-    const finalPath =
-        bodyPath ||
-        headerPath ||
-        (referer ? new URL(referer).pathname : null) ||
-        '/';
-
-    // -------------------------------
-    // Evitar SPAM: no registrar la misma
-    // IP + path más de una vez cada 5 min
-    // -------------------------------
-    const checkSql = `
-        SELECT id
-        FROM page_visits
-          WHERE path = ?
-          AND created_at >= datetime('now', '-5 minutes', 'localtime')
-        LIMIT 1
-    `;
-
-    db.get(checkSql, [normalizedPath], (err, row) => {
-        if (err) {
-            console.error('❌ Error verificando visita previa:', err);
-            // No rompemos nada al frontend, solo logueamos
-            return res.status(200).json({ ok: true, skipped: true });
-        }
-
-        if (row) {
-            console.log('ℹ️ Visita duplicada bloqueada para path:', normalizedPath);
-            return res.status(304).json({ ok: true, duplicated: true });
-        }
-
-        // -------------------------------
-        // Insertar la visita
-        // -------------------------------
-        const insertSql = `
-            INSERT INTO page_visits (path, created_at)
-            VALUES (?, datetime('now', 'localtime'))
+        // Insertamos la visita en la tabla page_visits
+        const sql = `
+            INSERT INTO page_visits (path)
+            VALUES (?)
         `;
 
-        db.run(insertSql, [normalizedPath], function (err) {
+        db.run(sql, [normalizedPath], function (err) {
             if (err) {
                 console.error('❌ Error insertando visita:', err);
-                return res.status(500).json({ ok: false, message: 'Error al registrar visita' });
+                return res
+                    .status(500)
+                    .json({ ok: false, message: 'Error al registrar visita' });
             }
 
-            console.log('✅ Visita registrada. ID =', this.lastID, 'Path =', normalizedPath);
-            return res.status(201).json({ ok: true, id: this.lastID });
+            // Respuesta simple para el frontend
+            return res.json({
+                ok: true,
+                message: 'Visita registrada',
+                visitId: this.lastID,
+            });
         });
-    });
+    } catch (error) {
+        console.error('❌ Error inesperado en POST /api/visits:', error);
+        return res
+            .status(500)
+            .json({ ok: false, message: 'Error interno al registrar visita' });
+    }
 });
 
 // ============================================================
-// 2. Estadísticas de visitas
+// 2. Obtener estadísticas de visitas
 // ------------------------------------------------------------
 // GET /api/visits/stats
 //
 // Devuelve:
 //   {
 //     ok: true,
-//     total: 123,
-//     today: 5
+//     total: 123,   // total de registros en page_visits
+//     today: 5      // registros creados hoy (según localtime)
 //   }
 // ============================================================
 
 router.get('/stats', (req, res) => {
-    const statsSql = `
+    const sql = `
         SELECT
           COUNT(*) AS total,
           SUM(
@@ -126,24 +94,19 @@ router.get('/stats', (req, res) => {
         FROM page_visits;
     `;
 
-    db.get(statsSql, [], (err, row) => {
+    db.get(sql, [], (err, row) => {
         if (err) {
-            console.error(
-                '❌ Error obteniendo estadísticas de visitas:',
-                err
-            );
-            return res.status(500).json({
-                ok: false,
-                message: 'Error al obtener estadísticas de visitas',
-            });
+            console.error('❌ Error obteniendo estadísticas de visitas:', err);
+            return res
+                .status(500)
+                .json({ ok: false, message: 'Error al obtener estadísticas de visitas' });
         }
 
+        // Si row es null por cualquier motivo, devolvemos 0s
         const total = row?.total || 0;
         const today = row?.today || 0;
 
-        console.log(
-            `📊 Estadísticas solicitadas: Total=${total}, Hoy=${today}`
-        );
+        console.log(`📊 Estadísticas solicitadas: Total=${total}, Hoy=${today}`);
 
         return res.json({
             ok: true,
@@ -153,4 +116,7 @@ router.get('/stats', (req, res) => {
     });
 });
 
+// ============================================================
+// Exportar router
+// ============================================================
 module.exports = router;
