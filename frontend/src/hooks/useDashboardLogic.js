@@ -294,10 +294,10 @@ export function useDashboardLogic() {
             setSavingPatient(true);
             let response;
             if (isEditing) {
-                response = await api.put(`/api/patients/${patientFormData.id}`, patientFormData);
+                response = await api.put(`/patients/${patientFormData.id}`, patientFormData);
                 toast.success("Paciente actualizado correctamente");
             } else {
-                response = await api.post("/api/patients", patientFormData);
+                response = await api.post("/patients", patientFormData);
                 toast.success("Paciente creado exitosamente");
             }
 
@@ -333,7 +333,7 @@ export function useDashboardLogic() {
             return;
         }
         try {
-            await api.delete(`/api/patients/${id}`);
+            await api.delete(`/patients/${id}`);
             setPatients(prev => prev.filter(p => p.id !== id));
             toast.success("Paciente eliminado correctamente");
         } catch (error) {
