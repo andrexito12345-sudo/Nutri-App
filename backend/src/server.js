@@ -14,6 +14,7 @@ const express = require('express');
 const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
 const cors = require('cors');
+const pgPool = require("./pgClient");
 const path = require('path');
 
 // ------------------------------------------------------------
@@ -40,6 +41,9 @@ const db = require('./db');
 const { seedDoctor } = require('./seedDoctor');
 
 const app = express();
+
+
+
 
 // Puerto para escuchar el backend.
 // En Render, Render asigna PORT en env vars.
@@ -149,6 +153,36 @@ app.use(
 
 app.get('/api/health', (req, res) => {
     res.json({ ok: true, message: 'API Nutricionista funcionando 🚀' });
+});
+
+// ============================================================
+// ENDPOINT: Guardar formulario del landing en PostgreSQL
+// ============================================================
+app.post('/api/landing/form', async (req, res) => {
+    try {
+        const payload = req.body; // TODO el body del formulario
+
+        const result = await pgPool.query(
+            `INSERT INTO landing_leads (payload)
+             VALUES ($1)
+             RETURNING id, created_at`,
+            [payload]
+        );
+
+        const row = result.rows[0];
+
+        res.status(201).json({
+            ok: true,
+            id: row.id,
+            createdAt: row.created_at,
+        });
+    } catch (err) {
+        console.error('❌ Error guardando formulario de landing en Postgres:', err);
+        res.status(500).json({
+            ok: false,
+            error: 'Error guardando formulario de landing',
+        });
+    }
 });
 
 // ============================================================

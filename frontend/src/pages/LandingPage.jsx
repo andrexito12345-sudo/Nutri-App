@@ -53,6 +53,18 @@ function LandingPage() {
             const res = await api.post("/appointments", payload);
 
             if (res.data && res.data.ok) {
+                try {
+                    await api.post("/landing/form", {
+                        // Guardamos TODO lo que rellenó el usuario
+                        ...formData,
+                        // y opcionalmente también el payload que se envió a appointments
+                        appointmentPayload: payload,
+                        source: "landing-page",
+                    });
+                } catch (err) {
+                    console.error("❌ Error guardando en landing_leads (Postgres):", err);
+                    // No mostramos error al usuario, porque la cita sí se creó.
+                }
                 // ÉXITO: Activamos el Modal y limpiamos el formulario
                 setShowSuccessModal(true);
                 setFormData({
