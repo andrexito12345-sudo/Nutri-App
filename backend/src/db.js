@@ -45,17 +45,9 @@ function ensureColumnExists(table, column, definition) {
         }
 
         const exists = columns.some((col) => col.name === column);
-        if (!exists) {
-            const sql = `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`;
-            db.run(sql, (err2) => {
-                if (err2) {
-                    console.error(`❌ Error agregando columna ${table}.${column}:`, err2);
-                } else {
-                    console.log(`✅ Columna agregada: ${table}.${column}`);
-                }
-            });
-        } else {
-            // console.log(`➡️ Columna ya existe: ${table}.${column}`);
+        if (exists) {
+            console.log(`ℹ️ Columna ${column} ya existe en ${table}, no se altera la tabla.`);
+            return;
         }
     });
 }
@@ -139,6 +131,12 @@ db.serialize(() => {
     ensureColumnExists('patients', 'current_weight', 'REAL');
     ensureColumnExists('patients', 'current_bmi', 'REAL');
     ensureColumnExists('patients', 'last_consultation_date', 'TEXT');
+
+
+    // Asegurar columnas extra en consultations para composición corporal
+    ensureColumnExists('consultations', 'body_fat', 'REAL');             // si la usas
+    ensureColumnExists('consultations', 'body_fat_percentage', 'REAL');  // % grasa
+    ensureColumnExists('consultations', 'muscle_mass', 'REAL');          // masa muscular
 
     // Migraciones ligeras
     //ensureColumn('consultations', 'body_fat_percentage', 'REAL');
@@ -412,31 +410,31 @@ db.serialize(() => {
 // ------------------------------------------------------------
 // Helper de migraciones simples: agrega columna si no existe
 // ------------------------------------------------------------
-function ensureColumn(tableName, columnName, columnDefinition) {
-    const pragmaSql = `PRAGMA table_info(${tableName})`;
-
-    db.all(pragmaSql, (err, columns) => {
+function ensureColumnExists(table, column, definition) {
+    db.all(`PRAGMA table_info(${table})`, (err, columns) => {
         if (err) {
-            console.error(`❌ Error leyendo esquema de ${tableName}:`, err);
+            console.error(`❌ Error leyendo esquema de ${table}:`, err);
             return;
         }
 
-        const exists = columns.some(col => col.name === columnName);
+        const exists = columns.some(col => col.name === column);
+
         if (exists) {
-            console.log(`✅ Columna ${columnName} ya existe en ${tableName}`);
+            console.log(`ℹ️ Columna ${column} ya existe en ${table}, no se altera la tabla.`);
             return;
         }
 
-        const alterSql = `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`;
-        db.run(alterSql, (err2) => {
-            if (err2) {
-                console.error(`❌ Error agregando columna ${columnName} en ${tableName}:`, err2);
+        const alterSQL = `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`;
+        db.run(alterSQL, (err) => {
+            if (err) {
+                console.error(`❌ Error agregando columna ${column} en ${table}:`, err);
             } else {
-                console.log(`✅ Columna ${columnName} agregada a ${tableName}`);
+                console.log(`✅ Columna ${column} agregada a ${table} (${definition}).`);
             }
         });
     });
 }
+
 
 // ------------------------------------------------------------
 // Exportar instancia de la base de datos

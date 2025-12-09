@@ -299,7 +299,7 @@ router.post('/', (req, res) => {
             ) VALUES (
                 ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?,
@@ -309,6 +309,7 @@ router.post('/', (req, res) => {
         `;
 
         const params = [
+            // Identificadores básicos
             patient_id,
             appointment_id || null,
             consultation_date,
@@ -331,7 +332,8 @@ router.post('/', (req, res) => {
             hip || null,
             waist_hip_ratio,
             body_fat || null,
-            body_fat_percentage || null,
+            // Si no viene body_fat_percentage, usamos body_fat como respaldo
+            body_fat_percentage ?? body_fat ?? null,
             muscle_mass || null,
             ideal_weight || null,
 
@@ -378,6 +380,7 @@ router.post('/', (req, res) => {
             notes || null,
             created_by || null
         ];
+
 
         db.run(query, params, function(err) {
             if (err) {
