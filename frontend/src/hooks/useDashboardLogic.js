@@ -96,9 +96,9 @@ export function useDashboardLogic() {
             setError("");
 
             const [appointmentsRes, visitsRes, statsRes] = await Promise.all([
-                api.get("/api/appointments"),
-                api.get("/api/visits/stats"),
-                api.get("/api/appointments/stats"),
+                api.get("/appointments"),
+                api.get("/visits/stats"),
+                api.get("/appointments/stats"),
             ]);
 
             setAppointments(Array.isArray(appointmentsRes.data?.appointments) ? appointmentsRes.data.appointments : []);
@@ -135,7 +135,7 @@ export function useDashboardLogic() {
     const fetchPatients = async (searchTerm = "") => {
         try {
             setPatientsLoading(true);
-            const response = await api.get("/api/patients", { params: { search: searchTerm } });
+            const response = await api.get("/patients", { params: { search: searchTerm } });
             setPatients(response.data.patients || []);
         } catch (err) {
             console.error("Error cargando pacientes:", err);
@@ -231,8 +231,8 @@ export function useDashboardLogic() {
         setShowPatientModal(true);
         try {
             const [consultationsRes, weightRes] = await Promise.all([
-                api.get(`/api/consultations/patient/${patient.id}`),
-                api.get(`/api/consultations/patient/${patient.id}/weight-history`)
+                api.get(`/consultations/patient/${patient.id}`),
+                api.get(`/consultations/patient/${patient.id}/weight-history`)
             ]);
             setPatientConsultations(consultationsRes.data.consultations || []);
             setPatientWeightHistory(weightRes.data || []);
@@ -344,7 +344,7 @@ export function useDashboardLogic() {
 
     const printLatestConsultation = async (patient) => {
         try {
-            const response = await api.get(`/api/consultations/patient/${patient.id}?limit=1`);
+            const response = await api.get(`/consultations/patient/${patient.id}?limit=1`);
             const consultations = response.data.consultations;
             if (!consultations || consultations.length === 0) {
                 alert(`El paciente ${patient.full_name} no tiene consultas.`);
