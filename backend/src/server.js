@@ -47,26 +47,54 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // ============================================================
+// CAMBIO: detectar entorno (desarrollo vs producción)
+// ------------------------------------------------------------
+// Usaremos esta constante para ajustar CORS y las cookies
+// de sesión según si estamos en Render (NODE_ENV=production)
+// o en local.
+// ============================================================
+const isProduction = process.env.NODE_ENV === 'production';
+
+// ============================================================
 // CONFIGURACIÓN DE CORS
 // ------------------------------------------------------------
 // - Permite que el frontend (React + Vite) se comunique con la API.
 // - `credentials: true` porque usamos sesiones/cookies.
 // - IMPORTANTE: el `origin` debe incluir el dominio del frontend
 //   tanto en local como en producción (Render).
+// ------------------------------------------------------------
+// CAMBIO: en lugar de pasar directamente un array como `origin`,
+//         usamos una función + lista `allowedOrigins` para poder
+//         controlar mejor qué orígenes se aceptan y seguir
+//         soportando herramientas como Postman (sin origin).
 // ============================================================
 
+// CAMBIO: lista de orígenes permitidos
+const allowedOrigins = [
+    // Frontend en local (Vite)
+    'http://localhost:5173',
+
+    // Si pruebas en tu red local con la IP de tu PC:
+    // Cambia esta IP por la tuya real si es necesario.
+    'http://192.168.1.11:5173',
+
+    // Frontend de producción en Render (ajusta si tu dominio cambia)
+    'https://nutri-app-dashboard.onrender.com',
+];
+
 const corsOptions = {
-    origin: [
-        // Frontend en local (Vite)
-        'http://localhost:5173',
+    // CAMBIO: función para validar dinámicamente el origen
+    origin(origin, callback) {
+        // Permitir llamadas sin origin (por ejemplo, Postman, curl)
+        if (!origin) return callback(null, true);
 
-        // Si pruebas en tu red local con la IP de tu PC:
-        // Cambia esta IP por la tuya real si es necesario.
-        'http://192.168.1.11:5173',
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
 
-        // Frontend de producción en Render (ajusta si tu dominio cambia)
-        'https://nutri-app-dashboard.onrender.com',
-    ],
+        console.warn('Origen no permitido por CORS:', origin);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true, // permite enviar cookies (sesiones) al backend
 };
 
@@ -81,8 +109,17 @@ app.use(express.json());
 // Usamos `express-session` con almacenamiento en SQLite
 // (archivo sessions.sqlite) mediante connect-sqlite3.
 // Esto permite mantener la sesión de la doctora después de login.
+// ------------------------------------------------------------
+// CAMBIO: ajustamos las cookies según el entorno:
+//   - En producción (Render, HTTPS, dominios distintos):
+//       sameSite: 'none', secure: true
+//     → permite que la cookie se envíe en contexto cross-site.
+//   - En desarrollo local (http://localhost:5173):
+//       sameSite: 'lax', secure: false
+//     → más cómodo para pruebas en local.
 // ============================================================
 
+// CAMBIO: necesario en Render (proxy) para que secure/samesite funcionen bien
 app.set('trust proxy', 1); // recomendado si algún día usas proxy/https
 
 app.use(
@@ -93,8 +130,12 @@ app.use(
         saveUninitialized: false,
         cookie: {
             maxAge: 1000 * 60 * 60 * 24, // duración de la cookie: 1 día
-            sameSite: 'lax',             // ayuda con CSRF sin romper navegaciones normales
-            secure: false,               // en http debe ser false; en https prod podrías poner true
+
+            // CAMBIO: configuración dinámica para soportar frontend y backend en dominios distintos (Render)
+            sameSite: isProduction ? 'none' : 'lax', // 'none' en producción (cross-site), 'lax' en local
+
+            // CAMBIO: en producción (HTTPS en Render) la cookie debe ser secure
+            secure: isProduction, // true en Render (https), false en local
         },
     })
 );
@@ -143,7 +184,7 @@ async function start() {
 
         // Espera a que seedDoctor termine:
         // - Crea la doctora si no existe.
-// - Si ya existe, solo muestra info en logs.
+        // - Si ya existe, solo muestra info en logs.
         await seedDoctor();
 
         console.log('✅ seedDoctor() completado. Iniciando servidor Express...');
