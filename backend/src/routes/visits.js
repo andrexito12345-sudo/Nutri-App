@@ -63,54 +63,39 @@ router.post('/', (req, res) => {
     const checkSql = `
         SELECT id
         FROM page_visits
-        WHERE ip_address = ?
-          AND path = ?
+          WHERE path = ?
           AND created_at >= datetime('now', '-5 minutes', 'localtime')
         LIMIT 1
     `;
 
-    db.get(checkSql, [ip, finalPath], (checkErr, existing) => {
-        if (checkErr) {
-            console.error('❌ Error verificando visita previa:', checkErr);
+    db.get(checkSql, [normalizedPath], (err, row) => {
+        if (err) {
+            console.error('❌ Error verificando visita previa:', err);
             // No rompemos nada al frontend, solo logueamos
             return res.status(200).json({ ok: true, skipped: true });
         }
 
-        if (existing) {
-            // Ya hubo una visita reciente desde este IP a este path
-            console.log(
-                `ℹ️ Visita duplicada bloqueada desde IP: ${ip} en path: ${finalPath} (últimos 5 min)`
-            );
-            return res.status(200).json({ ok: true, duplicated: true });
+        if (row) {
+            console.log('ℹ️ Visita duplicada bloqueada para path:', normalizedPath);
+            return res.status(304).json({ ok: true, duplicated: true });
         }
 
         // -------------------------------
         // Insertar la visita
         // -------------------------------
         const insertSql = `
-            INSERT INTO page_visits (path, ip_address, user_agent, created_at)
-            VALUES (?, ?, ?, datetime('now', 'localtime'))
+            INSERT INTO page_visits (path, created_at)
+            VALUES (?, datetime('now', 'localtime'))
         `;
 
-        db.run(insertSql, [finalPath, ip, userAgent], function (err) {
+        db.run(insertSql, [normalizedPath], function (err) {
             if (err) {
                 console.error('❌ Error insertando visita:', err);
-                // IMPORTANTE: no queremos que falle el dashboard por esto,
-                // devolvemos 200 y solo avisamos en el log.
-                return res.status(200).json({
-                    ok: false,
-                    message: 'Error al registrar visita (solo analytics)',
-                });
+                return res.status(500).json({ ok: false, message: 'Error al registrar visita' });
             }
 
-            console.log(
-                `✅ Visita registrada: path=${finalPath}, ip=${ip}, id=${this.lastID}`
-            );
-
-            return res.status(201).json({
-                ok: true,
-                visitId: this.lastID,
-            });
+            console.log('✅ Visita registrada. ID =', this.lastID, 'Path =', normalizedPath);
+            return res.status(201).json({ ok: true, id: this.lastID });
         });
     });
 });
