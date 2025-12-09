@@ -126,6 +126,29 @@ db.serialize(() => {
     )
   `);
 
+
+    // ========================================================
+    // NUEVA TABLA: page_visits
+    // --------------------------------------------------------
+    // - Guarda cada visita a la página (path y fecha/hora).
+    // - El backend la usa en routes/visits.js para:
+    //   - INSERT INTO page_visits ...
+    //   - SELECT COUNT(*) y filtrar por created_at.
+    // ========================================================
+    db.run(`
+        CREATE TABLE IF NOT EXISTS page_visits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            path TEXT NOT NULL,                -- ruta visitada (/doctora/dashboard, etc.)
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- fecha/hora de la visita
+        )
+    `, (err) => {
+        if (err) {
+            console.error('❌ Error creando tabla page_visits:', err);
+        } else {
+            console.log('✅ Tabla page_visits verificada/creada correctamente');
+        }
+    });
+
     // ----------------------------------------------------------
     // Tabla de consultas nutricionales (consultations)
     // ----------------------------------------------------------
