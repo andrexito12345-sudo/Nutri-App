@@ -134,9 +134,9 @@ db.serialize(() => {
 
 
     // Asegurar columnas extra en consultations para composición corporal
-    ensureColumnExists('consultations', 'body_fat', 'REAL');             // si la usas
-    ensureColumnExists('consultations', 'body_fat_percentage', 'REAL');  // % grasa
-    ensureColumnExists('consultations', 'muscle_mass', 'REAL');          // masa muscular
+    //ensureColumnExists('consultations', 'body_fat', 'REAL');             // si la usas
+    //ensureColumnExists('consultations', 'body_fat_percentage', 'REAL');  // % grasa
+    //ensureColumnExists('consultations', 'muscle_mass', 'REAL');          // masa muscular
 
     // Migraciones ligeras
     //ensureColumn('consultations', 'body_fat_percentage', 'REAL');
