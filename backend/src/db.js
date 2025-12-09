@@ -140,6 +140,10 @@ db.serialize(() => {
     ensureColumnExists('patients', 'current_bmi', 'REAL');
     ensureColumnExists('patients', 'last_consultation_date', 'TEXT');
 
+    // Migraciones ligeras
+    ensureColumn('consultations', 'body_fat_percentage', 'REAL');
+
+
     // ==========================
     // Tabla page_visits (tráfico)
     // ==========================
@@ -185,6 +189,7 @@ db.serialize(() => {
       hip REAL,
       waist_hip_ratio REAL,
       body_fat REAL,
+      body_fat_percentage REAL,
       muscle_mass REAL,
       ideal_weight REAL,
 
@@ -403,6 +408,35 @@ db.serialize(() => {
     )
   `);
 });
+
+// ------------------------------------------------------------
+// Helper de migraciones simples: agrega columna si no existe
+// ------------------------------------------------------------
+function ensureColumn(tableName, columnName, columnDefinition) {
+    const pragmaSql = `PRAGMA table_info(${tableName})`;
+
+    db.all(pragmaSql, (err, columns) => {
+        if (err) {
+            console.error(`❌ Error leyendo esquema de ${tableName}:`, err);
+            return;
+        }
+
+        const exists = columns.some(col => col.name === columnName);
+        if (exists) {
+            console.log(`✅ Columna ${columnName} ya existe en ${tableName}`);
+            return;
+        }
+
+        const alterSql = `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`;
+        db.run(alterSql, (err2) => {
+            if (err2) {
+                console.error(`❌ Error agregando columna ${columnName} en ${tableName}:`, err2);
+            } else {
+                console.log(`✅ Columna ${columnName} agregada a ${tableName}`);
+            }
+        });
+    });
+}
 
 // ------------------------------------------------------------
 // Exportar instancia de la base de datos

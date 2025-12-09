@@ -184,6 +184,7 @@ router.post('/', (req, res) => {
         waist,
         hip,
         body_fat,
+        body_fat_percentage,
         muscle_mass,
         ideal_weight,
 
@@ -274,7 +275,7 @@ router.post('/', (req, res) => {
                 
                 -- Objetivo Antropometría
                 weight, height, bmi, waist, hip, waist_hip_ratio,
-                body_fat, muscle_mass, ideal_weight,
+                body_fat, body_fat_percentage, muscle_mass, ideal_weight,
                 
                 -- Objetivo Signos Vitales
                 blood_pressure, heart_rate, temperature,
@@ -330,6 +331,7 @@ router.post('/', (req, res) => {
             hip || null,
             waist_hip_ratio,
             body_fat || null,
+            body_fat_percentage || null,
             muscle_mass || null,
             ideal_weight || null,
 
@@ -460,7 +462,7 @@ router.put('/:id', (req, res) => {
         stress_level, physical_activity, water_intake, bowel_habits,
 
         // Objetivo Antropometría
-        weight, height, waist, hip, body_fat, muscle_mass, ideal_weight,
+        weight, height, waist, hip, body_fat, body_fat_percentage, muscle_mass, ideal_weight,
 
         // Objetivo Signos Vitales
         blood_pressure, heart_rate, temperature,
@@ -511,7 +513,7 @@ router.put('/:id', (req, res) => {
                 
                 -- Objetivo Antropometría
                 weight = ?, height = ?, bmi = ?, waist = ?, hip = ?, waist_hip_ratio = ?,
-                body_fat = ?, muscle_mass = ?, ideal_weight = ?,
+                body_fat = ?,body_fat_percentage = ?, muscle_mass = ?, ideal_weight = ?,
                 
                 -- Objetivo Signos Vitales
                 blood_pressure = ?, heart_rate = ?, temperature = ?,
@@ -544,7 +546,7 @@ router.put('/:id', (req, res) => {
 
             // Objetivo Antropometría
             weight || null, height || null, bmi, waist || null, hip || null, waist_hip_ratio,
-            body_fat || null, muscle_mass || null, ideal_weight || null,
+            body_fat || null, body_fat_percentage || null, muscle_mass || null, ideal_weight || null,
 
             // Objetivo Signos Vitales
             blood_pressure || null, heart_rate || null, temperature || null,
