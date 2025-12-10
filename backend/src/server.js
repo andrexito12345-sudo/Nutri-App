@@ -126,23 +126,39 @@ app.use(express.json());
 // CAMBIO: necesario en Render (proxy) para que secure/samesite funcionen bien
 app.set('trust proxy', 1); // recomendado si algún día usas proxy/https
 
-app.use(
-    session({
-        store: new SQLiteStore({ db: 'sessions.sqlite' }), // archivo donde se guardan las sesiones
-        secret: process.env.SESSION_SECRET || 'DanielaVca12@', // cambia esto en producción por algo fuerte
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24, // duración de la cookie: 1 día
+// CAMBIO: necesario en Render (proxy) para que secure/samesite funcionen bien
+app.set('trust proxy', 1); // recomendado si algún día usas proxy/https
 
-            // CAMBIO: configuración dinámica para soportar frontend y backend en dominios distintos (Render)
-            sameSite: isProduction ? 'none' : 'lax', // 'none' en producción (cross-site), 'lax' en local
+// Store de sesiones en SQLite (ya lo usabas)
+const sessionStore = new SQLiteStore({
+    db: 'sessions.sqlite',
+    // [No verificado] si antes usabas algún `dir`, puedes añadirlo aquí:
+    // dir: './backend',
+});
 
-            // CAMBIO: en producción (HTTPS en Render) la cookie debe ser secure
-            secure: isProduction, // true en Render (https), false en local
-        },
-    })
-);
+// Opciones de la sesión
+const sessionOptions = {
+    name: 'nvpsid', // nombre de la cookie de sesión
+    secret: process.env.SESSION_SECRET || 'dev-secret-muy-largo-y-seguro',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 días
+
+        // [No verificado] Como frontend y backend están en subdominios de onrender.com,
+        // 'lax' es suficiente y más simple que 'none'.
+        sameSite: 'lax',
+
+        // En Render (NODE_ENV=production) la cookie va como Secure.
+        secure: isProduction,
+    },
+};
+
+// Aplica la sesión a la app
+app.use(session(sessionOptions));
+
 
 // ============================================================
 // RUTA DE SALUD (HEALTHCHECK)
