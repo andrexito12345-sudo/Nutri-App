@@ -6,7 +6,21 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+
+// AHORA USAMOS POSTGRES
+const pg = require('../pgClient');
+
+// Helper para convertir strings a float o null
+function toFloatOrNull(value) {
+    if (value === '' || value === undefined || value === null) return null;
+    const n = Number(value);
+    return Number.isNaN(n) ? null : n;
+}
+
+
+// ===================================================================
+// 0. CÁLCULOS NUTRICIONALES (guardados aparte)
+// ===================================================================
 
 // Guardar cálculo nutricional
 router.post('/calculations', async (req, res) => {
@@ -25,13 +39,20 @@ router.post('/calculations', async (req, res) => {
                 tmb_value, get_value, calories_prescribed,
                 protein_grams, carbs_grams, fats_grams,
                 distribution_strategy, meal_distribution
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (
+                $1, $2, NOW(),
+                $3, $4, $5, $6,
+                $7, $8, $9, $10, $11,
+                $12, $13, $14,
+                $15, $16, $17,
+                $18, $19
+            )
+            RETURNING id
         `;
 
-        const result = await db.run(query, [
+        const values = [
             patient_id,
             consultation_id,
-            new Date().toISOString(),
             calculation_data.weight,
             calculation_data.height,
             calculation_data.age,
@@ -48,19 +69,21 @@ router.post('/calculations', async (req, res) => {
             calculation_data.results.macros.carbs.grams,
             calculation_data.results.macros.fats.grams,
             calculation_data.results.metadata.distribution_strategy,
-            JSON.stringify(calculation_data.results.mealDistribution)
-        ]);
+            JSON.stringify(calculation_data.results.mealDistribution),
+        ];
+
+        const { rows } = await pg.query(query, values);
 
         res.json({
             success: true,
-            id: result.lastID,
-            message: 'Cálculo guardado exitosamente'
+            id: rows[0].id,
+            message: 'Cálculo guardado exitosamente',
         });
     } catch (error) {
         console.error('Error guardando cálculo:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message,
         });
     }
 });
@@ -70,105 +93,108 @@ router.get('/calculations/patient/:patientId', async (req, res) => {
     const { patientId } = req.params;
 
     try {
-        const calculations = await db.all(
-            `SELECT * FROM nutritional_calculations 
-             WHERE patient_id = ? 
+        const { rows } = await pg.query(
+            `SELECT *
+             FROM nutritional_calculations
+             WHERE patient_id = $1
              ORDER BY calculation_date DESC`,
             [patientId]
         );
 
         res.json({
             success: true,
-            calculations
+            calculations: rows,
         });
     } catch (error) {
         console.error('Error obteniendo historial:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message,
         });
     }
 });
 
 
-
-// ============================================
+// ===================================================================
 // 1. OBTENER TODAS LAS CONSULTAS DE UN PACIENTE
-// ============================================
-router.get('/patient/:patientId', (req, res) => {
+// ===================================================================
+router.get('/patient/:patientId', async (req, res) => {
     const { patientId } = req.params;
-    const { limit = 50, offset = 0 } = req.query;
+    const limit = parseInt(req.query.limit || 50, 10);
+    const offset = parseInt(req.query.offset || 0, 10);
 
     const query = `
         SELECT 
             c.*,
-            p.full_name as patient_name,
-            (SELECT COUNT(*) FROM evolution_notes WHERE consultation_id = c.id) as notes_count
+            p.full_name AS patient_name,
+            (
+                SELECT COUNT(*) 
+                FROM evolution_notes en 
+                WHERE en.consultation_id = c.id
+            ) AS notes_count
         FROM consultations c
         JOIN patients p ON c.patient_id = p.id
-        WHERE c.patient_id = ?
+        WHERE c.patient_id = $1
         ORDER BY c.consultation_date DESC
-        LIMIT ? OFFSET ?
+        LIMIT $2 OFFSET $3
     `;
 
-    db.all(query, [patientId, parseInt(limit), parseInt(offset)], (err, rows) => {
-        if (err) {
-            console.error('Error al obtener consultas:', err);
-            return res.status(500).json({ error: 'Error al obtener consultas' });
-        }
+    try {
+        const { rows } = await pg.query(query, [patientId, limit, offset]);
 
         res.json({
             consultations: rows,
             total: rows.length,
-            limit: parseInt(limit),
-            offset: parseInt(offset)
+            limit,
+            offset,
         });
-    });
+    } catch (err) {
+        console.error('Error al obtener consultas:', err);
+        res.status(500).json({ error: 'Error al obtener consultas' });
+    }
 });
 
-// ============================================
-// 2. OBTENER UNA CONSULTA ESPECÍFICA (CORREGIDO)
-// ============================================
-router.get('/:id', (req, res) => {
+// ===================================================================
+// 2. OBTENER UNA CONSULTA ESPECÍFICA
+// ===================================================================
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
-    // Consulta simplificada para evitar errores de JOIN
     const query = `
         SELECT
             c.*,
-            p.full_name as patient_name,
-            p.email as patient_email,
-            p.phone as patient_phone
+            p.full_name AS patient_name,
+            p.email AS patient_email,
+            p.phone AS patient_phone
         FROM consultations c
-                 JOIN patients p ON c.patient_id = p.id
-        WHERE c.id = ?
+        JOIN patients p ON c.patient_id = p.id
+        WHERE c.id = $1
     `;
 
-    db.get(query, [id], (err, consultation) => {
-        if (err) {
-            console.error('Error SQL al obtener consulta:', err);
-            return res.status(500).json({ error: 'Error interno de base de datos' });
-        }
+    try {
+        const { rows } = await pg.query(query, [id]);
 
-        if (!consultation) {
+        if (rows.length === 0) {
             return res.status(404).json({ error: 'Consulta no encontrada' });
         }
 
-        // Enviamos la respuesta limpia
-        res.json(consultation);
-    });
+        res.json(rows[0]);
+    } catch (err) {
+        console.error('Error SQL al obtener consulta:', err);
+        res.status(500).json({ error: 'Error interno de base de datos' });
+    }
 });
 
-// ============================================
+// ===================================================================
 // 3. CREAR NUEVA CONSULTA (SOAP PROFESIONAL COMPLETO)
-// ============================================
-router.post('/', (req, res) => {
+// ===================================================================
+router.post('/', async (req, res) => {
     const {
         patient_id,
         appointment_id,
         consultation_date,
 
-        // ===== SUBJETIVO (S) =====
+        // S
         subjective,
         symptoms,
         appetite,
@@ -178,7 +204,7 @@ router.post('/', (req, res) => {
         water_intake,
         bowel_habits,
 
-        // ===== OBJETIVO (O) - Antropometría =====
+        // O - Antropometría
         weight,
         height,
         waist,
@@ -188,12 +214,12 @@ router.post('/', (req, res) => {
         muscle_mass,
         ideal_weight,
 
-        // ===== OBJETIVO (O) - Signos Vitales =====
+        // O - Signos vitales
         blood_pressure,
         heart_rate,
         temperature,
 
-        // ===== OBJETIVO (O) - Bioquímicos =====
+        // O - Bioquímicos
         glucose,
         hba1c,
         cholesterol,
@@ -204,7 +230,7 @@ router.post('/', (req, res) => {
         albumin,
         objective_notes,
 
-        // ===== ANÁLISIS (A) =====
+        // A
         pes_problem,
         pes_etiology,
         pes_signs,
@@ -214,7 +240,7 @@ router.post('/', (req, res) => {
         risk_level,
         priority,
 
-        // ===== PLAN (P) =====
+        // P
         treatment_plan,
         treatment_goals,
         calories_prescribed,
@@ -227,45 +253,42 @@ router.post('/', (req, res) => {
         referrals,
         next_appointment,
 
-        // ===== OTROS =====
+        // Otros
         notes,
         created_by,
-        measurements
+        measurements,
     } = req.body;
 
-    // Validaciones
     if (!patient_id || !consultation_date) {
         return res.status(400).json({
-            error: 'ID del paciente y fecha de consulta son obligatorios'
+            error: 'ID del paciente y fecha de consulta son obligatorios',
         });
     }
 
-    // Calcular IMC si hay peso y altura
     let bmi = null;
     if (weight && height) {
         const heightInMeters = height / 100;
         bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
     }
 
-    // Calcular ICC si hay cintura y cadera
     let waist_hip_ratio = null;
     if (waist && hip) {
         waist_hip_ratio = (waist / hip).toFixed(2);
     }
 
-    // Verificar que el paciente existe
-    db.get('SELECT id FROM patients WHERE id = ?', [patient_id], (err, patient) => {
-        if (err) {
-            console.error('Error al verificar paciente:', err);
-            return res.status(500).json({ error: 'Error al verificar paciente' });
-        }
+    try {
+        // 1) Verificar que el paciente existe en POSTGRES
+        const { rows: patientRows } = await pg.query(
+            'SELECT id FROM patients WHERE id = $1',
+            [patient_id]
+        );
 
-        if (!patient) {
+        if (patientRows.length === 0) {
             return res.status(404).json({ error: 'Paciente no encontrado' });
         }
 
-        // Insertar consulta COMPLETA
-        const query = `
+        // 2) Insertar consulta completa
+        const insertQuery = `
             INSERT INTO consultations (
                 patient_id, appointment_id, consultation_date,
                 
@@ -297,19 +320,26 @@ router.post('/', (req, res) => {
                 -- Metadatos
                 notes, created_by, created_at, updated_at
             ) VALUES (
-                ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, datetime('now'), datetime('now')
+                $1, $2, $3,
+                $4, $5, $6, $7,
+                $8, $9, $10, $11,
+                $12, $13, $14, $15, $16, $17,
+                $18, $19, $20, $21,
+                $22, $23, $24,
+                $25, $26, $27, $28, $29, $30,
+                $31, $32, $33,
+                $34, $35, $36, $37,
+                $38, $39, $40, $41,
+                $42, $43, $44,
+                $45, $46, $47, $48,
+                $49, $50, $51, $52,
+                $53, $54, NOW(), NOW()
             )
+            RETURNING *
         `;
 
-        const params = [
-            // Identificadores básicos
+        const values = [
+            // Identificadores
             patient_id,
             appointment_id || null,
             consultation_date,
@@ -324,7 +354,7 @@ router.post('/', (req, res) => {
             water_intake || null,
             bowel_habits || null,
 
-            // Objetivo Antropometría
+            // Antropometría
             weight || null,
             height || null,
             bmi,
@@ -332,17 +362,16 @@ router.post('/', (req, res) => {
             hip || null,
             waist_hip_ratio,
             body_fat || null,
-            // Si no viene body_fat_percentage, usamos body_fat como respaldo
             body_fat_percentage ?? body_fat ?? null,
             muscle_mass || null,
             ideal_weight || null,
 
-            // Objetivo Signos Vitales
+            // Signos vitales
             blood_pressure || null,
             heart_rate || null,
             temperature || null,
 
-            // Objetivo Bioquímicos
+            // Bioquímicos
             glucose || null,
             hba1c || null,
             cholesterol || null,
@@ -378,84 +407,92 @@ router.post('/', (req, res) => {
 
             // Metadatos
             notes || null,
-            created_by || null
+            created_by || null,
         ];
 
+        const { rows } = await pg.query(insertQuery, values);
+        const consultation = rows[0];
+        const consultationId = consultation.id;
 
-        db.run(query, params, function(err) {
-            if (err) {
-                console.error('Error al crear consulta:', err);
-                return res.status(500).json({ error: 'Error al crear consulta: ' + err.message });
-            }
+        // 3) Actualizaciones paralelas (no bloquean la respuesta)
+        // 3.1 Actualizar datos básicos del paciente
+        if (weight) {
+            pg.query(
+                `
+                UPDATE patients
+                SET current_weight = $1,
+                    current_bmi = $2,
+                    last_consultation_date = $3
+                WHERE id = $4
+                `,
+                [weight, bmi, consultation_date, patient_id]
+            ).catch(err =>
+                console.error('Error actualizando datos del paciente:', err)
+            );
+        }
 
-            const consultationId = this.lastID;
+        // 3.2 Marcar cita como realizada
+        if (appointment_id) {
+            pg.query(
+                `
+                UPDATE appointments
+                SET status = 'Realizada',
+                    patient_id = $1
+                WHERE id = $2
+                `,
+                [patient_id, appointment_id]
+            ).catch(err =>
+                console.error('Error actualizando estado de la cita:', err)
+            );
+        }
 
-            // --- LÓGICA DE ACTUALIZACIÓN AUTOMÁTICA ---
+        // 3.3 Guardar mediciones adicionales
+        if (measurements && Object.keys(measurements).length > 0) {
+            pg.query(
+                `
+                INSERT INTO measurements (
+                    patient_id, consultation_id, measurement_date,
+                    chest, arm_left, arm_right, forearm_left, forearm_right,
+                    thigh_left, thigh_right, calf_left, calf_right, notes
+                ) VALUES (
+                    $1, $2, $3,
+                    $4, $5, $6, $7, $8,
+                    $9, $10, $11, $12, $13
+                )
+                `,
+                [
+                    patient_id,
+                    consultationId,
+                    consultation_date,
+                    measurements.chest || null,
+                    measurements.arm_left || null,
+                    measurements.arm_right || null,
+                    measurements.forearm_left || null,
+                    measurements.forearm_right || null,
+                    measurements.thigh_left || null,
+                    measurements.thigh_right || null,
+                    measurements.calf_left || null,
+                    measurements.calf_right || null,
+                    measurements.notes || null,
+                ]
+            ).catch(err => console.error('Error al guardar mediciones:', err));
+        }
 
-            // 1. Actualizar perfil del paciente con los nuevos datos
-            if (weight) {
-                const updatePatientQuery = `
-                    UPDATE patients 
-                    SET current_weight = ?, current_bmi = ?, last_consultation_date = ? 
-                    WHERE id = ?
-                `;
-                db.run(updatePatientQuery, [weight, bmi, consultation_date, patient_id], (err) => {
-                    if (err) console.error('Error actualizando datos del paciente:', err);
-                    else console.log('✅ Datos del paciente actualizados correctamente.');
-                });
-            }
-
-            // 2. Marcar cita como "Realizada" (si existe appointment_id)
-            if (appointment_id) {
-                const updateApptQuery = `UPDATE appointments SET status = 'Realizada', patient_id = ? WHERE id = ?`;
-                db.run(updateApptQuery, [patient_id, appointment_id], (err) => {
-                    if (err) console.error('Error actualizando estado de la cita:', err);
-                    else console.log(`✅ Cita ${appointment_id} marcada como Realizada.`);
-                });
-            }
-
-            // 3. Guardar mediciones adicionales
-            if (measurements && Object.keys(measurements).length > 0) {
-                const measurementQuery = `
-                    INSERT INTO measurements (
-                        patient_id, consultation_id, measurement_date,
-                        chest, arm_left, arm_right, forearm_left, forearm_right,
-                        thigh_left, thigh_right, calf_left, calf_right, notes
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `;
-
-                const measurementParams = [
-                    patient_id, consultationId, consultation_date,
-                    measurements.chest || null, measurements.arm_left || null, measurements.arm_right || null,
-                    measurements.forearm_left || null, measurements.forearm_right || null,
-                    measurements.thigh_left || null, measurements.thigh_right || null,
-                    measurements.calf_left || null, measurements.calf_right || null,
-                    measurements.notes || null
-                ];
-
-                db.run(measurementQuery, measurementParams, (err) => {
-                    if (err) console.error('Error al guardar mediciones:', err);
-                });
-            }
-
-            // Respuesta final
-            db.get('SELECT * FROM consultations WHERE id = ?', [consultationId], (err, consultation) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Consulta creada pero error al obtenerla' });
-                }
-                res.status(201).json({
-                    message: '✅ Consulta SOAP creada exitosamente',
-                    consultation
-                });
-            });
+        // 4) Respuesta
+        res.status(201).json({
+            message: '✅ Consulta SOAP creada exitosamente',
+            consultation,
         });
-    });
+    } catch (err) {
+        console.error('Error al crear consulta:', err);
+        res.status(500).json({ error: 'Error al crear consulta: ' + err.message });
+    }
 });
 
-// ============================================
-// 4. ACTUALIZAR CONSULTA (SOAP PROFESIONAL COMPLETO)
-// ============================================
-router.put('/:id', (req, res) => {
+// ===================================================================
+// 4. ACTUALIZAR CONSULTA
+// ===================================================================
+router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const {
         consultation_date,
@@ -464,13 +501,14 @@ router.put('/:id', (req, res) => {
         subjective, symptoms, appetite, sleep_quality,
         stress_level, physical_activity, water_intake, bowel_habits,
 
-        // Objetivo Antropometría
-        weight, height, waist, hip, body_fat, body_fat_percentage, muscle_mass, ideal_weight,
+        // Antropometría
+        weight, height, waist, hip, body_fat, body_fat_percentage,
+        muscle_mass, ideal_weight,
 
-        // Objetivo Signos Vitales
+        // Signos vitales
         blood_pressure, heart_rate, temperature,
 
-        // Objetivo Bioquímicos
+        // Bioquímicos
         glucose, hba1c, cholesterol, triglycerides, hdl, ldl,
         hemoglobin, albumin, objective_notes,
 
@@ -484,211 +522,241 @@ router.put('/:id', (req, res) => {
         diet_type, supplements_recommended, education_provided,
         referrals, next_appointment,
 
-        notes
+        notes,
     } = req.body;
 
-    // Calcular IMC si hay peso y altura
     let bmi = null;
     if (weight && height) {
         const heightInMeters = height / 100;
         bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
     }
 
-    // Calcular ICC si hay cintura y cadera
     let waist_hip_ratio = null;
     if (waist && hip) {
         waist_hip_ratio = (waist / hip).toFixed(2);
     }
 
-    // Verificar que la consulta existe
-    db.get('SELECT id FROM consultations WHERE id = ?', [id], (err, consultation) => {
-        if (err || !consultation) {
+    try {
+        // Verificar que exista
+        const { rows: existing } = await pg.query(
+            'SELECT id FROM consultations WHERE id = $1',
+            [id]
+        );
+        if (existing.length === 0) {
             return res.status(404).json({ error: 'Consulta no encontrada' });
         }
 
         const query = `
             UPDATE consultations SET
-                consultation_date = COALESCE(?, consultation_date),
+                consultation_date = COALESCE($1, consultation_date),
                 
                 -- Subjetivo
-                subjective = ?, symptoms = ?, appetite = ?, sleep_quality = ?,
-                stress_level = ?, physical_activity = ?, water_intake = ?, bowel_habits = ?,
+                subjective = $2, symptoms = $3, appetite = $4, sleep_quality = $5,
+                stress_level = $6, physical_activity = $7, water_intake = $8, bowel_habits = $9,
                 
-                -- Objetivo Antropometría
-                weight = ?, height = ?, bmi = ?, waist = ?, hip = ?, waist_hip_ratio = ?,
-                body_fat = ?,body_fat_percentage = ?, muscle_mass = ?, ideal_weight = ?,
+                -- Antropometría
+                weight = $10, height = $11, bmi = $12, waist = $13, hip = $14, waist_hip_ratio = $15,
+                body_fat = $16, body_fat_percentage = $17, muscle_mass = $18, ideal_weight = $19,
                 
-                -- Objetivo Signos Vitales
-                blood_pressure = ?, heart_rate = ?, temperature = ?,
+                -- Signos vitales
+                blood_pressure = $20, heart_rate = $21, temperature = $22,
                 
-                -- Objetivo Bioquímicos
-                glucose = ?, hba1c = ?, cholesterol = ?, triglycerides = ?,
-                hdl = ?, ldl = ?, hemoglobin = ?, albumin = ?, objective_notes = ?,
+                -- Bioquímicos
+                glucose = $23, hba1c = $24, cholesterol = $25, triglycerides = $26,
+                hdl = $27, ldl = $28, hemoglobin = $29, albumin = $30, objective_notes = $31,
                 
                 -- Análisis
-                pes_problem = ?, pes_etiology = ?, pes_signs = ?, diagnosis = ?,
-                assessment_notes = ?, nutritional_status = ?, risk_level = ?, priority = ?,
+                pes_problem = $32, pes_etiology = $33, pes_signs = $34, diagnosis = $35,
+                assessment_notes = $36, nutritional_status = $37, risk_level = $38, priority = $39,
                 
                 -- Plan
-                treatment_plan = ?, treatment_goals = ?, calories_prescribed = ?,
-                protein_prescribed = ?, carbs_prescribed = ?, fats_prescribed = ?,
-                diet_type = ?, supplements_recommended = ?, education_provided = ?,
-                referrals = ?, next_appointment = ?,
+                treatment_plan = $40, treatment_goals = $41, calories_prescribed = $42,
+                protein_prescribed = $43, carbs_prescribed = $44, fats_prescribed = $45,
+                diet_type = $46, supplements_recommended = $47, education_provided = $48,
+                referrals = $49, next_appointment = $50,
                 
-                notes = ?,
-                updated_at = datetime('now')
-            WHERE id = ?
+                notes = $51,
+                updated_at = NOW()
+            WHERE id = $52
+            RETURNING *
         `;
 
         const params = [
             consultation_date || null,
 
-            // Subjetivo
             subjective || null, symptoms || null, appetite || null, sleep_quality || null,
             stress_level || null, physical_activity || null, water_intake || null, bowel_habits || null,
 
-            // Objetivo Antropometría
             weight || null, height || null, bmi, waist || null, hip || null, waist_hip_ratio,
             body_fat || null, body_fat_percentage || null, muscle_mass || null, ideal_weight || null,
 
-            // Objetivo Signos Vitales
             blood_pressure || null, heart_rate || null, temperature || null,
 
-            // Objetivo Bioquímicos
             glucose || null, hba1c || null, cholesterol || null, triglycerides || null,
             hdl || null, ldl || null, hemoglobin || null, albumin || null, objective_notes || null,
 
-            // Análisis
             pes_problem || null, pes_etiology || null, pes_signs || null, diagnosis || null,
             assessment_notes || null, nutritional_status || null, risk_level || null, priority || null,
 
-            // Plan
             treatment_plan || null, treatment_goals || null, calories_prescribed || null,
             protein_prescribed || null, carbs_prescribed || null, fats_prescribed || null,
             diet_type || null, supplements_recommended || null, education_provided || null,
             referrals || null, next_appointment || null,
 
             notes || null,
-            id
+            id,
         ];
 
-        db.run(query, params, function(err) {
-            if (err) {
-                console.error('Error al actualizar consulta:', err);
-                return res.status(500).json({ error: 'Error al actualizar consulta' });
-            }
+        const { rows } = await pg.query(query, params);
+        const updatedConsultation = rows[0];
 
-            db.get('SELECT * FROM consultations WHERE id = ?', [id], (err, updatedConsultation) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Consulta actualizada pero error al obtenerla' });
-                }
-                res.json({
-                    message: '✅ Consulta actualizada exitosamente',
-                    consultation: updatedConsultation
-                });
-            });
+        res.json({
+            message: '✅ Consulta actualizada exitosamente',
+            consultation: updatedConsultation,
         });
-    });
+    } catch (err) {
+        console.error('Error al actualizar consulta:', err);
+        res.status(500).json({ error: 'Error al actualizar consulta' });
+    }
 });
 
-// ============================================
+// ===================================================================
 // 5. ELIMINAR CONSULTA
-// ============================================
-router.delete('/:id', (req, res) => {
+// ===================================================================
+router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
-    db.get('SELECT id FROM consultations WHERE id = ?', [id], (err, consultation) => {
-        if (err || !consultation) {
+    try {
+        const { rows } = await pg.query(
+            'SELECT id FROM consultations WHERE id = $1',
+            [id]
+        );
+        if (rows.length === 0) {
             return res.status(404).json({ error: 'Consulta no encontrada' });
         }
 
-        db.run('DELETE FROM consultations WHERE id = ?', [id], function(err) {
-            if (err) {
-                return res.status(500).json({ error: 'Error al eliminar consulta' });
-            }
-            res.json({
-                message: '✅ Consulta eliminada exitosamente',
-                deletedId: id
-            });
+        await pg.query('DELETE FROM consultations WHERE id = $1', [id]);
+
+        res.json({
+            message: '✅ Consulta eliminada exitosamente',
+            deletedId: id,
         });
-    });
+    } catch (err) {
+        console.error('Error al eliminar consulta:', err);
+        res.status(500).json({ error: 'Error al eliminar consulta' });
+    }
 });
 
-// ============================================
+// ===================================================================
 // 6. OBTENER EVOLUCIÓN COMPLETA (Peso, Grasa, Músculo)
-// ============================================
-router.get('/patient/:patientId/weight-history', (req, res) => {
+// ===================================================================
+router.get('/patient/:patientId/weight-history', async (req, res) => {
     const { patientId } = req.params;
-    const { limit = 20 } = req.query;
+    const limit = parseInt(req.query.limit || 20, 10);
 
     const query = `
         SELECT
-            consultation_date as date,
-      weight,
-      bmi,
-      body_fat_percentage,  -- Nuevo campo
-      muscle_mass           -- Nuevo campo
+            consultation_date AS date,
+            weight,
+            bmi,
+            body_fat_percentage,
+            muscle_mass
         FROM consultations
-        WHERE patient_id = ? AND weight IS NOT NULL
+        WHERE patient_id = $1 AND weight IS NOT NULL
         ORDER BY consultation_date ASC
-            LIMIT ?
+        LIMIT $2
     `;
 
-    db.all(query, [patientId, parseInt(limit)], (err, rows) => {
-        if (err) {
-            console.error('Error al obtener historial:', err);
-            return res.status(500).json({ error: 'Error al obtener historial' });
-        }
+    try {
+        const { rows } = await pg.query(query, [patientId, limit]);
         res.json(rows);
-    });
+    } catch (err) {
+        console.error('Error al obtener historial:', err);
+        res.status(500).json({ error: 'Error al obtener historial' });
+    }
 });
 
-// ============================================
+// ===================================================================
 // 7. AGREGAR NOTA DE EVOLUCIÓN
-// ============================================
-router.post('/:consultationId/notes', (req, res) => {
+// ===================================================================
+router.post('/:consultationId/notes', async (req, res) => {
     const { consultationId } = req.params;
-    const { note, note_type = 'Seguimiento', is_important = false, created_by } = req.body;
+    const {
+        note,
+        note_type = 'Seguimiento',
+        is_important = false,
+        created_by,
+    } = req.body;
 
-    if (!note) return res.status(400).json({ error: 'La nota no puede estar vacía' });
+    if (!note) {
+        return res.status(400).json({ error: 'La nota no puede estar vacía' });
+    }
 
-    db.get('SELECT patient_id FROM consultations WHERE id = ?', [consultationId], (err, consultation) => {
-        if (err || !consultation) return res.status(404).json({ error: 'Consulta no encontrada' });
+    try {
+        const { rows: consRows } = await pg.query(
+            'SELECT patient_id FROM consultations WHERE id = $1',
+            [consultationId]
+        );
+        if (consRows.length === 0) {
+            return res.status(404).json({ error: 'Consulta no encontrada' });
+        }
 
-        const query = `
+        const patientId = consRows[0].patient_id;
+
+        const insertQuery = `
             INSERT INTO evolution_notes (
-                patient_id, consultation_id, note_date, note_type, note, is_important, created_by
-            ) VALUES (?, ?, datetime('now'), ?, ?, ?, ?)
+                patient_id, consultation_id, note_date,
+                note_type, note, is_important, created_by
+            ) VALUES (
+                $1, $2, NOW(),
+                $3, $4, $5, $6
+            )
+            RETURNING *
         `;
 
-        db.run(query, [consultation.patient_id, consultationId, note_type, note, is_important, created_by], function(err) {
-            if (err) return res.status(500).json({ error: 'Error al crear nota' });
+        const { rows } = await pg.query(insertQuery, [
+            patientId,
+            consultationId,
+            note_type,
+            note,
+            is_important,
+            created_by || null,
+        ]);
 
-            db.get('SELECT * FROM evolution_notes WHERE id = ?', [this.lastID], (err, evolutionNote) => {
-                if (err) return res.status(500).json({ error: 'Error al obtener nota creada' });
-                res.status(201).json({ message: '✅ Nota agregada exitosamente', note: evolutionNote });
-            });
+        res.status(201).json({
+            message: '✅ Nota agregada exitosamente',
+            note: rows[0],
         });
-    });
+    } catch (err) {
+        console.error('Error al crear nota:', err);
+        res.status(500).json({ error: 'Error al crear nota' });
+    }
 });
 
-// ============================================
+// ===================================================================
 // 8. OBTENER ÚLTIMAS CONSULTAS (dashboard)
-// ============================================
-router.get('/recent/all', (req, res) => {
-    const { limit = 10 } = req.query;
+// ===================================================================
+router.get('/recent/all', async (req, res) => {
+    const limit = parseInt(req.query.limit || 10, 10);
+
     const query = `
-        SELECT c.*, p.full_name as patient_name, p.phone as patient_phone
+        SELECT 
+            c.*, 
+            p.full_name AS patient_name, 
+            p.phone AS patient_phone
         FROM consultations c
         JOIN patients p ON c.patient_id = p.id
         ORDER BY c.consultation_date DESC
-        LIMIT ?
+        LIMIT $1
     `;
 
-    db.all(query, [parseInt(limit)], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Error al obtener consultas recientes' });
+    try {
+        const { rows } = await pg.query(query, [limit]);
         res.json(rows);
-    });
+    } catch (err) {
+        console.error('Error al obtener consultas recientes:', err);
+        res.status(500).json({ error: 'Error al obtener consultas recientes' });
+    }
 });
 
 module.exports = router;

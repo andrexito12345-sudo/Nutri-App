@@ -1,59 +1,57 @@
+// backend/src/routes/dashboard.js
+
 const express = require('express');
-const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const pg = require('../pgClient');
 
 const router = express.Router();
 
 // GET /api/dashboard/summary  (privado: doctora)
-router.get('/summary', requireAuth, (req, res) => {
-    const result = {};
+router.get('/summary', requireAuth, async (req, res) => {
+    try {
+        const summary = {};
 
-    // Contar citas por estado
-    db.get(
-        `SELECT 
-        COUNT(*) as total,
-        SUM(CASE WHEN status = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
-        SUM(CASE WHEN status = 'realizada' THEN 1 ELSE 0 END) as realizadas,
-        SUM(CASE WHEN status = 'cancelada' THEN 1 ELSE 0 END) as canceladas
-     FROM appointments`,
-        [],
-        (err, row) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ ok: false, message: 'Error en dashboard (citas)' });
-            }
+        // 1) Contar citas por estado
+        const appointmentsSql = `
+            SELECT
+                COUNT(*)::integer AS total,
+                SUM(CASE WHEN status = 'pendiente' THEN 1 ELSE 0 END)::integer AS pendientes,
+                SUM(CASE WHEN status = 'realizada' THEN 1 ELSE 0 END)::integer AS realizadas,
+                SUM(CASE WHEN status = 'cancelada' THEN 1 ELSE 0 END)::integer AS canceladas
+            FROM appointments;
+        `;
+        const { rows: [appointmentsRow] } = await pg.query(appointmentsSql);
+        summary.appointments = appointmentsRow || {
+            total: 0,
+            pendientes: 0,
+            realizadas: 0,
+            canceladas: 0,
+        };
 
-            result.appointments = row;
+        // 2) Visitas totales
+        const visitsTotalSql = `
+            SELECT COUNT(*)::integer AS total_visits
+            FROM page_visits;
+        `;
+        const { rows: [visitsRow] } = await pg.query(visitsTotalSql);
+        summary.visits = visitsRow || { total_visits: 0 };
 
-            // Contar visitas totales
-            db.get('SELECT COUNT(*) as total_visits FROM page_visits', [], (err2, visitsRow) => {
-                if (err2) {
-                    console.error(err2);
-                    return res.status(500).json({ ok: false, message: 'Error en dashboard (visitas)' });
-                }
+        // 3) Visitas de hoy
+        const visitsTodaySql = `
+            SELECT COUNT(*)::integer AS visits_today
+            FROM page_visits
+            WHERE DATE(created_at) = CURRENT_DATE;
+        `;
+        const { rows: [todayRow] } = await pg.query(visitsTodaySql);
+        summary.visits_today = todayRow?.visits_today || 0;
 
-                result.visits = visitsRow;
-
-                // Visitas de hoy (fecha local de hoy)
-                db.get(
-                    `SELECT COUNT(*) as visits_today
-           FROM page_visits
-           WHERE date(created_at) = date('now','localtime')`,
-                    [],
-                    (err3, todayRow) => {
-                        if (err3) {
-                            console.error(err3);
-                            return res.status(500).json({ ok: false, message: 'Error en dashboard (visitas hoy)' });
-                        }
-
-                        result.visits_today = todayRow.visits_today;
-
-                        return res.json({ ok: true, summary: result });
-                    }
-                );
-            });
-        }
-    );
+        return res.json({ ok: true, summary });
+    } catch (err) {
+        console.error('❌ Error en dashboard summary:', err);
+        return res
+            .status(500)
+            .json({ ok: false, message: 'Error en dashboard (summary)' });
+    }
 });
 
 module.exports = router;
