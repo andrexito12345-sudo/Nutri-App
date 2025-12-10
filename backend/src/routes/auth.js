@@ -16,7 +16,6 @@ router.post('/login', async (req, res) => {
     console.log('   password recibido (longitud):', password ? password.length : 0);
 
     if (!email || !password) {
-        console.log('⚠️  Falta email o password en el body');
         return res.status(400).json({
             ok: false,
             message: 'Email y contraseña son obligatorios',
@@ -24,60 +23,70 @@ router.post('/login', async (req, res) => {
     }
 
     try {
-        // Buscamos a la doctora en PostgreSQL
         console.log('📡 Consultando doctora en PostgreSQL...');
         const { rows } = await pg.query(
             'SELECT * FROM doctors WHERE email = $1 LIMIT 1',
             [email]
         );
 
-        console.log('   rows.length:', rows.length);
-
         const doctor = rows[0];
 
+        console.log('   rows.length:', rows.length);
+
         if (!doctor) {
-            console.log('❌ No se encontró doctora con ese email en la tabla doctors');
+            console.log('   ❌ No se encontró doctora con ese email.');
             return res
                 .status(401)
                 .json({ ok: false, message: 'Credenciales incorrectas' });
         }
 
-        console.log('✅ Doctora encontrada:');
-        console.log('   id:', doctor.id);
-        console.log('   email:', doctor.email);
-        console.log(
-            '   hash (primeros 20 chars):',
-            typeof doctor.password_hash === 'string'
-                ? doctor.password_hash.slice(0, 20) + '...'
-                : '(no es string)'
-        );
+        console.log('   ✅ Doctora encontrada:');
+        console.log('      id:', doctor.id);
+        console.log('      email:', doctor.email);
+        console.log('      hash (primeros 20 chars):', String(doctor.password_hash).slice(0, 20) + '...');
 
-        // Verificar contraseña
-        console.log('🔐 Comparando contraseña con bcrypt...');
+        console.log('🔑 Comparando contraseña con bcrypt...');
         const isMatch = await bcrypt.compare(password, doctor.password_hash);
+
         console.log('   Resultado bcrypt.compare isMatch =', isMatch);
 
         if (!isMatch) {
-            console.log('❌ La contraseña NO coincide con el hash guardado');
+            console.log('   ❌ Contraseña incorrecta.');
             return res
                 .status(401)
                 .json({ ok: false, message: 'Credenciales incorrectas' });
         }
 
-        console.log('✅ Contraseña correcta, creando sesión...');
+        console.log('   ✅ Contraseña correcta, creando sesión...');
+        console.log('   Antes de asignar, req.sessionID =', req.sessionID);
+        console.log('   req.session actual:', req.session);
 
-        // Login correcto → guardar en sesión
+        // 👉 Asignamos datos de la doctora a la sesión
         req.session.doctorId = doctor.id;
         req.session.doctorName = doctor.name;
         req.session.doctorEmail = doctor.email;
 
-        return res.json({
-            ok: true,
-            doctor: {
-                id: doctor.id,
-                name: doctor.name,
-                email: doctor.email,
-            },
+        // 👉 Guardamos explícitamente la sesión en el store
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Error guardando la sesión después de login:', err);
+                return res
+                    .status(500)
+                    .json({ ok: false, message: 'Error al guardar la sesión' });
+            }
+
+            console.log('✅ Sesión guardada correctamente tras login.');
+            console.log('   req.sessionID (después de save):', req.sessionID);
+            console.log('   req.session (después de save):', req.session);
+
+            return res.json({
+                ok: true,
+                doctor: {
+                    id: doctor.id,
+                    name: doctor.name,
+                    email: doctor.email,
+                },
+            });
         });
     } catch (err) {
         console.error('❌ Error en /api/auth/login:', err);
