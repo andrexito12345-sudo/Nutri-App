@@ -1,103 +1,132 @@
 /**
- * Rutas para gestión de pacientes
+ * Rutas para gestión de pacientes (PostgreSQL)
  * CRUD completo: Crear, Leer, Actualizar, Eliminar
  */
 
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const pgPool = require('../pgClient');      // ← usamos Postgres
 const { requireAuth } = require('../middleware/auth');
 
 // ============================================
 // 1. OBTENER TODOS LOS PACIENTES (PRIVADO DOCTORA)
 //    GET /api/patients?search=&limit=&offset=
 // ============================================
-router.get('/', requireAuth, (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
     const { search, limit = 50, offset = 0 } = req.query;
 
+    const limitNum = parseInt(limit, 10) || 50;
+    const offsetNum = parseInt(offset, 10) || 0;
+
     let query = `
-        SELECT 
-          p.*,
-          COUNT(DISTINCT c.id) as total_consultations,
-          MAX(c.consultation_date) as last_consultation,
-          (SELECT weight FROM consultations WHERE patient_id = p.id ORDER BY consultation_date DESC LIMIT 1) as current_weight,
-          (SELECT bmi FROM consultations WHERE patient_id = p.id ORDER BY consultation_date DESC LIMIT 1) as current_bmi
-        FROM patients p
-        LEFT JOIN consultations c ON p.id = c.patient_id
-    `;
+    SELECT 
+      p.*,
+      COUNT(DISTINCT c.id)::int AS total_consultations,
+      MAX(c.consultation_date) AS last_consultation,
+      (
+        SELECT weight 
+        FROM consultations 
+        WHERE patient_id = p.id 
+        ORDER BY consultation_date DESC 
+        LIMIT 1
+      ) AS current_weight,
+      (
+        SELECT bmi 
+        FROM consultations 
+        WHERE patient_id = p.id 
+        ORDER BY consultation_date DESC 
+        LIMIT 1
+      ) AS current_bmi
+    FROM patients p
+    LEFT JOIN consultations c ON p.id = c.patient_id
+  `;
 
     const params = [];
+    let idx = 1;
 
     // Búsqueda por nombre, email o teléfono
     if (search) {
-        query += ` WHERE p.full_name LIKE ? OR p.email LIKE ? OR p.phone LIKE ?`;
+        query += `
+      WHERE 
+        p.full_name ILIKE $${idx} 
+        OR p.email ILIKE $${idx} 
+        OR p.phone ILIKE $${idx}
+    `;
         const searchParam = `%${search}%`;
-        params.push(searchParam, searchParam, searchParam);
+        params.push(searchParam);
+        idx++;
     }
 
-    // [CAMBIO] Antes: ORDER BY p.created_at (columna que puede no existir en tu BD remota)
-    // Para evitar el error 500, ordenamos por p.id DESC, que siempre existe.
-    query += ` GROUP BY p.id ORDER BY p.id DESC LIMIT ? OFFSET ?`;
-    params.push(parseInt(limit, 10), parseInt(offset, 10));
+    query += `
+    GROUP BY p.id
+    ORDER BY p.id DESC
+    LIMIT $${idx} OFFSET $${idx + 1}
+  `;
+    params.push(limitNum, offsetNum);
 
-    db.all(query, params, (err, rows) => {
-        if (err) {
-            console.error('Error al obtener pacientes:', err);
-            return res
-                .status(500)
-                .json({ error: 'Error al obtener pacientes' });
-        }
+    try {
+        const { rows } = await pgPool.query(query, params);
 
-        res.json({
+        return res.json({
             patients: rows,
             total: rows.length,
-            limit: parseInt(limit, 10),
-            offset: parseInt(offset, 10),
+            limit: limitNum,
+            offset: offsetNum,
         });
-    });
+    } catch (err) {
+        console.error('❌ Error al obtener pacientes (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al obtener pacientes' });
+    }
 });
 
 // ============================================
 // 2. OBTENER UN PACIENTE POR ID (DETALLE)
 //    GET /api/patients/:id
 // ============================================
-router.get('/:id', requireAuth, (req, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
 
     const query = `
-        SELECT 
-          p.*,
-          COUNT(DISTINCT c.id) as total_consultations,
-          MAX(c.consultation_date) as last_consultation,
-          MIN(c.consultation_date) as first_consultation,
-          (SELECT COUNT(*) FROM appointments WHERE patient_id = p.id) as total_appointments
-        FROM patients p
-        LEFT JOIN consultations c ON p.id = c.patient_id
-        WHERE p.id = ?
-        GROUP BY p.id
-    `;
+    SELECT 
+      p.*,
+      COUNT(DISTINCT c.id)::int AS total_consultations,
+      MAX(c.consultation_date) AS last_consultation,
+      MIN(c.consultation_date) AS first_consultation,
+      (
+        SELECT COUNT(*)::int 
+        FROM appointments 
+        WHERE patient_id = p.id
+      ) AS total_appointments
+    FROM patients p
+    LEFT JOIN consultations c ON p.id = c.patient_id
+    WHERE p.id = $1
+    GROUP BY p.id
+  `;
 
-    db.get(query, [id], (err, patient) => {
-        if (err) {
-            console.error('Error al obtener paciente:', err);
-            return res
-                .status(500)
-                .json({ error: 'Error al obtener paciente' });
-        }
+    try {
+        const { rows } = await pgPool.query(query, [id]);
+        const patient = rows[0];
 
         if (!patient) {
             return res.status(404).json({ error: 'Paciente no encontrado' });
         }
 
-        res.json(patient);
-    });
+        return res.json(patient);
+    } catch (err) {
+        console.error('❌ Error al obtener paciente (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al obtener paciente' });
+    }
 });
 
 // ============================================
 // 3. CREAR NUEVO PACIENTE
 //    POST /api/patients
 // ============================================
-router.post('/', requireAuth, (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
     const {
         full_name,
         email,
@@ -113,95 +142,75 @@ router.post('/', requireAuth, (req, res) => {
         notes,
     } = req.body;
 
-    // Validaciones
     if (!full_name || !phone) {
         return res.status(400).json({
             error: 'Nombre completo y teléfono son obligatorios',
         });
     }
 
-    // Verificar si ya existe un paciente con el mismo teléfono
-    db.get(
-        'SELECT id FROM patients WHERE phone = ?',
-        [phone],
-        (err, existing) => {
-            if (err) {
-                console.error('Error al verificar paciente:', err);
-                return res
-                    .status(500)
-                    .json({ error: 'Error al verificar paciente' });
-            }
+    try {
+        // Verificar si ya existe un paciente con el mismo teléfono
+        const existing = await pgPool.query(
+            'SELECT id FROM patients WHERE phone = $1 LIMIT 1',
+            [phone]
+        );
 
-            if (existing) {
-                return res.status(400).json({
-                    error: 'Ya existe un paciente con este número de teléfono',
-                });
-            }
-
-            // Insertar nuevo paciente
-            const query = `
-                INSERT INTO patients (
-                  full_name, email, phone, birth_date, gender, occupation, 
-                  address, emergency_contact, emergency_phone, blood_type, 
-                  allergies, notes, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
-            `;
-
-            const params = [
-                full_name,
-                email || null,
-                phone,
-                birth_date || null,
-                gender || null,
-                occupation || null,
-                address || null,
-                emergency_contact || null,
-                emergency_phone || null,
-                blood_type || null,
-                allergies || null,
-                notes || null,
-            ];
-
-            db.run(query, params, function (err2) {
-                if (err2) {
-                    console.error('Error al crear paciente:', err2);
-                    return res
-                        .status(500)
-                        .json({ error: 'Error al crear paciente' });
-                }
-
-                // Obtener el paciente recién creado
-                db.get(
-                    'SELECT * FROM patients WHERE id = ?',
-                    [this.lastID],
-                    (err3, patient) => {
-                        if (err3) {
-                            console.error(
-                                'Error al obtener paciente creado:',
-                                err3
-                            );
-                            return res.status(500).json({
-                                error:
-                                    'Paciente creado pero error al obtenerlo',
-                            });
-                        }
-
-                        res.status(201).json({
-                            message: 'Paciente creado exitosamente',
-                            patient,
-                        });
-                    }
-                );
+        if (existing.rowCount > 0) {
+            return res.status(400).json({
+                error: 'Ya existe un paciente con este número de teléfono',
             });
         }
-    );
+
+        // Insertar nuevo paciente
+        const insertQuery = `
+      INSERT INTO patients (
+        full_name, email, phone, birth_date, gender, occupation,
+        address, emergency_contact, emergency_phone, blood_type,
+        allergies, notes, created_at, updated_at
+      )
+      VALUES (
+        $1, $2, $3, $4, $5, $6,
+        $7, $8, $9, $10,
+        $11, $12, NOW()::TEXT, NOW()::TEXT
+      )
+      RETURNING *;
+    `;
+
+        const insertParams = [
+            full_name,
+            email || null,
+            phone,
+            birth_date || null,
+            gender || null,
+            occupation || null,
+            address || null,
+            emergency_contact || null,
+            emergency_phone || null,
+            blood_type || null,
+            allergies || null,
+            notes || null,
+        ];
+
+        const { rows } = await pgPool.query(insertQuery, insertParams);
+        const patient = rows[0];
+
+        return res.status(201).json({
+            message: 'Paciente creado exitosamente',
+            patient,
+        });
+    } catch (err) {
+        console.error('❌ Error al crear paciente (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al crear paciente' });
+    }
 });
 
 // ============================================
 // 4. ACTUALIZAR PACIENTE
 //    PUT /api/patients/:id
 // ============================================
-router.put('/:id', requireAuth, (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
     const {
         full_name,
@@ -218,228 +227,201 @@ router.put('/:id', requireAuth, (req, res) => {
         notes,
     } = req.body;
 
-    // Validaciones
     if (!full_name || !phone) {
         return res.status(400).json({
             error: 'Nombre completo y teléfono son obligatorios',
         });
     }
 
-    // Verificar que el paciente existe
-    db.get('SELECT id FROM patients WHERE id = ?', [id], (err, patient) => {
-        if (err) {
-            console.error('Error al verificar paciente:', err);
-            return res
-                .status(500)
-                .json({ error: 'Error al verificar paciente' });
-        }
+    try {
+        // Verificar que el paciente existe
+        const existingPatient = await pgPool.query(
+            'SELECT id FROM patients WHERE id = $1',
+            [id]
+        );
 
-        if (!patient) {
+        if (existingPatient.rowCount === 0) {
             return res.status(404).json({ error: 'Paciente no encontrado' });
         }
 
         // Verificar si el teléfono ya está en uso por otro paciente
-        db.get(
-            'SELECT id FROM patients WHERE phone = ? AND id != ?',
-            [phone, id],
-            (err2, existing) => {
-                if (err2) {
-                    console.error('Error al verificar teléfono:', err2);
-                    return res.status(500).json({
-                        error: 'Error al verificar teléfono',
-                    });
-                }
-
-                if (existing) {
-                    return res.status(400).json({
-                        error:
-                            'Ya existe otro paciente con este número de teléfono',
-                    });
-                }
-
-                // Actualizar paciente
-                const query = `
-                    UPDATE patients SET
-                      full_name = ?,
-                      email = ?,
-                      phone = ?,
-                      birth_date = ?,
-                      gender = ?,
-                      occupation = ?,
-                      address = ?,
-                      emergency_contact = ?,
-                      emergency_phone = ?,
-                      blood_type = ?,
-                      allergies = ?,
-                      notes = ?,
-                      updated_at = datetime('now')
-                    WHERE id = ?
-                `;
-
-                const params = [
-                    full_name,
-                    email || null,
-                    phone,
-                    birth_date || null,
-                    gender || null,
-                    occupation || null,
-                    address || null,
-                    emergency_contact || null,
-                    emergency_phone || null,
-                    blood_type || null,
-                    allergies || null,
-                    notes || null,
-                    id,
-                ];
-
-                db.run(query, params, function (err3) {
-                    if (err3) {
-                        console.error(
-                            'Error al actualizar paciente:',
-                            err3
-                        );
-                        return res.status(500).json({
-                            error: 'Error al actualizar paciente',
-                        });
-                    }
-
-                    // Obtener el paciente actualizado
-                    db.get(
-                        'SELECT * FROM patients WHERE id = ?',
-                        [id],
-                        (err4, updatedPatient) => {
-                            if (err4) {
-                                console.error(
-                                    'Error al obtener paciente actualizado:',
-                                    err4
-                                );
-                                return res.status(500).json({
-                                    error:
-                                        'Paciente actualizado pero error al obtenerlo',
-                                });
-                            }
-
-                            res.json({
-                                message:
-                                    'Paciente actualizado exitosamente',
-                                patient: updatedPatient,
-                            });
-                        }
-                    );
-                });
-            }
+        const phoneCheck = await pgPool.query(
+            'SELECT id FROM patients WHERE phone = $1 AND id <> $2 LIMIT 1',
+            [phone, id]
         );
-    });
+
+        if (phoneCheck.rowCount > 0) {
+            return res.status(400).json({
+                error: 'Ya existe otro paciente con este número de teléfono',
+            });
+        }
+
+        const updateQuery = `
+      UPDATE patients SET
+        full_name = $1,
+        email = $2,
+        phone = $3,
+        birth_date = $4,
+        gender = $5,
+        occupation = $6,
+        address = $7,
+        emergency_contact = $8,
+        emergency_phone = $9,
+        blood_type = $10,
+        allergies = $11,
+        notes = $12,
+        updated_at = NOW()::TEXT
+      WHERE id = $13
+      RETURNING *;
+    `;
+
+        const updateParams = [
+            full_name,
+            email || null,
+            phone,
+            birth_date || null,
+            gender || null,
+            occupation || null,
+            address || null,
+            emergency_contact || null,
+            emergency_phone || null,
+            blood_type || null,
+            allergies || null,
+            notes || null,
+            id,
+        ];
+
+        const { rows } = await pgPool.query(updateQuery, updateParams);
+        const updatedPatient = rows[0];
+
+        return res.json({
+            message: 'Paciente actualizado exitosamente',
+            patient: updatedPatient,
+        });
+    } catch (err) {
+        console.error('❌ Error al actualizar paciente (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al actualizar paciente' });
+    }
 });
 
 // ============================================
 // 5. ELIMINAR PACIENTE
 //    DELETE /api/patients/:id
 // ============================================
-router.delete('/:id', requireAuth, (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
 
-    // Verificar que el paciente existe
-    db.get('SELECT id FROM patients WHERE id = ?', [id], (err, patient) => {
-        if (err) {
-            console.error('Error al verificar paciente:', err);
-            return res
-                .status(500)
-                .json({ error: 'Error al verificar paciente' });
-        }
+    try {
+        // Verificar que el paciente existe
+        const existing = await pgPool.query(
+            'SELECT id FROM patients WHERE id = $1',
+            [id]
+        );
 
-        if (!patient) {
+        if (existing.rowCount === 0) {
             return res.status(404).json({ error: 'Paciente no encontrado' });
         }
 
-        // Por ahora, eliminación real (DELETE). En prod podrías hacer soft delete.
-        db.run('DELETE FROM patients WHERE id = ?', [id], function (err2) {
-            if (err2) {
-                console.error('Error al eliminar paciente:', err2);
-                return res
-                    .status(500)
-                    .json({ error: 'Error al eliminar paciente' });
-            }
+        await pgPool.query('DELETE FROM patients WHERE id = $1', [id]);
 
-            res.json({
-                message: 'Paciente eliminado exitosamente',
-                deletedId: id,
-            });
+        return res.json({
+            message: 'Paciente eliminado exitosamente',
+            deletedId: id,
         });
-    });
+    } catch (err) {
+        console.error('❌ Error al eliminar paciente (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al eliminar paciente' });
+    }
 });
 
 // ============================================
 // 6. BUSCAR PACIENTE POR TELÉFONO
 //    GET /api/patients/search/phone/:phone
 // ============================================
-router.get('/search/phone/:phone', requireAuth, (req, res) => {
+router.get('/search/phone/:phone', requireAuth, async (req, res) => {
     const { phone } = req.params;
 
-    db.get(
-        'SELECT * FROM patients WHERE phone = ?',
-        [phone],
-        (err, patient) => {
-            if (err) {
-                console.error('Error al buscar paciente:', err);
-                return res
-                    .status(500)
-                    .json({ error: 'Error al buscar paciente' });
-            }
+    try {
+        const { rows } = await pgPool.query(
+            'SELECT * FROM patients WHERE phone = $1 LIMIT 1',
+            [phone]
+        );
 
-            if (!patient) {
-                return res.status(404).json({
-                    error: 'Paciente no encontrado',
-                    found: false,
-                });
-            }
+        const patient = rows[0];
 
-            res.json({
-                found: true,
-                patient,
+        if (!patient) {
+            return res.status(404).json({
+                error: 'Paciente no encontrado',
+                found: false,
             });
         }
-    );
+
+        return res.json({
+            found: true,
+            patient,
+        });
+    } catch (err) {
+        console.error('❌ Error al buscar paciente (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al buscar paciente' });
+    }
 });
 
 // ============================================
 // 7. OBTENER ESTADÍSTICAS DEL PACIENTE
 //    GET /api/patients/:id/stats
 // ============================================
-router.get('/:id/stats', requireAuth, (req, res) => {
+router.get('/:id/stats', requireAuth, async (req, res) => {
     const { id } = req.params;
 
     const query = `
-        SELECT
-          COUNT(*) as total_consultations,
-          MIN(weight) as min_weight,
-          MAX(weight) as max_weight,
-          AVG(weight) as avg_weight,
-          MIN(bmi) as min_bmi,
-          MAX(bmi) as max_bmi,
-          AVG(bmi) as avg_bmi,
-          (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date ASC LIMIT 1) as initial_weight,
-          (SELECT weight FROM consultations WHERE patient_id = ? ORDER BY consultation_date DESC LIMIT 1) as current_weight
-        FROM consultations
-        WHERE patient_id = ?
-    `;
+    SELECT
+      COUNT(*)::int AS total_consultations,
+      MIN(weight) AS min_weight,
+      MAX(weight) AS max_weight,
+      AVG(weight) AS avg_weight,
+      MIN(bmi) AS min_bmi,
+      MAX(bmi) AS max_bmi,
+      AVG(bmi) AS avg_bmi,
+      (
+        SELECT weight 
+        FROM consultations 
+        WHERE patient_id = $1 
+        ORDER BY consultation_date ASC 
+        LIMIT 1
+      ) AS initial_weight,
+      (
+        SELECT weight 
+        FROM consultations 
+        WHERE patient_id = $1 
+        ORDER BY consultation_date DESC 
+        LIMIT 1
+      ) AS current_weight
+    FROM consultations
+    WHERE patient_id = $1
+  `;
 
-    db.get(query, [id, id, id], (err, stats) => {
-        if (err) {
-            console.error('Error al obtener estadísticas:', err);
-            return res
-                .status(500)
-                .json({ error: 'Error al obtener estadísticas' });
-        }
+    try {
+        const { rows } = await pgPool.query(query, [id]);
+        const stats = rows[0] || null;
 
-        // Calcular diferencia de peso
-        if (stats && stats.initial_weight && stats.current_weight) {
+        if (stats && stats.initial_weight != null && stats.current_weight != null) {
             stats.weight_difference =
-                stats.current_weight - stats.initial_weight;
+                Number(stats.current_weight) - Number(stats.initial_weight);
         }
 
-        res.json(stats);
-    });
+        return res.json(stats);
+    } catch (err) {
+        console.error('❌ Error al obtener estadísticas (Postgres):', err);
+        return res
+            .status(500)
+            .json({ error: 'Error al obtener estadísticas' });
+    }
 });
 
 module.exports = router;
