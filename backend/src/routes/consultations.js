@@ -10,12 +10,21 @@ const router = express.Router();
 // AHORA USAMOS POSTGRES
 const pg = require('../pgClient');
 
-// Helper para convertir strings a float o null
+// Helpers para convertir valores opcionales
 function toFloatOrNull(value) {
-    if (value === '' || value === undefined || value === null) return null;
-    const n = Number(value);
-    return Number.isNaN(n) ? null : n;
+    if (value === undefined || value === null) return null;
+    if (typeof value === 'string' && value.trim() === '') return null;
+    const num = Number(value);
+    return Number.isNaN(num) ? null : num;
 }
+
+function toIntOrNull(value) {
+    if (value === undefined || value === null) return null;
+    if (typeof value === 'string' && value.trim() === '') return null;
+    const num = parseInt(value, 10);
+    return Number.isNaN(num) ? null : num;
+}
+
 
 
 // ===================================================================
@@ -339,10 +348,10 @@ router.post('/', async (req, res) => {
         `;
 
         const values = [
-            // Identificadores
-            patient_id,
-            appointment_id || null,
-            consultation_date,
+            // IDs
+            toIntOrNull(patient_id),
+            toIntOrNull(appointment_id),
+            consultation_date || null,
 
             // Subjetivo
             subjective || null,
@@ -354,35 +363,35 @@ router.post('/', async (req, res) => {
             water_intake || null,
             bowel_habits || null,
 
-            // Antropometría
-            weight || null,
-            height || null,
-            bmi,
-            waist || null,
-            hip || null,
-            waist_hip_ratio,
-            body_fat || null,
-            body_fat_percentage ?? body_fat ?? null,
-            muscle_mass || null,
-            ideal_weight || null,
+            // Antropometría (todos números → toFloatOrNull)
+            toFloatOrNull(weight),
+            toFloatOrNull(height),
+            toFloatOrNull(bmi),
+            toFloatOrNull(waist),
+            toFloatOrNull(hip),
+            toFloatOrNull(waist_hip_ratio),
+            toFloatOrNull(body_fat),
+            toFloatOrNull(body_fat_percentage),
+            toFloatOrNull(muscle_mass),
+            toFloatOrNull(ideal_weight),
 
             // Signos vitales
             blood_pressure || null,
-            heart_rate || null,
-            temperature || null,
+            toIntOrNull(heart_rate),
+            toFloatOrNull(temperature),
 
             // Bioquímicos
-            glucose || null,
-            hba1c || null,
-            cholesterol || null,
-            triglycerides || null,
-            hdl || null,
-            ldl || null,
-            hemoglobin || null,
-            albumin || null,
+            toFloatOrNull(glucose),
+            toFloatOrNull(hba1c),
+            toFloatOrNull(cholesterol),
+            toFloatOrNull(triglycerides),
+            toFloatOrNull(hdl),
+            toFloatOrNull(ldl),
+            toFloatOrNull(hemoglobin),
+            toFloatOrNull(albumin),
             objective_notes || null,
 
-            // Análisis
+            // Análisis (PES)
             pes_problem || null,
             pes_etiology || null,
             pes_signs || null,
@@ -395,10 +404,10 @@ router.post('/', async (req, res) => {
             // Plan
             treatment_plan || null,
             treatment_goals || null,
-            calories_prescribed || null,
-            protein_prescribed || null,
-            carbs_prescribed || null,
-            fats_prescribed || null,
+            toFloatOrNull(calories_prescribed),
+            toFloatOrNull(protein_prescribed),
+            toFloatOrNull(carbs_prescribed),
+            toFloatOrNull(fats_prescribed),
             diet_type || null,
             supplements_recommended || null,
             education_provided || null,
@@ -410,22 +419,26 @@ router.post('/', async (req, res) => {
             created_by || null,
         ];
 
+
         const { rows } = await pg.query(insertQuery, values);
         const consultation = rows[0];
         const consultationId = consultation.id;
 
         // 3) Actualizaciones paralelas (no bloquean la respuesta)
         // 3.1 Actualizar datos básicos del paciente
-        if (weight) {
+        const weightForUpdate = toFloatOrNull(weight);
+        const bmiForUpdate = toFloatOrNull(bmi);
+
+        if (weightForUpdate !== null) {
             pg.query(
                 `
-                UPDATE patients
-                SET current_weight = $1,
-                    current_bmi = $2,
-                    last_consultation_date = $3
-                WHERE id = $4
+                    UPDATE patients
+                    SET current_weight = $1,
+                        current_bmi = $2,
+                        last_consultation_date = $3
+                    WHERE id = $4
                 `,
-                [weight, bmi, consultation_date, patient_id]
+                [weightForUpdate, bmiForUpdate, consultation_date || null, toIntOrNull(patient_id)]
             ).catch(err =>
                 console.error('Error actualizando datos del paciente:', err)
             );
