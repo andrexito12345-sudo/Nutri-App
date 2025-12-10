@@ -43,7 +43,10 @@ router.post('/login', async (req, res) => {
         console.log('   ✅ Doctora encontrada:');
         console.log('      id:', doctor.id);
         console.log('      email:', doctor.email);
-        console.log('      hash (primeros 20 chars):', String(doctor.password_hash).slice(0, 20) + '...');
+        console.log(
+            '      hash (primeros 20 chars):',
+            String(doctor.password_hash).slice(0, 20) + '...'
+        );
 
         console.log('🔑 Comparando contraseña con bcrypt...');
         const isMatch = await bcrypt.compare(password, doctor.password_hash);
@@ -61,7 +64,7 @@ router.post('/login', async (req, res) => {
         console.log('   Antes de asignar, req.sessionID =', req.sessionID);
         console.log('   req.session actual:', req.session);
 
-        // 👉 Asignamos datos de la doctora a la sesión
+        // 👉 Aquí metemos a la doctora en la sesión
         req.session.doctorId = doctor.id;
         req.session.doctorName = doctor.name;
         req.session.doctorEmail = doctor.email;
