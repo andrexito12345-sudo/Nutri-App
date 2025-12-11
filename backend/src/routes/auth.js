@@ -2,14 +2,13 @@
 
 const express = require('express');
 const bcrypt = require('bcryptjs');
-// Antes usábamos: const db = require('../db');
-const pg = require('../pgClient');
+const pgPool = require('../pgClient'); // Pool de PostgreSQL
 
 const router = express.Router();
 
-// POST /api/auth/login
-// backend/src/routes/auth.js
-
+/**
+ * POST /api/auth/login
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -26,7 +25,7 @@ router.post('/login', async (req, res) => {
 
     try {
         console.log('📡 Consultando doctora en PostgreSQL...');
-        const { rows } = await pg.query(
+        const { rows } = await pgPool.query(
             'SELECT * FROM doctors WHERE email = $1 LIMIT 1',
             [email]
         );
@@ -44,8 +43,8 @@ router.post('/login', async (req, res) => {
         console.log('   id:', doctor.id);
         console.log('   email:', doctor.email);
 
-        const isMatch = await bcrypt.compare(password, doctor.password_hash);
         console.log('🔐 Comparando contraseña con bcrypt...');
+        const isMatch = await bcrypt.compare(password, doctor.password_hash);
         console.log('   Resultado bcrypt.compare isMatch =', isMatch);
 
         if (!isMatch) {
@@ -57,7 +56,7 @@ router.post('/login', async (req, res) => {
 
         console.log('✅ Login correcto, regenerando sesión...');
 
-        // 🔄 Regenerar sesión para tener un SID limpio
+        // Regenerar la sesión para tener un SID limpio
         req.session.regenerate((err) => {
             if (err) {
                 console.error('❌ Error al regenerar sesión:', err);
@@ -66,7 +65,7 @@ router.post('/login', async (req, res) => {
                     .json({ ok: false, message: 'Error al crear sesión' });
             }
 
-            // 🧠 Guardar datos de la doctora en la sesión
+            // Guardar datos de la doctora en la sesión
             req.session.doctorId = doctor.id;
             req.session.doctorName = doctor.name;
             req.session.doctorEmail = doctor.email;
@@ -76,7 +75,7 @@ router.post('/login', async (req, res) => {
             console.log('   doctorId:', req.session.doctorId);
             console.log('   cookie:', req.session.cookie);
 
-            // 💾 Forzar guardado de la sesión en el store
+            // Forzar guardado de la sesión en el store
             req.session.save((err2) => {
                 if (err2) {
                     console.error('❌ Error guardando la sesión:', err2);
@@ -97,7 +96,6 @@ router.post('/login', async (req, res) => {
                 });
             });
         });
-
     } catch (err) {
         console.error('❌ Error en /api/auth/login:', err);
         return res
@@ -106,26 +104,34 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// POST /api/auth/logout
+/**
+ * POST /api/auth/logout
+ */
 router.post('/logout', (req, res) => {
+    if (!req.session) {
+        return res.json({ ok: true });
+    }
+
     req.session.destroy((err) => {
         if (err) {
-            console.error(err);
-            return res
-                .status(500)
-                .json({ ok: false, message: 'No se pudo cerrar sesión' });
+            console.error('❌ [LOGOUT] Error al destruir la sesión:', err);
         }
-        res.clearCookie('connect.sid');
-        return res.json({ ok: true, message: 'Sesión cerrada' });
+
+        // IMPORTANTE: este nombre debe coincidir con "name" del session() en server.js
+        res.clearCookie('nvpsid');
+        return res.json({ ok: true });
     });
 });
 
-// GET /api/auth/me
+/**
+ * GET /api/auth/me
+ */
 router.get('/me', (req, res) => {
     if (!req.session || !req.session.doctorId) {
-        return res
-            .status(401)
-            .json({ ok: false, message: 'No autenticado' });
+        return res.status(401).json({
+            ok: false,
+            message: 'No autenticado',
+        });
     }
 
     return res.json({
