@@ -149,7 +149,7 @@ const sessionOptions = {
 
         // [No verificado] Como frontend y backend están en subdominios de onrender.com,
         // 'lax' es suficiente y más simple que 'none'.
-        sameSite: 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
 
         // En Render (NODE_ENV=production) la cookie va como Secure.
         secure: isProduction,
