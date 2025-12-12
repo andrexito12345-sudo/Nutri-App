@@ -1,16 +1,17 @@
 // ============================================================
 // backend/src/server.js
 // ------------------------------------------------------------
+// Versión con JWT - Sin sesiones SQLite
+// ============================================================
 
 require('dotenv').config();
 
 const express = require('express');
-const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
 const cors = require('cors');
 const pgPool = require('./pgClient');
 const path = require('path');
 
+// Rutas
 const authRoutes = require('./routes/auth');
 const appointmentsRoutes = require('./routes/appointments');
 const dashboardRoutes = require('./routes/dashboard');
@@ -27,7 +28,6 @@ const PORT = process.env.PORT || 4000;
 
 // ===== ENTORNO =============================================================
 
-// Render pone RENDER="true". Aseguramos que esto también cuente como producción.
 const isRender = process.env.RENDER === 'true';
 const isProduction = process.env.NODE_ENV === 'production' || isRender;
 
@@ -41,62 +41,48 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin(origin, callback) {
-        if (!origin) return callback(null, true); // p.ej. Postman
+        // Permitir requests sin origin (ej: Postman, curl)
+        if (!origin) return callback(null, true);
 
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
 
-        console.warn('Origen no permitido por CORS:', origin);
+        console.warn('⚠️ Origen no permitido por CORS:', origin);
         return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true,
+    credentials: true, // Permitir cookies/headers de autorización
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// ===== SESIONES ============================================================
-
-// Necesario detrás de proxy (Render) para que secure/samesite funcionen bien
+// ===== TRUST PROXY (para Render) ===========================================
 app.set('trust proxy', 1);
-
-const sessionStore = new SQLiteStore({
-    db: 'sessions.sqlite',
-    // dir: './backend', // solo si quieres cambiar la carpeta
-});
-
-const sessionOptions = {
-    name: 'nvpsid', // nombre de la cookie de sesión
-    secret: process.env.SESSION_SECRET || 'dev-secret-muy-largo-y-seguro',
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 días
-        // En Render (subdominios distintos, peticiones XHR) necesitamos SameSite=None + Secure
-        sameSite: isProduction ? 'none' : 'lax',
-        secure: isProduction,
-    },
-};
-
-app.use(session(sessionOptions));
 
 // ===== RUTAS BASE ==========================================================
 
+// Health check
 app.get('/api/health', (req, res) => {
-    res.json({ ok: true, message: 'API Nutricionista funcionando 🚀' });
+    res.json({
+        ok: true,
+        message: 'API NutriVida Pro funcionando 🚀',
+        mode: isProduction ? 'production' : 'development',
+        timestamp: new Date().toISOString(),
+    });
 });
 
+// Formulario de landing (público)
 app.post('/api/landing/form', async (req, res) => {
     try {
         const payload = req.body;
 
         const result = await pgPool.query(
             `INSERT INTO landing_leads (payload)
-       VALUES ($1)
-       RETURNING id, created_at`,
+             VALUES ($1)
+             RETURNING id, created_at`,
             [payload]
         );
 
@@ -108,13 +94,15 @@ app.post('/api/landing/form', async (req, res) => {
             createdAt: row.created_at,
         });
     } catch (err) {
-        console.error('❌ Error guardando formulario de landing en Postgres:', err);
+        console.error('❌ Error guardando formulario de landing:', err);
         res.status(500).json({
             ok: false,
             error: 'Error guardando formulario de landing',
         });
     }
 });
+
+// ===== MONTAR RUTAS ========================================================
 
 app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentsRoutes);
@@ -123,21 +111,58 @@ app.use('/api/visits', visitsRoutes);
 app.use('/api/patients', patientsRoutes);
 app.use('/api/consultations', consultationsRoutes);
 
+// ===== MANEJO DE ERRORES ===================================================
+
+// Ruta no encontrada
+app.use((req, res, next) => {
+    res.status(404).json({
+        ok: false,
+        message: `Ruta no encontrada: ${req.method} ${req.originalUrl}`,
+    });
+});
+
+// Error handler global
+app.use((err, req, res, next) => {
+    console.error('❌ Error no manejado:', err);
+
+    // Error de CORS
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({
+            ok: false,
+            message: 'Origen no permitido por CORS',
+        });
+    }
+
+    res.status(500).json({
+        ok: false,
+        message: 'Error interno del servidor',
+    });
+});
+
 // ===== ARRANQUE ============================================================
 
 async function start() {
     try {
-        console.log('🚀 Ejecutando seedDoctor() al inicio...');
+        console.log('🚀 Iniciando NutriVida Pro Backend...');
+        console.log('   Entorno:', isProduction ? 'PRODUCCIÓN' : 'DESARROLLO');
+
+        // Ejecutar seed de doctora
+        console.log('👩‍⚕️ Ejecutando seedDoctor()...');
         await seedDoctor();
-        console.log('✅ seedDoctor() completado. Iniciando servidor Express...');
+        console.log('✅ seedDoctor() completado');
+
     } catch (err) {
-        console.error('❌ Error durante seedDoctor():', err.message || err);
-        // process.exit(1); // si quieres que no arranque sin seed
+        console.error('❌ Error durante inicialización:', err.message || err);
     }
 
     app.listen(PORT, '0.0.0.0', () => {
-        console.log(`✅ Servidor backend escuchando en puerto ${PORT}`);
-        console.log('   isProduction =', isProduction, 'RENDER =', process.env.RENDER);
+        console.log('');
+        console.log('════════════════════════════════════════════');
+        console.log(`✅ Servidor escuchando en puerto ${PORT}`);
+        console.log(`   Modo: ${isProduction ? 'Producción' : 'Desarrollo'}`);
+        console.log(`   RENDER: ${process.env.RENDER || 'false'}`);
+        console.log('════════════════════════════════════════════');
+        console.log('');
     });
 }
 

@@ -1,7 +1,7 @@
 // frontend/src/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api, { saveAuthData } from '../api';  // ← Agregado saveAuthData
 import './LoginPage.css';
 
 function LoginPage() {
@@ -28,16 +28,21 @@ function LoginPage() {
         try {
             const res = await api.post('/auth/login', form);
             const data = res.data || {};
-            const token = data.token;
 
-            if (data.ok !== false) {
-                if (token) localStorage.setItem('nutri_token', token);
+            if (data.ok) {
+                // ✅ Guardar token JWT y datos del doctor
+                saveAuthData(data.token, data.doctor);
                 navigate('/doctora/dashboard');
             } else {
                 setError(data.message || 'Credenciales incorrectas.');
             }
         } catch (err) {
-            setError('No se pudo iniciar sesión. Intenta de nuevo.');
+            // Manejar errores de respuesta del servidor
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else {
+                setError('No se pudo iniciar sesión. Intenta de nuevo.');
+            }
         } finally {
             setLoading(false);
         }
