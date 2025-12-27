@@ -36,7 +36,7 @@ async function seedDoctor() {
         // 1) Asegurar que exista la tabla doctors en PostgreSQL
         await pg.query(`
       CREATE TABLE IF NOT EXISTS doctors (
-        id SERIAL PRIMARY KEY,
+        id SERIAL PRIMARY KEY,  
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,

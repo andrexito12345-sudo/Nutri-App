@@ -66,3 +66,7 @@ build/
 # ------------------------------------------------------------
 coverage/
 .nyc_output/
+
+# dumps / backups
+*.sql
+*.dump
