@@ -37,6 +37,7 @@ const allowedOrigins = [
     'http://localhost:5173',
     'http://192.168.1.11:5173',
     'https://nutri-app-dashboard.onrender.com',
+    'https://nutriapp-landing.onrender.com',
 ];
 
 const corsOptions = {
@@ -57,6 +58,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // ===== TRUST PROXY (para Render) ===========================================
