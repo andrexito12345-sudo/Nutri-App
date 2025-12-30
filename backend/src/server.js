@@ -37,6 +37,7 @@ const allowedOrigins = [
     'http://localhost:5173',
     'http://192.168.1.11:5173',
     'https://nutri-app-dashboard.onrender.com',
+    'https://nutriapp-landing.onrender.com',
 ];
 
 const corsOptions = {
