@@ -4,6 +4,135 @@ import api from "../api";
 import "./LandingPage.css";
 import IMCLandingPage from "../components/IMCLandingPage";
 
+// ============================================================
+// ICONOS SVG PROFESIONALES - Reemplazan emojis
+// ============================================================
+const Icons = {
+    // Logo de la app (manzana/nutrición)
+    Logo: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lp-header__logo-icon">
+            <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>
+            <path d="M10 2c1 .5 2 2 2 5"/>
+        </svg>
+    ),
+
+    // Icono del tag (rayo/energía)
+    Bolt: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lp-tag__icon">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+    ),
+
+    // Check/verificado
+    Check: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>
+    ),
+
+    // Candado (seguridad)
+    Lock: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+    ),
+
+    // Casa/Home
+    Home: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+    ),
+
+    // Calendario
+    Calendar: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+    ),
+
+    // Usuario
+    User: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+    ),
+
+    // WhatsApp/Teléfono
+    Phone: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+    ),
+
+    // Email
+    Mail: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+        </svg>
+    ),
+
+    // Ubicación
+    MapPin: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+        </svg>
+    ),
+
+    // Reloj
+    Clock: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+        </svg>
+    ),
+
+    // Estrella
+    Star: () => (
+        <svg viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        </svg>
+    ),
+
+    // Quote (comillas)
+    Quote: () => (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="quote-icon">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+        </svg>
+    ),
+
+    // Check circle (verificado)
+    CheckCircle: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="badge-icon">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+    ),
+
+    // Flecha derecha
+    ArrowRight: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lp-btn__icon">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+        </svg>
+    ),
+
+    // Check para botón
+    CheckBtn: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lp-btn__icon">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>
+    )
+};
+
 function LandingPage() {
 
     const [formData, setFormData] = useState({
@@ -16,10 +145,9 @@ function LandingPage() {
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
-
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    // ✅ REGISTRAR VISITA AL CARGAR LA PÁGINA
+    // Registrar visita al cargar la página
     const visitRegistered = useRef(false);
 
     useEffect(() => {
@@ -55,17 +183,13 @@ function LandingPage() {
             if (res.data && res.data.ok) {
                 try {
                     await api.post("/landing/form", {
-                        // Guardamos TODO lo que rellenó el usuario
                         ...formData,
-                        // y opcionalmente también el payload que se envió a appointments
                         appointmentPayload: payload,
                         source: "landing-page",
                     });
                 } catch (err) {
                     console.error("❌ Error guardando en landing_leads (Postgres):", err);
-                    // No mostramos error al usuario, porque la cita sí se creó.
                 }
-                // ÉXITO: Activamos el Modal y limpiamos el formulario
                 setShowSuccessModal(true);
                 setFormData({
                     name: "",
@@ -91,7 +215,6 @@ function LandingPage() {
         }
     };
 
-    // Función para cerrar el modal
     const closeSuccessModal = () => {
         setShowSuccessModal(false);
     };
@@ -103,27 +226,74 @@ function LandingPage() {
         }
     };
 
-    // FUNCION NUEVA: Recibe el resultado del IMC y rellena el formulario
     const handleIMCResult = (mensaje) => {
         setFormData((prev) => ({
             ...prev,
-            reason: mensaje // Rellena el motivo automáticamente
+            reason: mensaje
         }));
-        scrollToForm(); // Baja suavemente al formulario
+        scrollToForm();
     };
+
+    // ANIMACIÓN DE CONTADORES AL HACER SCROLL (500+, 95%, 3+)
+    useEffect(() => {
+        const counters = document.querySelectorAll('.lp-hero__stat-number');
+        const triggerPoint = window.innerHeight * 0.85; // Activar cuando esté al 85% visible
+
+        const startCounter = (entry) => {
+            if (entry.isIntersecting) {
+                counters.forEach(counter => {
+                    counter.classList.add('animate-counter');
+
+                    const target = counter.textContent.trim();
+                    const isPercent = target.includes('%');
+                    const finalNumber = parseInt(target.replace(/[^\d]/g, ''));
+
+                    let current = 0;
+                    const increment = finalNumber / 60; // 60 frames aprox
+
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= finalNumber) {
+                            clearInterval(timer);
+                            counter.textContent = target; // Asegura el valor final exacto
+                        } else {
+                            counter.textContent = isPercent
+                                ? Math.floor(current) + '%'
+                                : (target.includes('+') ? Math.floor(current) + '+' : Math.floor(current));
+                        }
+                    }, 35);
+                });
+            }
+        };
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                startCounter(entry);
+                observer.unobserve(entry.target); // Solo una vez
+            }
+        }, { threshold: 0.3 });
+
+        const statsSection = document.querySelector('.lp-hero__stats');
+        if (statsSection) observer.observe(statsSection);
+
+        return () => {
+            if (statsSection) observer.unobserve(statsSection);
+        };
+    }, []);
 
     return (
         <div className="lp">
-
             <main className="lp-main">
-                {/* HERO SECTION */}
+
+                {/* ==================== HERO SECTION ==================== */}
                 <section className="lp-hero">
                     <div className="lp-container">
                         <div className="lp-hero__grid">
+
                             {/* CONTENIDO IZQUIERDO */}
                             <div className="lp-hero__content">
                                 <div className="lp-tag">
-                                    <span className="lp-tag__icon">⚡</span>
+                                    <Icons.Bolt />
                                     <span>Transformación Nutricional Personalizada</span>
                                 </div>
 
@@ -145,6 +315,7 @@ function LandingPage() {
                                         onClick={scrollToForm}
                                     >
                                         Comenzar Ahora
+                                        <Icons.ArrowRight />
                                     </button>
                                     <button type="button" className="lp-btn lp-btn--outline lp-btn--large">
                                         Ver Planes
@@ -154,16 +325,16 @@ function LandingPage() {
                                 {/* STATS */}
                                 <div className="lp-hero__stats">
                                     <div className="lp-hero__stat">
-                                        <div className="lp-hero__stat-number">500+</div>
-                                        <div className="lp-hero__stat-label">Pacientes Felices</div>
+                                        <span className="lp-hero__stat-number">500+</span>
+                                        <span className="lp-hero__stat-label">Pacientes Felices</span>
                                     </div>
                                     <div className="lp-hero__stat">
-                                        <div className="lp-hero__stat-number">95%</div>
-                                        <div className="lp-hero__stat-label">Éxito en Metas</div>
+                                        <span className="lp-hero__stat-number">95%</span>
+                                        <span className="lp-hero__stat-label">Éxito en Metas</span>
                                     </div>
                                     <div className="lp-hero__stat">
-                                        <div className="lp-hero__stat-number">3+</div>
-                                        <div className="lp-hero__stat-label">Años Experiencia</div>
+                                        <span className="lp-hero__stat-number">3+</span>
+                                        <span className="lp-hero__stat-label">Años Experiencia</span>
                                     </div>
                                 </div>
                             </div>
@@ -275,8 +446,7 @@ function LandingPage() {
                                             ) : (
                                                 <>
                                                     Confirmar Cita
-                                                    <span className="lp-btn__icon">✓</span>
-
+                                                    <Icons.CheckBtn />
                                                 </>
                                             )}
                                         </button>
@@ -288,7 +458,8 @@ function LandingPage() {
                                         )}
 
                                         <p className="lp-hero__form-note">
-                                            🔒 Tus datos están protegidos y son completamente confidenciales
+                                            <Icons.Lock />
+                                            Tus datos están protegidos y son completamente confidenciales
                                         </p>
                                     </form>
                                 </div>
@@ -296,7 +467,8 @@ function LandingPage() {
                         </div>
                     </div>
                 </section>
-                {/* ====================== SOBRE MÍ / CREDIBILIDAD ====================== */}
+
+                {/* ==================== SOBRE MÍ / CREDIBILIDAD ==================== */}
                 <section className="lp-section lp-section--soft">
                     <div className="lp-container">
                         <div className="lp-section__header">
@@ -308,42 +480,53 @@ function LandingPage() {
                             </p>
                         </div>
 
-                        <div className="lp-hero__grid" style={{alignItems: 'center'}}>
-                            <div>
-                                <img
-                                    src="/assets/daniela-pro.jpg"
-                                    alt="Nutricionista Daniela Vargas"
-                                    style={{borderRadius: '1.5rem', width: '100%', boxShadow: '0 20px 40px rgba(75,0,130,0.2)'}}
-                                />
-                            </div>
+                        <div className="lp-about-grid">
+                            <img
+                                src="/assets/daniela-pro.jpg"
+                                alt="Nutricionista Daniela Vaca"
+                                className="lp-about__image"
+                            />
 
-                            <div>
-                                <h3 style={{fontSize: '1.8rem', marginBottom: '1.5rem'}}>
+                            <div className="lp-about__content">
+                                <h3 className="lp-about__title">
                                     Licenciada en Nutrición Humana • Magíster en Nutrición Clínica
                                 </h3>
-                                <ul style={{listStyle: 'none', fontSize: '1.1rem', lineHeight: '2'}} className="lp-card__list">
-                                    <li>✔ Certificada en Nutrición Deportiva ISSN-SNS (USA)</li>
-                                    <li>✔ Miembro activo del Colegio de Nutricionistas del Ecuador</li>
-                                    <li>✔ +500 pacientes atendidos con 95% de éxito en metas</li>
-                                    <li>✔ Ponente en Congreso Latinoamericano de Obesidad 2024</li>
-                                    <li>✔ Especialista en diabetes, SOP, tiroides y recomposición corporal</li>
+                                <ul className="lp-about__list">
+                                    <li>
+                                        <Icons.Check />
+                                        Certificada en Nutrición Deportiva ISSN-SNS (USA)
+                                    </li>
+                                    <li>
+                                        <Icons.Check />
+                                        Miembro activo del Colegio de Nutricionistas del Ecuador
+                                    </li>
+                                    <li>
+                                        <Icons.Check />
+                                        +500 pacientes atendidos con 95% de éxito en metas
+                                    </li>
+                                    <li>
+                                        <Icons.Check />
+                                        Ponente en Congreso Latinoamericano de Obesidad 2024
+                                    </li>
+                                    <li>
+                                        <Icons.Check />
+                                        Especialista en diabetes, SOP, tiroides y recomposición corporal
+                                    </li>
                                 </ul>
 
-                                <div style={{marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
-                                    <img src="/assets/cert1.png" alt="Certificado" style={{height: '70px', borderRadius: '8px'}} />
-                                    <img src="/assets/cert2.png" alt="Certificado" style={{height: '70px', borderRadius: '8px'}} />
-                                    <img src="/assets/colegio-nutri.png" alt="Colegio" style={{height: '70px', borderRadius: '8px'}} />
+                                <div className="lp-about__certs">
+                                    <img src="/assets/cert1.png" alt="Certificado" />
+                                    <img src="/assets/cert2.png" alt="Certificado" />
+                                    <img src="/assets/colegio-nutri.png" alt="Colegio" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* SECCION DE LA CALCULADORA IMC - VERSIÓN MEJORADA */}
+                {/* ==================== CALCULADORA IMC ==================== */}
                 <section className="lp-calculator-section">
                     <div className="lp-calculator-container">
-
-                        {/* Encabezado de la sección */}
                         <div className="lp-calculator-header">
                             <h2 className="lp-calculator-title">
                                 Conoce tu estado de <span className="text-gradient">Salud Real</span>
@@ -354,14 +537,11 @@ function LandingPage() {
                             </p>
                         </div>
 
-                        {/* COMPONENTE CALCULADORA IMPORTADO */}
                         <IMCLandingPage onAgendar={handleIMCResult} />
-
                     </div>
                 </section>
 
-
-                {/* HERRAMIENTAS NUTRICIONALES */}
+                {/* ==================== HERRAMIENTAS NUTRICIONALES ==================== */}
                 <section className="lp-section lp-section--white">
                     <div className="lp-container">
                         <div className="lp-section__header">
@@ -372,7 +552,6 @@ function LandingPage() {
                         </div>
 
                         <div className="lp-tools-grid">
-                            {/* Análisis Corporal */}
                             <div className="lp-tool-card lp-tool-card--blue">
                                 <div className="lp-tool-card__icon">
                                     <video
@@ -381,12 +560,6 @@ function LandingPage() {
                                         loop
                                         muted
                                         playsInline
-                                        style={{
-                                            width: '140px',      /* ← AQUÍ LO HACEMOS MÁS GRANDE */
-                                            height: '140px',     /* ← mismo alto que ancho */
-                                            maxWidth: 'none',    /* ← importante para que no se limite */
-                                            pointerEvents: 'none'
-                                        }}
                                     />
                                 </div>
                                 <h3 className="lp-tool-card__title">Análisis Corporal</h3>
@@ -395,7 +568,6 @@ function LandingPage() {
                                 </p>
                             </div>
 
-                            {/* Seguimiento Digital */}
                             <div className="lp-tool-card lp-tool-card--green">
                                 <div className="lp-tool-card__icon">
                                     <video
@@ -404,12 +576,6 @@ function LandingPage() {
                                         loop
                                         muted
                                         playsInline
-                                        style={{
-                                            width: '140px',      /* ← AQUÍ LO HACEMOS MÁS GRANDE */
-                                            height: '140px',     /* ← mismo alto que ancho */
-                                            maxWidth: 'none',    /* ← importante para que no se limite */
-                                            pointerEvents: 'none'
-                                        }}
                                     />
                                 </div>
                                 <h3 className="lp-tool-card__title">Seguimiento Digital</h3>
@@ -418,7 +584,6 @@ function LandingPage() {
                                 </p>
                             </div>
 
-                            {/* Plan de Hidratación */}
                             <div className="lp-tool-card lp-tool-card--purple">
                                 <div className="lp-tool-card__icon">
                                     <video
@@ -427,12 +592,6 @@ function LandingPage() {
                                         loop
                                         muted
                                         playsInline
-                                        style={{
-                                            width: '140px',      /* ← AQUÍ LO HACEMOS MÁS GRANDE */
-                                            height: '140px',     /* ← mismo alto que ancho */
-                                            maxWidth: 'none',    /* ← importante para que no se limite */
-                                            pointerEvents: 'none'
-                                        }}
                                     />
                                 </div>
                                 <h3 className="lp-tool-card__title">Plan de Hidratación</h3>
@@ -441,7 +600,6 @@ function LandingPage() {
                                 </p>
                             </div>
 
-                            {/* Recetas Personalizadas */}
                             <div className="lp-tool-card lp-tool-card--rose">
                                 <div className="lp-tool-card__icon">
                                     <video
@@ -450,12 +608,6 @@ function LandingPage() {
                                         loop
                                         muted
                                         playsInline
-                                        style={{
-                                            width: '140px',      /* ← AQUÍ LO HACEMOS MÁS GRANDE */
-                                            height: '140px',     /* ← mismo alto que ancho */
-                                            maxWidth: 'none',    /* ← importante para que no se limite */
-                                            pointerEvents: 'none'
-                                        }}
                                     />
                                 </div>
                                 <h3 className="lp-tool-card__title">Recetas Personalizadas</h3>
@@ -467,248 +619,142 @@ function LandingPage() {
                     </div>
                 </section>
 
-                {/* PARA QUIÉN ES – VERSIÓN PREMIUM CON HOVER */}
+                {/* ==================== PARA QUIÉN ES ==================== */}
                 <section className="lp-section lp-section--soft">
                     <div className="lp-container">
                         <div className="lp-section__header">
                             <h2 className="lp-section__title">¿Para quién es este programa?</h2>
                         </div>
 
-                        <div className="lp-cards-grid lp-cards-grid--hover">
-                            {/* CARD 1 */}
-                            <div className="lp-card lp-card--hover lp-card--purple">
+                        <div className="lp-cards-grid">
+                            <div className="lp-card lp-card--hover">
                                 <h3 className="lp-card__title">Control de Peso</h3>
                                 <ul className="lp-card__list">
-                                    <li>✓ Pérdida de peso sostenible sin rebote</li>
-                                    <li>✓ Aumento de masa muscular saludable</li>
-                                    <li>✓ Mejora de composición corporal</li>
-                                    <li>✓ Planes flexibles y realistas</li>
+                                    <li><Icons.Check /> Pérdida de peso sostenible sin rebote</li>
+                                    <li><Icons.Check /> Aumento de masa muscular saludable</li>
+                                    <li><Icons.Check /> Mejora de composición corporal</li>
+                                    <li><Icons.Check /> Planes flexibles y realistas</li>
                                 </ul>
                             </div>
 
-                            {/* CARD 2 */}
-                            <div className="lp-card lp-card--hover lp-card--blue">
+                            <div className="lp-card lp-card--hover">
                                 <h3 className="lp-card__title">Condiciones de Salud</h3>
                                 <ul className="lp-card__list">
-                                    <li>✓ Diabetes y prediabetes</li>
-                                    <li>✓ Colesterol y triglicéridos altos</li>
-                                    <li>✓ Hipertensión arterial</li>
-                                    <li>✓ Síndrome metabólico</li>
+                                    <li><Icons.Check /> Diabetes y prediabetes</li>
+                                    <li><Icons.Check /> Colesterol y triglicéridos altos</li>
+                                    <li><Icons.Check /> Hipertensión arterial</li>
+                                    <li><Icons.Check /> Síndrome metabólico</li>
                                 </ul>
                             </div>
 
-                            {/* CARD 3 */}
-                            <div className="lp-card lp-card--hover lp-card--green">
-                                <h3 className="lp-card__title">Bienestar Integral</h3>
+                            <div className="lp-card lp-card--hover">
+                                <h3 className="lp-card__title">Salud Hormonal</h3>
                                 <ul className="lp-card__list">
-                                    <li>✓ Más energía y vitalidad diaria</li>
-                                    <li>✓ Mejor digestión y sueño</li>
-                                    <li>✓ Relación saludable con la comida</li>
-                                    <li>✓ Hábitos sostenibles a largo plazo</li>
+                                    <li><Icons.Check /> Síndrome de ovario poliquístico</li>
+                                    <li><Icons.Check /> Hipotiroidismo e hipertiroidismo</li>
+                                    <li><Icons.Check /> Menopausia y andropausia</li>
+                                    <li><Icons.Check /> Resistencia a la insulina</li>
+                                </ul>
+                            </div>
+
+                            <div className="lp-card lp-card--hover">
+                                <h3 className="lp-card__title">Rendimiento Deportivo</h3>
+                                <ul className="lp-card__list">
+                                    <li><Icons.Check /> Nutrición para competiciones</li>
+                                    <li><Icons.Check /> Ganancia de masa muscular</li>
+                                    <li><Icons.Check /> Optimización de energía</li>
+                                    <li><Icons.Check /> Recuperación post-entrenamiento</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* PROCESO */}
-                <section className="lp-section lp-section--white">
-                    <div className="lp-container">
-                        <div className="lp-section__header">
-                            <h2 className="lp-section__title">Tu camino hacia el bienestar</h2>
-                            <p className="lp-section__text">
-                                Un proceso simple y efectivo en 3 pasos
-                            </p>
-                        </div>
-
-                        <div className="lp-steps-grid">
-                            <div className="lp-step">
-                                <div className="lp-step__number">1</div>
-                                <h3 className="lp-step__title">Agenda tu Cita</h3>
-                                <p className="lp-step__text">
-                                    Completa el formulario y coordinaremos el mejor horario para ti,
-                                    presencial u online.
-                                </p>
-                            </div>
-
-                            <div className="lp-step">
-                                <div className="lp-step__number">2</div>
-                                <h3 className="lp-step__title">Evaluación Completa</h3>
-                                <p className="lp-step__text">
-                                    Análisis detallado de tu historia clínica, hábitos, objetivos y
-                                    estilo de vida.
-                                </p>
-                            </div>
-
-                            <div className="lp-step">
-                                <div className="lp-step__number">3</div>
-                                <h3 className="lp-step__title">Plan Personalizado</h3>
-                                <p className="lp-step__text">
-                                    Recibe tu plan nutricional único con seguimiento continuo y
-                                    ajustes mensuales.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* TESTIMONIOS */}
+                {/* ==================== TESTIMONIOS ==================== */}
                 <section className="lp-section lp-section--testimonials">
                     <div className="lp-container">
                         <div className="lp-section__header">
-                            <h2 className="lp-section__title">Historias de Éxito</h2>
+                            <h2 className="lp-section__title">Lo que dicen nuestros pacientes</h2>
                             <p className="lp-section__text">
-                                Personas reales, resultados reales
+                                Historias reales de transformación y bienestar
                             </p>
                         </div>
 
                         <div className="lp-testimonials-grid">
-                            {/* TESTIMONIO 1 */}
+                            {/* Testimonio 1 */}
                             <article className="lp-testimonial-card">
                                 <div className="lp-testimonial-card__quote">
-                                    <svg className="quote-icon" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                                    </svg>
+                                    <Icons.Quote />
                                 </div>
-
                                 <div className="lp-testimonial-card__content">
                                     <div className="lp-testimonial-card__stars">
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
+                                        <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
                                     </div>
-
                                     <p className="lp-testimonial-card__text">
-                                        Bajé 15 kg en 4 meses sin pasar hambre. El plan se adaptó perfectamente a mi vida laboral y ahora tengo muchísima más energía.
+                                        Perdí 12 kilos en 4 meses sin pasar hambre. Daniela me enseñó a comer bien y ahora lo hago de forma natural.
                                     </p>
-
                                     <div className="lp-testimonial-card__author">
-                                        <div className="lp-testimonial-card__avatar">
-                                            <span>MG</span>
-                                        </div>
+                                        <div className="lp-testimonial-card__avatar"><span>MP</span></div>
                                         <div className="lp-testimonial-card__info">
-                                            <p className="author-name">María González</p>
-                                            <p className="author-role">Ejecutiva, 34 años</p>
+                                            <p className="author-name">María Paz</p>
+                                            <p className="author-role">Empresaria, 35 años</p>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="lp-testimonial-card__badge">
-                                    <svg className="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                    <Icons.CheckCircle />
                                     <span>Verificado</span>
                                 </div>
                             </article>
 
-                            {/* TESTIMONIO 2 */}
+                            {/* Testimonio 2 */}
                             <article className="lp-testimonial-card">
                                 <div className="lp-testimonial-card__quote">
-                                    <svg className="quote-icon" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                                    </svg>
+                                    <Icons.Quote />
                                 </div>
-
                                 <div className="lp-testimonial-card__content">
                                     <div className="lp-testimonial-card__stars">
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
+                                        <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
                                     </div>
-
                                     <p className="lp-testimonial-card__text">
-                                        Mis triglicéridos bajaron de 300 a 120 en solo 3 meses. Mi médico está impresionado con los resultados del plan nutricional.
+                                        Mis triglicéridos bajaron de 300 a 120 en solo 3 meses. Mi médico está impresionado con los resultados.
                                     </p>
-
                                     <div className="lp-testimonial-card__author">
-                                        <div className="lp-testimonial-card__avatar">
-                                            <span>CR</span>
-                                        </div>
+                                        <div className="lp-testimonial-card__avatar"><span>CR</span></div>
                                         <div className="lp-testimonial-card__info">
                                             <p className="author-name">Carlos Ruiz</p>
                                             <p className="author-role">Ingeniero, 42 años</p>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="lp-testimonial-card__badge">
-                                    <svg className="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                    <Icons.CheckCircle />
                                     <span>Verificado</span>
                                 </div>
                             </article>
 
-                            {/* TESTIMONIO 3 */}
+                            {/* Testimonio 3 */}
                             <article className="lp-testimonial-card">
                                 <div className="lp-testimonial-card__quote">
-                                    <svg className="quote-icon" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                                    </svg>
+                                    <Icons.Quote />
                                 </div>
-
                                 <div className="lp-testimonial-card__content">
                                     <div className="lp-testimonial-card__stars">
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <svg className="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
+                                        <Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star /><Icons.Star />
                                     </div>
-
                                     <p className="lp-testimonial-card__text">
-                                        Aprendí a organizar las comidas de toda la familia. Mis hijos ahora comen mejor y sin peleas en la mesa. ¡Gracias totales!
+                                        Aprendí a organizar las comidas de toda la familia. Mis hijos ahora comen mejor y sin peleas en la mesa.
                                     </p>
-
                                     <div className="lp-testimonial-card__author">
-                                        <div className="lp-testimonial-card__avatar">
-                                            <span>AM</span>
-                                        </div>
+                                        <div className="lp-testimonial-card__avatar"><span>AM</span></div>
                                         <div className="lp-testimonial-card__info">
                                             <p className="author-name">Ana Morales</p>
                                             <p className="author-role">Madre de 2, 38 años</p>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="lp-testimonial-card__badge">
-                                    <svg className="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                    <Icons.CheckCircle />
                                     <span>Verificado</span>
                                 </div>
                             </article>
@@ -716,7 +762,7 @@ function LandingPage() {
                     </div>
                 </section>
 
-                {/* PLANES */}
+                {/* ==================== PLANES / PRICING ==================== */}
                 <section className="lp-pricing lp-section">
                     <div className="lp-container">
                         <div className="lp-pricing__header">
@@ -730,7 +776,7 @@ function LandingPage() {
                         </div>
 
                         <div className="lp-pricing__grid">
-                            {/* PLAN ESSENTIAL */}
+                            {/* Plan Essential */}
                             <div className="lp-price-card">
                                 <h3>Plan Essential</h3>
                                 <div className="lp-price">$69<small>/mes</small></div>
@@ -745,7 +791,7 @@ function LandingPage() {
                                 </button>
                             </div>
 
-                            {/* PLAN MÁS VENDIDO */}
+                            {/* Plan Transformación */}
                             <div className="lp-price-card lp-price-card--featured">
                                 <div className="lp-badge-popular">MÁS VENDIDO</div>
                                 <h3>Plan Transformación Total</h3>
@@ -755,14 +801,14 @@ function LandingPage() {
                                     <li>Análisis corporal con bioimpedancia</li>
                                     <li>Plan + <strong>recetario semanal</strong> + lista de compras</li>
                                     <li>Grupo VIP de WhatsApp + ajustes ilimitados</li>
-                                    <li>Bonus: <strong> Plan de ejercicio en casa 8 semanas</strong></li>
+                                    <li>Bonus: <strong>Plan de ejercicio en casa 8 semanas</strong></li>
                                 </ul>
                                 <button className="lp-btn lp-btn--primary" onClick={scrollToForm}>
                                     Quiero Este Plan
                                 </button>
                             </div>
 
-                            {/* PLAN ÉLITE */}
+                            {/* Plan Élite */}
                             <div className="lp-price-card">
                                 <h3>Plan Élite 1:1</h3>
                                 <div className="lp-price">$199<small>/mes</small></div>
@@ -780,8 +826,7 @@ function LandingPage() {
                     </div>
                 </section>
 
-
-                {/* CTA FINAL */}
+                {/* ==================== CTA FINAL ==================== */}
                 <section className="lp-cta">
                     <div className="lp-container">
                         <div className="lp-cta__content">
@@ -800,14 +845,14 @@ function LandingPage() {
                     </div>
                 </section>
 
-                {/* FOOTER */}
+                {/* ==================== FOOTER ==================== */}
                 <footer className="lp-footer">
                     <div className="lp-container">
                         <div className="lp-footer__grid">
                             <div className="lp-footer__col">
                                 <div className="lp-footer__brand">
                                     <div className="lp-footer__logo">
-                                        <span className="lp-footer__logo-icon">🍎</span>
+                                        <Icons.Logo />
                                     </div>
                                     <span className="lp-footer__name">NutriVida Pro</span>
                                 </div>
@@ -829,16 +874,16 @@ function LandingPage() {
                             <div className="lp-footer__col">
                                 <h4 className="lp-footer__title">Contacto</h4>
                                 <ul className="lp-footer__list">
-                                    <li>📱 WhatsApp: +593 9xx xxx xxx</li>
-                                    <li>✉️ info@nutrivida.com</li>
-                                    <li>📍 Milagro, Guayas, Ecuador</li>
+                                    <li><Icons.Phone /> +593 9xx xxx xxx</li>
+                                    <li><Icons.Mail /> info@nutrivida.com</li>
+                                    <li><Icons.MapPin /> Milagro, Guayas, Ecuador</li>
                                 </ul>
                             </div>
 
                             <div className="lp-footer__col">
                                 <h4 className="lp-footer__title">Horarios</h4>
                                 <ul className="lp-footer__list">
-                                    <li>Lunes a Viernes</li>
+                                    <li><Icons.Clock /> Lunes a Viernes</li>
                                     <li>09:00 - 18:00</li>
                                     <li>Sábados (con cita previa)</li>
                                     <li>09:00 - 13:00</li>
@@ -852,14 +897,13 @@ function LandingPage() {
                     </div>
                 </footer>
 
-                {/* === MODAL DE ÉXITO (POPUP) === */}
+                {/* ==================== MODAL DE ÉXITO ==================== */}
                 {showSuccessModal && (
                     <div className="lp-modal-overlay">
                         <div className="lp-modal-card">
                             <div className="lp-success-icon-wrapper">
-                                {/* Icono Check Animado SVG */}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                             </div>
 

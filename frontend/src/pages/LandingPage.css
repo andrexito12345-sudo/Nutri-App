@@ -1,6 +1,11 @@
 /* ==============================================================
-   VARIABLES Y CONFIGURACIÓN BASE
+   NUTRIVIDA PRO - LANDING PAGE CSS
+   Versión 2.0 - Mobile First, Profesional y Clínico
    ============================================================== */
+
+/* Google Font: Inter - Moderna, legible y profesional */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
     /* Colores principales */
     --lp-primary: #4B0082;
@@ -14,33 +19,47 @@
     --lp-gradient-cta: linear-gradient(135deg, #4B0082, #7c3aed);
 
     /* Colores de texto */
-    --lp-text-main: #111827;
-    --lp-text-soft: #4b5563;
-    --lp-text-muted: #9ca3af;
+    --lp-text-main: #1e293b;
+    --lp-text-soft: #475569;
+    --lp-text-muted: #94a3b8;
 
     /* Colores de fondo */
     --lp-bg-white: #ffffff;
-    --lp-bg-soft: #f9fafb;
-    --lp-bg-emerald: #f3e8ff;
-    --lp-bg-teal: #faf5ff;
+    --lp-bg-soft: #f8fafc;
+    --lp-bg-emerald: #faf5ff;
+    --lp-bg-teal: #f5f3ff;
 
     /* Bordes y sombras */
-    --lp-border-light: #e5e7eb;
+    --lp-border-light: #e2e8f0;
     --lp-border-emerald: #e9d5ff;
-    --lp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --lp-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --lp-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-    --lp-shadow-xl: 0 20px 40px rgba(75, 0, 130, 0.3);
+    --lp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --lp-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --lp-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --lp-shadow-xl: 0 20px 25px -5px rgba(75, 0, 130, 0.15);
 
-    /* Tipografía */
-    --lp-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    /* Tipografía moderna */
+    --lp-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Espaciados base móvil */
+    --lp-space-xs: 0.25rem;
+    --lp-space-sm: 0.5rem;
+    --lp-space-md: 1rem;
+    --lp-space-lg: 1.5rem;
+    --lp-space-xl: 2rem;
+    --lp-space-2xl: 3rem;
 }
 
 /* Reset y base */
-* {
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .lp {
@@ -48,6 +67,7 @@
     color: var(--lp-text-main);
     background: var(--lp-bg-soft);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 /* ==============================================================
@@ -64,15 +84,15 @@
 }
 
 .lp-header--scrolled {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(12px);
-    box-shadow: var(--lp-shadow-md);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .lp-header__container {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -85,97 +105,122 @@
 }
 
 .lp-header__logo {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     background: var(--lp-gradient-primary);
-    border-radius: 0.75rem;
+    border-radius: 0.625rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .lp-header__logo-icon {
-    font-size: 1.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
 }
 
 .lp-header__nav {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .lp-header__name {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
     background: var(--lp-gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+    .lp-header__container {
+        padding: 1rem 1.5rem;
+    }
+
+    .lp-header__logo {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .lp-header__name {
+        font-size: 1.25rem;
+    }
 }
 
 /* ==============================================================
    MAIN Y CONTENEDORES
    ============================================================== */
 .lp-main {
-    padding-top: 5rem;
+    padding-top: 3.5rem;
 }
 
 .lp-container {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1rem;
 }
 
-/* ==============================================================
-   HERO SECTION
-   ============================================================== */
-.lp-hero {
-    padding-top: 1rem;
-}
+@media (min-width: 768px) {
+    .lp-main {
+        padding-top: 5rem;
+    }
 
-.lp-hero__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    align-items: start;
-}
-
-@media (min-width: 1024px) {
-    .lp-hero__grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
+    .lp-container {
+        padding: 0 1.5rem;
     }
 }
 
-.lp-hero__content {
-    padding-top: 2rem;
+/* ==============================================================
+   HERO SECTION - MOBILE FIRST
+   ============================================================== */
+.lp-hero {
+    padding: 1.5rem 0 2rem;
 }
 
-/* Tag */
+.lp-hero__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.lp-hero__content {
+    text-align: center;
+}
+
+/* Tag badge */
 .lp-tag {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #dcfce7;
+    gap: 0.375rem;
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
     border-radius: 999px;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    color: #059669;
-    margin-bottom: 1.5rem;
+    color: #047857;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(4, 120, 87, 0.1);
 }
 
 .lp-tag__icon {
-    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: #059669;
 }
 
-/* Título */
+/* Título hero */
 .lp-hero__title {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: 1.875rem;
     font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
+    line-height: 1.15;
+    margin-bottom: 1rem;
     color: var(--lp-text-main);
+    letter-spacing: -0.03em;
 }
 
 .lp-hero__title-gradient {
@@ -186,49 +231,111 @@
 }
 
 .lp-hero__subtitle {
-    font-size: 1.25rem;
+    font-size: 1rem;
     line-height: 1.7;
     color: var(--lp-text-soft);
-    margin-bottom: 2rem;
-    max-width: 38rem;
+    margin-bottom: 1.5rem;
+    max-width: 100%;
 }
 
-/* Botones del hero */
+/* Botones hero */
 .lp-hero__buttons {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 3rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
 }
 
 /* Stats */
 .lp-hero__stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    padding-top: 2rem;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: var(--lp-shadow-md);
+    border: 1px solid var(--lp-border-light);
 }
 
 .lp-hero__stat {
     text-align: center;
+    padding: 0.25rem;
 }
 
 .lp-hero__stat-number {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--lp-primary);
     display: block;
-    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
 }
 
 .lp-hero__stat-label {
-    font-size: 0.875rem;
+    font-size: 0.6875rem;
     color: var(--lp-text-soft);
     display: block;
+    font-weight: 500;
+    margin-top: 0.125rem;
+}
+
+@media (min-width: 768px) {
+    .lp-hero {
+        padding: 2rem 0 3rem;
+    }
+
+    .lp-hero__content {
+        text-align: left;
+    }
+
+    .lp-hero__title {
+        font-size: 2.5rem;
+    }
+
+    .lp-hero__subtitle {
+        font-size: 1.125rem;
+        max-width: 32rem;
+    }
+
+    .lp-hero__buttons {
+        flex-direction: row;
+    }
+
+    .lp-hero__stats {
+        display: flex;
+        gap: 2rem;
+        padding: 1.5rem 2rem;
+        justify-content: flex-start;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .lp-hero__stat-number {
+        font-size: 2rem;
+    }
+
+    .lp-hero__stat-label {
+        font-size: 0.875rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lp-hero__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .lp-hero__title {
+        font-size: 3rem;
+    }
 }
 
 /* ==============================================================
-   FORMULARIO
+   FORMULARIO - MOBILE OPTIMIZED
    ============================================================== */
 .lp-hero__form-wrapper {
     position: relative;
@@ -236,65 +343,67 @@
 
 .lp-hero__form-card {
     background: var(--lp-bg-white);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px rgba(75, 0, 130, 0.12);
     border: 1px solid var(--lp-border-emerald);
 }
 
 .lp-hero__form-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.875rem;
+    margin-bottom: 1.25rem;
 }
 
 .lp-avatar {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     background: var(--lp-gradient-primary);
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 8px 20px rgba(75, 0, 130, 0.3);
     flex-shrink: 0;
 }
 
 .lp-avatar__initials {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: white;
+    letter-spacing: -0.02em;
 }
 
 .lp-hero__form-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--lp-text-main);
     margin: 0;
+    letter-spacing: -0.02em;
 }
 
 .lp-hero__form-subtitle {
-    font-size: 1rem;
+    font-size: 0.875rem;
     color: var(--lp-text-soft);
-    margin: 0.25rem 0 0;
+    margin: 0.125rem 0 0;
 }
 
 /* Form */
 .lp-form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .lp-form__group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.375rem;
 }
 
 .lp-form__label {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: var(--lp-text-main);
 }
@@ -302,32 +411,38 @@
 .lp-input,
 .lp-textarea {
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 2px solid var(--lp-border-light);
-    border-radius: 0.75rem;
-    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--lp-border-light);
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
     font-family: inherit;
     outline: none;
     transition: all 0.2s ease;
     background: var(--lp-bg-white);
+    color: var(--lp-text-main);
+}
+
+.lp-input::placeholder,
+.lp-textarea::placeholder {
+    color: var(--lp-text-muted);
 }
 
 .lp-input:focus,
 .lp-textarea:focus {
     border-color: var(--lp-primary);
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
 }
 
 .lp-textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 80px;
 }
 
 .lp-form__message {
-    padding: 1rem;
-    border-radius: 0.75rem;
+    padding: 0.875rem;
+    border-radius: 0.625rem;
     font-size: 0.875rem;
-    margin-top: 0.5rem;
+    margin-top: 0.375rem;
 }
 
 .lp-form__message--success {
@@ -343,62 +458,78 @@
 }
 
 .lp-hero__form-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
     font-size: 0.75rem;
     color: var(--lp-text-muted);
     text-align: center;
     margin-top: 0.5rem;
 }
 
+.lp-hero__form-note svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    color: #059669;
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .lp-hero__form-card {
+        padding: 2rem;
+    }
+
+    .lp-avatar {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+
+    .lp-hero__form-title {
+        font-size: 1.375rem;
+    }
+}
+
 /* ==============================================================
-   BOTONES
+   BOTONES - SISTEMA COMPLETO
    ============================================================== */
 .lp-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.875rem 1.75rem;
-    border-radius: 999px;
-    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
     text-decoration: none;
     font-family: inherit;
+    letter-spacing: -0.01em;
 }
 
 .lp-btn--small {
-    padding: 0.5rem 1.25rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    border-radius: 0.5rem;
 }
-
-.lp-btn--ghost {
-    background: transparent;
-    color: var(--lp-text-main);
-    border: none;
-}
-
-.lp-btn--ghost:hover {
-    background: rgba(75, 0, 130, 0.1);
-}
-
-
 
 .lp-btn--large {
-    padding: 1rem 2rem;
-    font-size: 1.125rem;
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
 }
 
 .lp-btn--primary {
     background: var(--lp-gradient-primary);
     color: white;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 14px rgba(75, 0, 130, 0.3);
 }
 
 .lp-btn--primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(75, 0, 130, 0.4);
 }
 
 .lp-btn--outline {
@@ -411,15 +542,26 @@
     background: var(--lp-bg-emerald);
 }
 
+.lp-btn--ghost {
+    background: transparent;
+    color: var(--lp-text-main);
+    border: none;
+    padding: 0.5rem 0.75rem;
+}
+
+.lp-btn--ghost:hover {
+    background: rgba(75, 0, 130, 0.08);
+}
+
 .lp-btn--white {
     background: white;
     color: var(--lp-primary);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .lp-btn--white:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .lp-btn--full {
@@ -427,20 +569,21 @@
 }
 
 .lp-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
 .lp-btn__icon {
-    font-size: 1.25rem;
+    width: 1rem;
+    height: 1rem;
 }
 
 /* Spinner */
 .lp-spinner {
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 2px solid white;
-    border-top-color: transparent;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -449,11 +592,23 @@
     to { transform: rotate(360deg); }
 }
 
+@media (min-width: 768px) {
+    .lp-btn {
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+    }
+
+    .lp-btn--large {
+        padding: 1rem 2rem;
+        font-size: 1.0625rem;
+    }
+}
+
 /* ==============================================================
-   SECCIONES
+   SECCIONES GENERALES
    ============================================================== */
 .lp-section {
-    padding: 5rem 0;
+    padding: 3rem 0;
 }
 
 .lp-section--white {
@@ -465,46 +620,236 @@
 }
 
 .lp-section--testimonials {
-    background: var(--lp-bg-teal);
+    background: linear-gradient(180deg, #faf5ff 0%, #f5f3ff 100%);
 }
 
 .lp-section__header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .lp-section__title {
-    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--lp-text-main);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
 }
 
 .lp-section__text {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: var(--lp-text-soft);
-    max-width: 42rem;
+    max-width: 36rem;
     margin: 0 auto;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .lp-section {
+        padding: 4rem 0;
+    }
+
+    .lp-section__header {
+        margin-bottom: 3rem;
+    }
+
+    .lp-section__title {
+        font-size: 2rem;
+    }
+
+    .lp-section__text {
+        font-size: 1.125rem;
+    }
 }
 
 /* ==============================================================
-   HERRAMIENTAS
+   SECCIÓN SOBRE MÍ / NUTRICIONISTA
+   ============================================================== */
+.lp-about-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.lp-about__image {
+    width: 100%;
+    max-width: 280px;
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 40px rgba(75, 0, 130, 0.15);
+}
+
+.lp-about__content {
+    text-align: center;
+}
+
+.lp-about__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--lp-text-main);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+}
+
+.lp-about__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.lp-about__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--lp-text-soft);
+    line-height: 1.5;
+}
+
+.lp-about__list li svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: #059669;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.lp-about__certs {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.lp-about__certs img {
+    height: 50px;
+    border-radius: 0.5rem;
+    box-shadow: var(--lp-shadow-sm);
+}
+
+@media (min-width: 768px) {
+    .lp-about-grid {
+        flex-direction: row;
+        gap: 3rem;
+    }
+
+    .lp-about__image {
+        max-width: 320px;
+    }
+
+    .lp-about__content {
+        text-align: left;
+        flex: 1;
+    }
+
+    .lp-about__title {
+        font-size: 1.5rem;
+    }
+
+    .lp-about__certs {
+        justify-content: flex-start;
+    }
+
+    .lp-about__certs img {
+        height: 60px;
+    }
+}
+
+/* ==============================================================
+   CALCULADORA SECTION
+   ============================================================== */
+.lp-calculator-section {
+    padding: 3rem 1rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+.lp-calculator-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.04) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.lp-calculator-container {
+    width: 80%;              /* Ocupa el 90% del ancho disponible */
+    max-width: 900px;        /* Pero nunca más de 900px */
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.lp-calculator-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.lp-calculator-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #4B0082, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lp-calculator-desc {
+    font-size: 0.9375rem;
+    color: #64748b;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .lp-calculator-section {
+        padding: 2rem 1rem;
+    }
+
+    .lp-calculator-title {
+        font-size: 2rem;
+    }
+
+    .lp-calculator-desc {
+        font-size: 1.0625rem;
+    }
+}
+
+/* ==============================================================
+   HERRAMIENTAS / TOOLS GRID
    ============================================================== */
 .lp-tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
 
 .lp-tool-card {
     background: white;
-    border-radius: 1.25rem;
-    padding: 2rem;
-    box-shadow: var(--lp-shadow-lg);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: var(--lp-shadow-md);
     border: 1px solid var(--lp-border-light);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .lp-tool-card::before {
@@ -513,30 +858,19 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 3px;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.lp-tool-card--blue::before {
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-}
-
-.lp-tool-card--green::before {
-    background: linear-gradient(90deg, #10b981, #14b8a6);
-}
-
-.lp-tool-card--purple::before {
-    background: linear-gradient(90deg, #8b5cf6, #ec4899);
-}
-
-.lp-tool-card--rose::before {
-    background: linear-gradient(90deg, #f43f5e, #fb923c);
-}
+.lp-tool-card--blue::before { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+.lp-tool-card--green::before { background: linear-gradient(90deg, #10b981, #14b8a6); }
+.lp-tool-card--purple::before { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+.lp-tool-card--rose::before { background: linear-gradient(90deg, #f43f5e, #fb923c); }
 
 .lp-tool-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: var(--lp-shadow-lg);
 }
 
 .lp-tool-card:hover::before {
@@ -547,295 +881,244 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;        /* espacio arriba y abajo */
-    margin-bottom: 16px;    /* espacio antes del título */
-}
-
-.lp-tool-card__title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--lp-text-main);
     margin-bottom: 0.75rem;
 }
 
+.lp-tool-card__icon video {
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+}
+
+.lp-tool-card__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--lp-text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
 .lp-tool-card__desc {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--lp-text-soft);
-    line-height: 1.6;
+    line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+    .lp-tools-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    .lp-tool-card {
+        padding: 1.5rem;
+    }
+
+    .lp-tool-card__icon video {
+        width: 100px;
+        height: 100px;
+    }
+
+    .lp-tool-card__title {
+        font-size: 1.0625rem;
+    }
+
+    .lp-tool-card__desc {
+        font-size: 0.875rem;
+    }
 }
 
 /* ==============================================================
-   CARDS DE BENEFICIOS
+   CARDS DE BENEFICIOS / PARA QUIÉN
    ============================================================== */
 .lp-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
-
-/* Efecto hover brutal para las cards */
-.lp-cards-grid--hover {
-    gap: 2rem;
-}
-
-.lp-card--hover {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #f0f0f0;
-}
-
 
 .lp-card {
     background: white;
-    border-radius: 1.25rem;
-    padding: 2rem;
-    box-shadow: var(--lp-shadow-lg);
-    border: 1px solid var(--lp-border-emerald);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--lp-shadow-md);
+    border: 1px solid var(--lp-border-light);
+    transition: all 0.3s ease;
 }
 
-/* Icono bonito arriba */
-.lp-card__icon {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    opacity: 0.9;
-}
-
-/* Pequeño brillo que se mueve al hacer hover */
-.lp-card--hover::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgb(255, 255, 255), transparent);
-    transition: 0.7s;
-    transform: skewX(-25deg);
-}
-
-.lp-card--hover:hover::before {
-    left: 150%;
-}
-
-/* EFECTO HOVER */
 .lp-card--hover:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-    border-color: transparent;
+    transform: translateY(-4px);
+    box-shadow: var(--lp-shadow-lg);
 }
 
 .lp-card__title {
-    font-size: 1.375rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--lp-text-main);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
 }
 
 .lp-card__list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .lp-card__list li {
-    font-size: 1rem;
-    color: var(--lp-text-soft);
-    line-height: 1.6;
-}
-
-/* ==============================================================
-   PROCESO (STEPS)
-   ============================================================== */
-.lp-steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 3rem;
-}
-
-.lp-step {
-    text-align: center;
-}
-
-.lp-step__number {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background: var(--lp-gradient-primary);
-    color: white;
-    font-size: 2rem;
-    font-weight: 800;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    box-shadow: var(--lp-shadow-xl);
-}
-
-.lp-step__title {
-    font-size: 1.375rem;
-    font-weight: 700;
-    color: var(--lp-text-main);
-    margin-bottom: 1rem;
-}
-
-.lp-step__text {
-    font-size: 1rem;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
     color: var(--lp-text-soft);
-    line-height: 1.7;
+    line-height: 1.5;
+}
+
+.lp-card__list li svg {
+    width: 1rem;
+    height: 1rem;
+    color: #059669;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+@media (min-width: 640px) {
+    .lp-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lp-cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    .lp-card {
+        padding: 1.75rem;
+    }
 }
 
 /* ==============================================================
-   CSS PARA AGREGAR/REEMPLAZAR EN LANDINGPAGE.CSS:
+   TESTIMONIOS
    ============================================================== */
-
-/* Testimonios - Sección */
-.lp-section--testimonials {
-    background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
-    padding: 2.5rem 0;
-}
-
-/* Grid de testimonios */
 .lp-testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
 }
 
-/* Card de testimonio */
 .lp-testimonial-card {
     background: white;
-    border-radius: 1.5rem;
-    padding: 2rem;
+    border-radius: 1rem;
+    padding: 1.5rem;
     position: relative;
-    box-shadow: 0 10px 30px rgba(75, 0, 130, 0.08);
-    border: 1px solid rgba(75, 0, 130, 0.1);
+    box-shadow: var(--lp-shadow-md);
+    border: 1px solid rgba(75, 0, 130, 0.08);
     transition: all 0.3s ease;
-    overflow: hidden;
 }
 
 .lp-testimonial-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(75, 0, 130, 0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--lp-shadow-lg);
 }
 
-/* Comillas decorativas */
 .lp-testimonial-card__quote {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    opacity: 0.08;
+    top: 1rem;
+    right: 1rem;
+    opacity: 0.06;
 }
 
 .quote-icon {
-    width: 4rem;
-    height: 4rem;
-    color: #4B0082;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--lp-primary);
 }
 
-/* Contenido */
 .lp-testimonial-card__content {
     position: relative;
     z-index: 1;
 }
 
-/* Estrellas SVG */
 .lp-testimonial-card__stars {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 1.25rem;
+    gap: 0.125rem;
+    margin-bottom: 1rem;
 }
 
 .star-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    color: #fbbf24;
+    width: 1rem;
+    height: 1rem;
+    color: #f59e0b;
 }
 
-/* Texto del testimonio */
 .lp-testimonial-card__text {
-    font-size: 1.05rem;
-    line-height: 1.7;
+    font-size: 0.9375rem;
+    line-height: 1.65;
     color: #374151;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
     font-style: italic;
 }
 
-/* Autor */
 .lp-testimonial-card__author {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--lp-border-light);
 }
 
 .lp-testimonial-card__avatar {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4B0082, #7c3aed);
+    background: var(--lp-gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 0.875rem;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
-}
-
-.lp-testimonial-card__info {
-    flex: 1;
 }
 
 .author-name {
-    font-size: 1.05rem;
+    font-size: 0.9375rem;
     font-weight: 700;
     color: #1f2937;
-    margin: 0 0 0.25rem;
+    margin: 0 0 0.125rem;
 }
 
 .author-role {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: #6b7280;
     margin: 0;
 }
 
-/* Badge verificado */
 .lp-testimonial-card__badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.875rem;
+    gap: 0.25rem;
+    padding: 0.375rem 0.625rem;
     background: #dcfce7;
     color: #166534;
     border-radius: 999px;
-    font-size: 0.813rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
 }
 
 .badge-icon {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 0.875rem;
+    height: 0.875rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
     .lp-testimonials-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
-    }
-
-    .lp-testimonial-card {
-        padding: 1.5rem;
     }
 
     .quote-icon {
@@ -845,209 +1128,26 @@
 }
 
 /* ==============================================================
-   CTA FINAL
-   ============================================================== */
-.lp-cta {
-    background: var(--lp-gradient-cta);
-    padding: 6rem 0;
-}
-
-.lp-cta__content {
-    text-align: center;
-    max-width: 48rem;
-    margin: 0 auto;
-}
-
-.lp-cta__title {
-    font-size: clamp(2rem, 4vw, 2.5rem);
-    font-weight: 800;
-    color: white;
-    margin-bottom: 1rem;
-}
-
-.lp-cta__text {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2rem;
-}
-
-/* ==============================================================
-   FOOTER
-   ============================================================== */
-.lp-footer {
-    background: #111827;
-    color: #9ca3af;
-    padding: 4rem 0 2rem;
-}
-
-.lp-footer__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 3rem;
-    margin-bottom: 3rem;
-}
-
-.lp-footer__col {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.lp-footer__brand {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.lp-footer__logo {
-    width: 2.5rem;
-    height: 2.5rem;
-    background: var(--lp-gradient-primary);
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.lp-footer__logo-icon {
-    font-size: 1.5rem;
-}
-
-.lp-footer__name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: white;
-}
-
-.lp-footer__title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 0.5rem;
-}
-
-.lp-footer__text {
-    font-size: 0.875rem;
-    line-height: 1.6;
-}
-
-.lp-footer__list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-}
-
-.lp-footer__bottom {
-    border-top: 1px solid #374151;
-    padding-top: 2rem;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-/* ==============================================================
-   RESPONSIVE
-   ============================================================== */
-@media (max-width: 640px) {
-    .lp-header__nav {
-        gap: 0.5rem;
-    }
-
-    .lp-header__nav .lp-btn--small {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.75rem;
-    }
-
-    .lp-btn__icon {
-        font-size: 0.875rem;
-    }
-}
-
-
-
-
-@media (max-width: 768px) {
-    .lp-main {
-        padding-top: 4rem;
-    }
-
-    .lp-hero {
-        padding: 3rem 0 4rem;
-    }
-
-    .lp-hero__buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .lp-btn {
-        width: 100%;
-    }
-
-    .lp-hero__stats {
-        gap: 1.5rem;
-    }
-
-    .lp-section {
-        padding: 3rem 0;
-    }
-
-    .lp-tools-grid,
-    .lp-cards-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .lp-container {
-        padding: 0 1rem;
-    }
-
-    .lp-hero__title {
-        font-size: 2rem;
-    }
-
-    .lp-btn--ghost {
-        padding: 0.4rem 0.6rem;
-    }
-
-    .lp-hero__subtitle {
-        font-size: 1rem;
-    }
-
-    .lp-hero__form-card {
-        padding: 1.5rem;
-    }
-
-    .lp-section__title {
-        font-size: 1.75rem;
-    }
-}
-
-/* ==============================================================
-   SECCIÓN PRECIOS 2025 – VERSIÓN QUE MÁS CONVIERTE
+   PRECIOS / PRICING - MOBILE OPTIMIZED
    ============================================================== */
 .lp-pricing {
-    padding: 3.5rem 0;
+    padding: 3rem 0;
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    position: relative;
 }
 
 .lp-pricing__header {
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 5rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
 }
 
 .lp-pricing__title {
-    font-size: clamp(2.8rem, 5vw, 3.6rem);
+    font-size: 1.5rem;
     font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
+    line-height: 1.25;
+    margin-bottom: 1rem;
     color: #1e293b;
+    letter-spacing: -0.03em;
 }
 
 .lp-pricing__title span {
@@ -1058,101 +1158,107 @@
 }
 
 .lp-pricing__subtitle {
-    font-size: 1.25rem;
-    line-height: 1.7;
+    font-size: 0.9375rem;
+    line-height: 1.6;
     color: #475569;
-    max-width: 650px;
-    margin: 0 auto;
 }
 
-/* Grid de precios */
+.lp-pricing__subtitle strong {
+    color: var(--lp-primary);
+}
+
+/* Grid de precios - MOBILE STACK */
 .lp-pricing__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 2.5rem;
-    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 400px;
     margin: 0 auto;
 }
 
 /* Card base */
 .lp-price-card {
     background: white;
-    border-radius: 2rem;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--lp-shadow-md);
     border: 2px solid transparent;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
 }
 
-.lp-price-card:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 30px 60px rgba(75, 0, 130, 0.18);
+.lp-price-card h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--lp-text-main);
+    letter-spacing: -0.02em;
 }
 
-/* Card DESTACADA (la que más se vende) */
+/* Card DESTACADA */
 .lp-price-card--featured {
-    border: 3px solid #7c3aed;
-    transform: scale(1.06);
-    background: linear-gradient(135deg, #faf5ff 0%, #ffffff 100%);
-    z-index: 10;
+    border-color: var(--lp-secondary);
+    background: linear-gradient(180deg, #faf5ff 0%, #ffffff 100%);
+    padding-top: 2.5rem;
 }
 
 .lp-price-card--featured::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
     background: var(--lp-gradient-primary);
+    border-radius: 1.25rem 1.25rem 0 0;
 }
 
-/* Badge MÁS VENDIDO profesional */
+/* Badge MÁS VENDIDO */
 .lp-badge-popular {
     position: absolute;
-    top: -16px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #9333ea, #c084fc);
+    background: var(--lp-gradient-primary);
     color: white;
-    padding: 0.65rem 2rem;
+    padding: 0.5rem 1.25rem;
     border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.95rem;
-    box-shadow: 0 10px 25px rgba(147, 51, 234, 0.4);
-    z-index: 20;
+    font-weight: 700;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 12px rgba(75, 0, 130, 0.3);
     white-space: nowrap;
+    letter-spacing: 0.02em;
 }
 
 /* Precio */
 .lp-price {
-    font-size: 3.8rem;
-    font-weight: 900;
+    font-size: 2.5rem;
+    font-weight: 800;
     color: var(--lp-primary);
-    margin: 1.5rem 0;
+    margin: 0.75rem 0;
     line-height: 1;
+    letter-spacing: -0.03em;
 }
 
 .lp-price small {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--lp-text-soft);
     font-weight: 500;
 }
 
-/* Lista de beneficios PRO */
+/* Lista de beneficios */
 .lp-features {
     list-style: none;
-    margin: 2rem 0;
+    margin: 1.25rem 0;
 }
 
 .lp-features li {
-    padding: 0.75rem 0;
-    padding-left: 2.2rem;
+    padding: 0.625rem 0;
+    padding-left: 2rem;
     position: relative;
-    font-size: 1.1rem;
+    font-size: 0.9375rem;
     color: var(--lp-text-main);
-    line-height: 1.5;
-    border-bottom: 1px dashed #e2e8f0;
+    line-height: 1.45;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .lp-features li:last-child {
@@ -1165,118 +1271,227 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     background: #10b981;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-weight: 900;
-    font-size: 1rem;
+    font-weight: 800;
+    font-size: 0.75rem;
 }
 
-/* Iconos personalizados por beneficio (los más importantes) */
 .lp-features li:nth-child(1)::before { content: '1'; background: #8b5cf6; }
 .lp-features li:nth-child(2)::before { content: '2'; background: #ec4899; }
 .lp-features li:nth-child(3)::before { content: '3'; background: #f59e0b; }
 .lp-features li:nth-child(4)::before { content: '4'; background: #3b82f6; }
 .lp-features li:nth-child(5)::before { content: '5'; background: #06b6d4; }
+
 .lp-features li strong {
     color: var(--lp-primary);
 }
 
-/* Botones */
 .lp-price-card .lp-btn {
-    margin-top: auto;
     width: 100%;
-    padding: 1rem !important;
-    font-size: 1.1rem !important;
+    margin-top: 0.5rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .lp-price-card--featured {
-        transform: scale(1);
+@media (min-width: 768px) {
+    .lp-pricing {
+        padding: 4rem 0;
     }
+
+    .lp-pricing__header {
+        margin-bottom: 3rem;
+    }
+
+    .lp-pricing__title {
+        font-size: 2rem;
+    }
+
+    .lp-pricing__subtitle {
+        font-size: 1.0625rem;
+    }
+
+    .lp-pricing__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        max-width: 1100px;
+        align-items: start;
+    }
+
+    .lp-price-card {
+        padding: 2rem;
+    }
+
+    .lp-price-card--featured {
+        transform: scale(1.03);
+        z-index: 10;
+    }
+
     .lp-price {
-        font-size: 3.2rem;
+        font-size: 3rem;
     }
 }
 
 /* ==============================================================
-   SECCIÓN CALCULADORA (Mejorada)
+   CTA FINAL
    ============================================================== */
-.lp-calculator-section {
-    padding: 4rem 2rem;
-    position: relative;
-    overflow: hidden;
-    /* Fondo sofisticado: Gris muy claro con un degradado radial sutil en el centro */
-    background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+.lp-cta {
+    background: var(--lp-gradient-cta);
+    padding: 3rem 0;
 }
 
-/* Elemento decorativo de fondo (un brillo sutil detrás de la calculadora) */
-.lp-calculator-section::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(124, 58, 237, 0.03) 0%, transparent 60%);
-    z-index: 0;
-    pointer-events: none;
-}
-
-.lp-calculator-container {
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2; /* Para que esté por encima del brillo */
-}
-
-.lp-calculator-header {
+.lp-cta__content {
     text-align: center;
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.lp-cta__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.lp-cta__text {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .lp-cta {
+        padding: 5rem 0;
+    }
+
+    .lp-cta__title {
+        font-size: 2rem;
+    }
+
+    .lp-cta__text {
+        font-size: 1.125rem;
+    }
+}
+
+/* ==============================================================
+   FOOTER - PROFESIONAL
+   ============================================================== */
+.lp-footer {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 2.5rem 0 1.5rem;
+}
+
+.lp-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
     margin-bottom: 2rem;
 }
 
-.lp-calculator-title {
-    font-size: 3rem;
-    font-weight: 900;
-    color: #1e293b;
-    margin-bottom: 1rem;
-    letter-spacing: -1px;
+.lp-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-/* Efecto de texto degradado para una palabra clave */
-.text-gradient {
-    background: linear-gradient(135deg, #4B0082, #6d28d9);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.lp-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
-.lp-calculator-desc {
-    font-size: 1.25rem;
-    color: #64748b;
-    max-width: 600px;
-    margin: 0 auto;
+.lp-footer__logo {
+    width: 2rem;
+    height: 2rem;
+    background: var(--lp-gradient-primary);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lp-footer__logo-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: white;
+}
+
+.lp-footer__name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: white;
+}
+
+.lp-footer__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.lp-footer__text {
+    font-size: 0.8125rem;
     line-height: 1.6;
 }
 
-/* Responsividad para móviles */
-@media (max-width: 768px) {
-    .lp-calculator-section {
-        padding: 5rem 1.5rem;
+.lp-footer__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+.lp-footer__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lp-footer__list li svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--lp-accent);
+    flex-shrink: 0;
+}
+
+.lp-footer__bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 1.5rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #64748b;
+}
+
+@media (min-width: 640px) {
+    .lp-footer__grid {
+        grid-template-columns: repeat(2, 1fr);
     }
-    .lp-calculator-title {
-        font-size: 2.2rem;
+}
+
+@media (min-width: 1024px) {
+    .lp-footer {
+        padding: 3rem 0 2rem;
+    }
+
+    .lp-footer__grid {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 3rem;
     }
 }
 
 /* ==============================================================
-   MODAL DE ÉXITO (POPUP)
+   MODAL DE ÉXITO
    ============================================================== */
 .lp-modal-overlay {
     position: fixed;
@@ -1284,8 +1499,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.6); /* Fondo oscuro semitransparente */
-    backdrop-filter: blur(8px); /* Efecto de desenfoque moderno (Glassmorphism) */
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -1296,76 +1511,273 @@
 
 .lp-modal-card {
     background: white;
-    border-radius: 24px;
-    padding: 3rem 2rem;
+    border-radius: 1.25rem;
+    padding: 2rem 1.5rem;
     width: 100%;
-    max-width: 420px;
+    max-width: 380px;
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    position: relative;
     animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Animación del Icono de Check */
 .lp-success-icon-wrapper {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
     background: #dcfce7;
     color: #16a34a;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem;
-    box-shadow: 0 0 0 8px #f0fdf4; /* Efecto de onda exterior */
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 0 0 6px #f0fdf4;
 }
 
 .lp-success-icon-wrapper svg {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     stroke-width: 3;
 }
 
 .lp-modal-title {
-    font-size: 1.8rem;
-    font-weight: 900;
+    font-size: 1.375rem;
+    font-weight: 800;
     color: #1e293b;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
 }
 
 .lp-modal-text {
-    font-size: 1.1rem;
+    font-size: 0.9375rem;
     color: #64748b;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .lp-modal-btn {
     width: 100%;
-    padding: 1rem;
-    background: #16a34a; /* Verde éxito */
+    padding: 0.875rem;
+    background: #16a34a;
     color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 10px 15px -3px rgba(22, 163, 74, 0.3);
+    font-family: inherit;
 }
 
 .lp-modal-btn:hover {
     background: #15803d;
-    transform: translateY(-2px);
 }
 
-/* Animaciones Keyframes */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
 @keyframes scaleUp {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
+
+@media (min-width: 768px) {
+    .lp-modal-card {
+        padding: 2.5rem 2rem;
+    }
+
+    .lp-success-icon-wrapper {
+        width: 72px;
+        height: 72px;
+    }
+
+    .lp-modal-title {
+        font-size: 1.5rem;
+    }
+}
+
+
+/* ==============================================================
+   MEJORAS CALCULADORA EN MÓVIL
+   ============================================================== */
+
+/* En móviles y tablets pequeñas: que la calculadora ocupe casi todo el ancho */
+@media (max-width: 767px) {
+    .lp-calculator-section {
+        padding: 2rem 0.75rem;   /* Reduce un poco el padding lateral */
+    }
+
+    .lp-calculator-container {
+        width: 100%;             /* ¡Ocupa todo el ancho disponible! */
+        max-width: none;         /* Quita el límite máximo en móvil */
+        padding: 1.5rem 1rem;    /* Padding interno cómodo para la tarjeta */
+        background: white;       /* Fondo blanco limpio (opcional, para que resalte) */
+        border-radius: 1.25rem;  /* Bordes redondeados como las otras tarjetas */
+        box-shadow: var(--lp-shadow-lg); /* Sombra elegante */
+        margin: 0 auto;
+    }
+
+    /* Mejora los textos en móvil */
+    .lp-calculator-title {
+        font-size: 1.75rem;      /* Un poco más grande */
+    }
+
+    .lp-calculator-desc {
+        font-size: 1rem;
+    }
+
+    /* Si tus inputs y botón tienen clases específicas (ajústalas si es necesario) */
+    /* Ejemplo genérico para inputs de la calculadora */
+    .lp-calculator-container input[type="number"],
+    .lp-calculator-container input[type="text"] {
+        width: 100%;
+        height: 54px;
+        font-size: 1.1rem;
+        padding: 0 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .lp-calculator-container button,
+    .lp-calculator-container .lp-btn {
+        width: 100%;
+        height: 54px;
+        font-size: 1.1rem;
+        padding: 0 1.5rem;
+    }
+}
+
+/* En tablets y desktop: mantiene el ancho máximo elegante que ya tenías */
+@media (min-width: 768px) {
+    .lp-calculator-container {
+        width: 80%;
+        max-width: 900px;
+        padding: 2rem;
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: var(--lp-shadow-xl);
+    }
+}
+
+/* ==============================================================
+   HERO SECTION - MEJORAS 2025 (MÓVIL + ANIMACIÓN STATS)   ============================================================== */
+
+/* 1. HERO MÁS ANCHO Y LIMPIO EN MÓVIL */
+@media (max-width: 767px) {
+    .lp-hero {
+        padding: 1.5rem 0 2.5rem !important;
+    }
+
+    .lp-hero .lp-container {
+        padding: 0 !important; /* Elimina los 1rem laterales del contenedor general */
+    }
+
+    .lp-hero__grid {
+        gap: 2.5rem;
+    ;
+    }
+
+    /* Contenido principal (título, texto, botones, stats) ocupa todo el ancho */
+    .lp-hero__content {
+        padding: 0 1rem;
+        text-align: center;
+    }
+
+    /* Tarjeta del formulario: full-width y más grande en móvil */
+    .lp-hero__form-wrapper {
+        padding: 0 1rem;
+    }
+
+    .lp-hero__form-card {
+        padding: 2rem 1.5rem !important;
+        border-radius: 1.5rem;
+        box-shadow: var(--lp-shadow-xl);
+    }
+
+}
+
+/* Títulos más grandes y cómodos */
+.lp-hero__title {
+    font-size: 2.25rem !important;     /* antes era 1.875rem */
+    line-height: 1.1;
+}
+
+.lp-hero__subtitle {
+    font-size: 1.0625rem;
+}
+
+/* Botones más grandes y apilados correctamente */
+.lp-hero__buttons {
+    gap: 1rem;
+}
+
+.lp-hero__buttons .lp-btn {
+    width: 100%;
+    padding: 1rem 1.5rem !important;
+    font-size: 1.0625rem;
+}
+
+/* Stats más espaciados y visibles */
+.lp-hero__stats {
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: var(--lp-shadow-md);
+}
+
+.lp-hero__stat-number {
+    font-size: 2rem !important;
+}
+
+.lp-hero__stat-label {
+    font-size: 0.8125rem;
+}
+
+/* 2. EN DESKTOP: MANTENER GRID ELEGANTE (ya lo tenías, solo lo pulimos) */
+@media (min-width: 1024px) {
+    .lp-hero {
+        padding: 2rem 0 2rem;
+    }
+
+    .lp-hero__content {
+        text-align: left;
+        padding-right: 3rem;
+    }
+
+    .lp-hero__form-card {
+        padding: 2.5rem !important;
+    }
+}
+
+/* 3. ANIMACIÓN DE CONTADORES (500+, 95%, 3+) - PURA MAGIA CON CSS + UN TOQUE DE JS */
+.lp-hero__stat-number {
+    display: inline-block;
+    min-width: 70px;
+}
+
+/* Clase que activaremos con JS cuando entre en pantalla */
+.animate-counter {
+    animation: countUp 2.2s ease-out forwards;
+}
+
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+.lp-hero {
+    background: linear-gradient(180deg, #faf5ff 0%, #f8f9ff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.lp-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
